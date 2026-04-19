@@ -37,16 +37,16 @@ The app will be available at **http://localhost:5173**.
 
 ## 📜 Available Scripts
 
-| Command             | Description                                        |
-| ------------------- | -------------------------------------------------- |
-| `yarn dev`          | Start Vite dev server with HMR                     |
-| `yarn build`        | Type-check and build for production into `dist/`   |
-| `yarn preview`      | Preview the production build locally               |
-| `yarn lint`         | Run ESLint on all files (fails on any warning)     |
-| `yarn lint:fix`     | Run ESLint and auto-fix issues                     |
-| `yarn format`       | Format all files with Prettier                     |
-| `yarn format:check` | Check formatting without writing (used in CI)      |
-| `yarn type-check`   | Run TypeScript compiler without emitting files     |
+| Command             | Description                                      |
+| ------------------- | ------------------------------------------------ |
+| `yarn dev`          | Start Vite dev server with HMR                   |
+| `yarn build`        | Type-check and build for production into `dist/` |
+| `yarn preview`      | Preview the production build locally             |
+| `yarn lint`         | Run ESLint on all files (fails on any warning)   |
+| `yarn lint:fix`     | Run ESLint and auto-fix issues                   |
+| `yarn format`       | Format all files with Prettier                   |
+| `yarn format:check` | Check formatting without writing (used in CI)    |
+| `yarn type-check`   | Run TypeScript compiler without emitting files   |
 
 ## 📁 Project Structure
 
