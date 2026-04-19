@@ -1,4 +1,4 @@
-# PCL Platform — Frontend
+# W.E.B.U - Web Engineering of Bachkhoa Univeristy
 
 **Personalized Code Learning Platform** — Frontend application built with React + TypeScript + Vite.
 
@@ -10,7 +10,7 @@
 - **Code quality:** ESLint (flat config) + Prettier + Husky + lint-staged
 - **CI:** GitHub Actions
 
-## 📋 Prerequisites
+## 📋 Prerequisitesx
 
 - Node.js `>= 20`
 - Yarn `>= 1.22` (or npm/pnpm — adjust commands accordingly)
@@ -82,18 +82,3 @@ import Home from '@/pages/Home';
 
 - **Pre-commit:** Husky runs `lint-staged` which auto-fixes ESLint issues and formats staged files with Prettier before every commit.
 - **CI:** On every push or pull request to `main`, GitHub Actions runs lint, format check, type-check, and build.
-
-## 🧭 Roadmap (Phase 1)
-
-- [x] Project init with Vite + React + TS
-- [x] ESLint + Prettier + Husky setup
-- [x] Home page placeholder
-- [x] CI pipeline
-- [ ] Auth flow
-- [ ] Learning path UI
-- [ ] Integration with backend API
-- [ ] Deployment (Vercel / Netlify)
-
-## 📄 License
-
-MIT
