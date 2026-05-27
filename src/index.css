@@ -1,3 +1,262 @@
+@import 'tailwindcss';
+
+/* =========================================
+  THEME VARIABLES
+========================================= */
+@theme {
+  /* --*: initial; */
+
+  /* --- Colors --- */
+  /* surface */
+  --color-surface-a0: #0a0e15;
+  --color-surface-a10: #1d2128;
+  --color-surface-a20: #32363c;
+  --color-surface-a30: #484c52;
+  --color-surface-a40: #606368;
+  --color-surface-a50: #787b80;
+
+  /* surface-tonal */
+  --color-tonal-a0: #0a1222;
+  --color-tonal-a10: #1d2535;
+  --color-tonal-a20: #323a49;
+  --color-tonal-a30: #48505d;
+  --color-tonal-a40: #606673;
+  --color-tonal-a50: #787e89;
+
+  /* primary */
+  --color-primary-a0: #1a3a8a;
+  --color-primary-a10: #2d52b5;
+  --color-primary-a20: #3b6bdf;
+  --color-primary-a30: #5580ed;
+  --color-primary-a40: #7899f5;
+  --color-primary-a50: #a1b8fb;
+  --color-primary-a60: #c9d6fd;
+
+  /* secondary */
+  --color-secondary-a10: #e0f2ff;
+  --color-secondary-a30: #bde0ff;
+  --color-secondary-a50: #85c4ff;
+  --color-secondary-a70: #4ca3ff;
+  --color-secondary-a90: #1a88ff;
+
+  /* neutral */
+  --color-neutral-a50: #f0f4f8;
+  --color-neutral-a100: #d9e2ec;
+  --color-neutral-a200: #bcccdc;
+  --color-neutral-a300: #9fb3c8;
+  --color-neutral-a400: #829ab1;
+  --color-neutral-a500: #627d98;
+  --color-neutral-a600: #486581;
+  --color-neutral-a700: #334e68;
+  --color-neutral-a800: #243b53;
+  --color-neutral-a900: #102a43;
+
+  /* status */
+  --color-success-success-a0: #00d68f;
+  --color-success-success-a10: #33e0a8;
+  --color-success-success-a20: #77eac4;
+  --color-warning-warning-a0: #d69e00;
+  --color-warning-warning-a10: #e6b833;
+  --color-warning-warning-a20: #f0d077;
+  --color-danger-danger-a0: #d63d3d;
+  --color-danger-danger-a10: #e06c6c;
+  --color-danger-danger-a20: #ea9999;
+  --color-info-info-a0: #1a3a8a;
+  --color-info-info-a10: #3b6bdf;
+  --color-info-info-a20: #7899f5;
+  --color-discovery-discovery-a10: #99fff0;
+  --color-discovery-discovery-a30: #5cf5d7;
+  --color-discovery-discovery-a50: #2eeabd;
+  --color-discovery-discovery-a70: #00d6b1;
+  --color-discovery-discovery-a90: #00a37b;
+
+  /* --- Spacing --- */
+  --spacing-0: 0px;
+  --spacing-1: 4px;
+  --spacing-2: 8px;
+  --spacing-3: 12px;
+  --spacing-4: 16px;
+  --spacing-5: 20px;
+  --spacing-6: 24px;
+  --spacing-8: 32px;
+  --spacing-10: 40px;
+  --spacing-12: 48px;
+  --spacing-16: 64px;
+  --spacing-20: 80px;
+  --spacing-24: 96px;
+  --spacing-30: 120px;
+  --spacing-32: 128px;
+}
+
+/* =========================================
+  FONTS
+========================================= */
+@font-face {
+  font-family: 'SFU Futura';
+  src: url('/fonts/SFUFuturaBold.TTF') format('truetype');
+  font-weight: 700;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'SFU Futura';
+  src: url('/fonts/SFUFuturaExtraBold.TTF') format('truetype');
+  font-weight: 800;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'UTM Neo Sans Intel';
+  src: url('/fonts/UTM%20Neo%20Sans%20Intel.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+}
+
+/* =========================================
+  TEXT STYLES
+========================================= */
+@utility ide1 {
+  font-size: 20px;
+  font-family: 'JetBrains Mono', monospace;
+  font-weight: 400;
+  letter-spacing: 0em;
+}
+@utility ide2 {
+  font-size: 18px;
+  font-family: 'JetBrains Mono', monospace;
+  font-weight: 400;
+  letter-spacing: 0em;
+}
+@utility ide3 {
+  font-size: 16px;
+  font-family: 'JetBrains Mono', monospace;
+  font-weight: 400;
+  letter-spacing: 0em;
+}
+@utility ide4 {
+  font-size: 14px;
+  font-family: 'JetBrains Mono', monospace;
+  font-weight: 400;
+  letter-spacing: 0em;
+}
+
+@utility h0 {
+  font-size: 80px;
+  font-family: 'SFU Futura', sans-serif;
+  font-weight: 800;
+  letter-spacing: 0em;
+}
+@utility h00 {
+  font-size: 60px;
+  font-family: 'SFU Futura', sans-serif;
+  font-weight: 800;
+  letter-spacing: 0em;
+}
+
+@utility h1 {
+  font-size: 40px;
+  font-family: 'SFU Futura', sans-serif;
+  font-weight: 700;
+  letter-spacing: 0em;
+}
+@utility h2 {
+  font-size: 36px;
+  font-family: 'SFU Futura', sans-serif;
+  font-weight: 700;
+  letter-spacing: 0em;
+}
+@utility h3 {
+  font-size: 32px;
+  font-family: 'SFU Futura', sans-serif;
+  font-weight: 700;
+  letter-spacing: 0em;
+}
+@utility h4 {
+  font-size: 28px;
+  font-family: 'SFU Futura', sans-serif;
+  font-weight: 700;
+  letter-spacing: 0em;
+}
+@utility h5 {
+  font-size: 24px;
+  font-family: 'SFU Futura', sans-serif;
+  font-weight: 700;
+  letter-spacing: 0em;
+}
+@utility h6 {
+  font-size: 20px;
+  font-family: 'SFU Futura', sans-serif;
+  font-weight: 700;
+  letter-spacing: 0em;
+}
+@utility h7 {
+  font-size: 16px;
+  font-family: 'SFU Futura', sans-serif;
+  font-weight: 700;
+  letter-spacing: 0em;
+}
+@utility h8 {
+  font-size: 12px;
+  font-family: 'SFU Futura', sans-serif;
+  font-weight: 700;
+  letter-spacing: 0em;
+}
+
+@utility p1 {
+  font-size: 40px;
+  font-family: 'UTM Neo Sans Intel', sans-serif;
+  font-weight: 400;
+  letter-spacing: 0em;
+}
+@utility p2 {
+  font-size: 36px;
+  font-family: 'UTM Neo Sans Intel', sans-serif;
+  font-weight: 400;
+  letter-spacing: 0em;
+}
+@utility p3 {
+  font-size: 32px;
+  font-family: 'UTM Neo Sans Intel', sans-serif;
+  font-weight: 400;
+  letter-spacing: 0em;
+}
+@utility p4 {
+  font-size: 28px;
+  font-family: 'UTM Neo Sans Intel', sans-serif;
+  font-weight: 400;
+  letter-spacing: 0em;
+}
+@utility p5 {
+  font-size: 24px;
+  font-family: 'UTM Neo Sans Intel', sans-serif;
+  font-weight: 400;
+  letter-spacing: 0em;
+}
+@utility p6 {
+  font-size: 20px;
+  font-family: 'UTM Neo Sans Intel', sans-serif;
+  font-weight: 400;
+  letter-spacing: 0em;
+}
+@utility p7 {
+  font-size: 16px;
+  font-family: 'UTM Neo Sans Intel', sans-serif;
+  font-weight: 400;
+  letter-spacing: 0em;
+}
+@utility p8 {
+  font-size: 14px;
+  font-family: 'UTM Neo Sans Intel', sans-serif;
+  font-weight: 400;
+  letter-spacing: 0em;
+}
+@utility p9 {
+  font-size: 12px;
+  font-family: 'UTM Neo Sans Intel', sans-serif;
+  font-weight: 400;
+  letter-spacing: 0em;
+}
+
 :root {
   font-family:
     system-ui,

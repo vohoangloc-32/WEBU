@@ -1,0 +1,762 @@
+This file is a merged representation of the entire codebase, combined into a single document by Repomix.
+
+<file_summary>
+This section contains a summary of this file.
+
+<purpose>
+This file contains a packed representation of the entire repository's contents.
+It is designed to be easily consumable by AI systems for analysis, code review,
+or other automated processes.
+</purpose>
+
+<file_format>
+The content is organized as follows:
+1. This summary section
+2. Repository information
+3. Directory structure
+4. Repository files (if enabled)
+5. Multiple file entries, each consisting of:
+  - File path as an attribute
+  - Full contents of the file
+</file_format>
+
+<usage_guidelines>
+- This file should be treated as read-only. Any changes should be made to the
+  original repository files, not this packed version.
+- When processing this file, use the file path to distinguish
+  between different files in the repository.
+- Be aware that this file may contain sensitive information. Handle it with
+  the same level of security as you would the original repository.
+</usage_guidelines>
+
+<notes>
+- Some files may have been excluded based on .gitignore rules and Repomix's configuration
+- Binary files are not included in this packed representation. Please refer to the Repository Structure section for a complete list of file paths, including binary files
+- Files matching patterns in .gitignore are excluded
+- Files matching default ignore patterns are excluded
+- Files are sorted by Git change count (files with more changes are at the bottom)
+</notes>
+
+</file_summary>
+
+<directory_structure>
+.github/workflows/ci.yml
+.gitignore
+.husky/pre-commit
+.prettierignore
+.prettierrc
+eslint.config.js
+index.html
+package.json
+README.md
+src/App.tsx
+src/index.css
+src/main.tsx
+src/pages/Home.css
+src/pages/Home.tsx
+src/vite-env.d.ts
+tsconfig.app.json
+tsconfig.app.tsbuildinfo
+tsconfig.json
+tsconfig.node.json
+tsconfig.node.tsbuildinfo
+vite.config.ts
+</directory_structure>
+
+<files>
+This section contains the contents of the repository's files.
+
+<file path=".github/workflows/ci.yml">
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  quality:
+    name: Lint, Format, Type-check & Build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'yarn'
+
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+
+      - name: Run ESLint
+        run: yarn lint
+
+      - name: Check Prettier formatting
+        run: yarn format:check
+
+      - name: Type-check
+        run: yarn type-check
+
+      - name: Build project
+        run: yarn build
+</file>
+
+<file path=".gitignore">
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# Dependencies
+node_modules
+.pnp
+.pnp.js
+
+# Build outputs
+dist
+dist-ssr
+build
+*.local
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Env files
+.env
+.env.local
+.env.*.local
+
+# Coverage
+coverage
+</file>
+
+<file path=".husky/pre-commit">
+npx lint-staged
+</file>
+
+<file path=".prettierignore">
+node_modules
+dist
+build
+coverage
+.husky
+yarn.lock
+package-lock.json
+pnpm-lock.yaml
+*.min.js
+*.min.css
+</file>
+
+<file path=".prettierrc">
+{
+  "semi": true,
+  "singleQuote": true,
+  "trailingComma": "all",
+  "printWidth": 80,
+  "tabWidth": 2,
+  "useTabs": false,
+  "arrowParens": "always",
+  "endOfLine": "lf"
+}
+</file>
+
+<file path="eslint.config.js">
+import js from '@eslint/js';
+import globals from 'globals';
+import reactHooks from 'eslint-plugin-react-hooks';
+import reactRefresh from 'eslint-plugin-react-refresh';
+import tseslint from 'typescript-eslint';
+import prettierConfig from 'eslint-config-prettier';
+
+export default tseslint.config(
+  { ignores: ['dist', 'node_modules', '.husky'] },
+  {
+    extends: [js.configs.recommended, ...tseslint.configs.recommended],
+    files: ['**/*.{ts,tsx}'],
+    languageOptions: {
+      ecmaVersion: 2020,
+      globals: globals.browser,
+    },
+    plugins: {
+      'react-hooks': reactHooks,
+      'react-refresh': reactRefresh,
+    },
+    rules: {
+      ...reactHooks.configs.recommended.rules,
+      'react-refresh/only-export-components': [
+        'warn',
+        { allowConstantExport: true },
+      ],
+      '@typescript-eslint/no-unused-vars': [
+        'error',
+        { argsIgnorePattern: '^_', varsIgnorePattern: '^_' },
+      ],
+    },
+  },
+  prettierConfig,
+);
+</file>
+
+<file path="index.html">
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Personalized Code Learning Platform - Learn coding with AI-powered personalized paths"
+    />
+    <title>PCL Platform — Personalized Code Learning</title>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
+</file>
+
+<file path="src/App.tsx">
+import { Route, Routes } from 'react-router-dom';
+import Home from './pages/Home';
+
+function App() {
+  return (
+    <Routes>
+      <Route path="/" element={<Home />} />
+    </Routes>
+  );
+}
+
+export default App;
+</file>
+
+<file path="src/index.css">
+:root {
+  font-family:
+    system-ui,
+    -apple-system,
+    'Segoe UI',
+    Roboto,
+    sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+  color-scheme: dark;
+  color: rgba(255, 255, 255, 0.87);
+  background-color: #0b0d14;
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background:
+    radial-gradient(
+      ellipse at top,
+      rgba(100, 108, 255, 0.15) 0%,
+      transparent 50%
+    ),
+    #0b0d14;
+}
+
+a {
+  color: #a5adff;
+  text-decoration: none;
+}
+
+a:hover {
+  color: #c7cbff;
+}
+
+button {
+  font-family: inherit;
+}
+</file>
+
+<file path="src/main.tsx">
+import { StrictMode } from 'react';
+import { createRoot } from 'react-dom/client';
+import { BrowserRouter } from 'react-router-dom';
+import App from './App';
+import './index.css';
+
+createRoot(document.getElementById('root')!).render(
+  <StrictMode>
+    <BrowserRouter>
+      <App />
+    </BrowserRouter>
+  </StrictMode>,
+);
+</file>
+
+<file path="src/pages/Home.css">
+.home {
+  min-height: 100vh;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 4rem 1.5rem 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 4rem;
+}
+
+.home__hero {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.25rem;
+}
+
+.home__badge {
+  display: inline-block;
+  padding: 0.35rem 0.9rem;
+  border: 1px solid rgba(100, 108, 255, 0.4);
+  background: rgba(100, 108, 255, 0.1);
+  border-radius: 999px;
+  font-size: 0.85rem;
+  color: #a5adff;
+}
+
+.home__title {
+  font-size: clamp(2.25rem, 5vw, 3.75rem);
+  line-height: 1.1;
+  margin: 0;
+  font-weight: 800;
+  background: linear-gradient(135deg, #646cff 0%, #b18cff 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.home__subtitle {
+  font-size: 1.1rem;
+  color: rgba(255, 255, 255, 0.7);
+  max-width: 620px;
+  margin: 0;
+  line-height: 1.6;
+}
+
+.home__actions {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-top: 0.5rem;
+}
+
+.home__btn {
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition:
+    transform 0.15s ease,
+    background 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.home__btn:hover {
+  transform: translateY(-1px);
+}
+
+.home__btn--primary {
+  background: #646cff;
+  color: #fff;
+}
+
+.home__btn--primary:hover {
+  background: #535bf2;
+}
+
+.home__btn--ghost {
+  background: transparent;
+  color: #e5e7eb;
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.home__btn--ghost:hover {
+  border-color: rgba(255, 255, 255, 0.45);
+}
+
+.home__features {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 1.25rem;
+}
+
+.feature {
+  padding: 1.5rem;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  transition:
+    transform 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.feature:hover {
+  transform: translateY(-2px);
+  border-color: rgba(100, 108, 255, 0.4);
+}
+
+.feature__icon {
+  font-size: 2rem;
+  margin-bottom: 0.75rem;
+}
+
+.feature h3 {
+  margin: 0 0 0.5rem;
+  font-size: 1.15rem;
+}
+
+.feature p {
+  margin: 0;
+  color: rgba(255, 255, 255, 0.65);
+  line-height: 1.55;
+  font-size: 0.95rem;
+}
+
+.home__footer {
+  text-align: center;
+  color: rgba(255, 255, 255, 0.4);
+  font-size: 0.85rem;
+  margin-top: auto;
+}
+</file>
+
+<file path="src/pages/Home.tsx">
+import './Home.css';
+function Home() {
+  return (
+    <main className="home">
+      <section className="home__hero">
+        <span className="home__badge">Cooking cooking cooking</span>
+        <h1 className="home__title">
+          Wibu wibu wibu wibu wibu
+          <br />
+          wibu wibu wibu wibu wibu
+        </h1>
+        <p className="home__subtitle">
+          Học lập trình theo lộ trình được cá nhân hoá — phù hợp với trình độ,
+          mục tiêu và tốc độ của riêng bạn.
+        </p>
+
+        <div className="home__actions">
+          <button className="home__btn home__btn--primary" type="button">
+            Bắt đầu học
+          </button>
+          <button className="home__btn home__btn--ghost" type="button">
+            Tìm hiểu thêm
+          </button>
+        </div>
+      </section>
+
+      <section className="home__features">
+        <article className="feature">
+          <div className="feature__icon">🧭</div>
+          <h3>Lộ trình cá nhân hoá</h3>
+          <p>
+            Nhận lộ trình học phù hợp với trình độ và mục tiêu nghề nghiệp của
+            bạn.
+          </p>
+        </article>
+
+        <article className="feature">
+          <div className="feature__icon">💻</div>
+          <h3>Học qua thực hành</h3>
+          <p>
+            Thực hành trực tiếp với các bài tập code và dự án thực tế, có phản
+            hồi chi tiết.
+          </p>
+        </article>
+
+        <article className="feature">
+          <div className="feature__icon">🤖</div>
+          <h3>Trợ lý AI</h3>
+          <p>
+            Được hỗ trợ bởi AI để giải đáp thắc mắc và gợi ý bài học tiếp theo
+            cho bạn.
+          </p>
+        </article>
+      </section>
+
+      <footer className="home__footer">
+        <p>Yahooooooo</p>
+      </footer>
+    </main>
+  );
+}
+
+export default Home;
+</file>
+
+<file path="src/vite-env.d.ts">
+/// <reference types="vite/client" />
+</file>
+
+<file path="tsconfig.app.json">
+{
+  "compilerOptions": {
+    "target": "ES2020",
+    "useDefineForClassFields": true,
+    "lib": ["ES2020", "DOM", "DOM.Iterable"],
+    "module": "ESNext",
+    "skipLibCheck": true,
+    "moduleResolution": "bundler",
+    "allowImportingTsExtensions": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "moduleDetection": "force",
+    "noEmit": true,
+    "jsx": "react-jsx",
+    "strict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noFallthroughCasesInSwitch": true,
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["src/*"]
+    }
+  },
+  "include": ["src"]
+}
+</file>
+
+<file path="tsconfig.app.tsbuildinfo">
+{"root":["./src/app.tsx","./src/main.tsx","./src/vite-env.d.ts","./src/pages/home.tsx"],"version":"5.6.3"}
+</file>
+
+<file path="tsconfig.json">
+{
+  "files": [],
+  "references": [
+    { "path": "./tsconfig.app.json" },
+    { "path": "./tsconfig.node.json" }
+  ]
+}
+</file>
+
+<file path="tsconfig.node.json">
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "lib": ["ES2023"],
+    "module": "ESNext",
+    "skipLibCheck": true,
+    "moduleResolution": "bundler",
+    "allowImportingTsExtensions": true,
+    "isolatedModules": true,
+    "moduleDetection": "force",
+    "noEmit": true,
+    "strict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noFallthroughCasesInSwitch": true
+  },
+  "include": ["vite.config.ts"]
+}
+</file>
+
+<file path="tsconfig.node.tsbuildinfo">
+{"root":["./vite.config.ts"],"version":"5.6.3"}
+</file>
+
+<file path="vite.config.ts">
+import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react';
+import path from 'node:path';
+import tailwindcss from '@tailwindcss/vite';
+
+// https://vitejs.dev/config/
+export default defineConfig({
+  plugins: [
+    react(),
+    tailwindcss()
+  ],
+  resolve: {
+    alias: {
+      '@': path.resolve(__dirname, './src'),
+    },
+  },
+  server: {
+    port: 5173,
+    open: true,
+  },
+});
+</file>
+
+<file path="package.json">
+{
+  "name": "webu-frontend",
+  "private": true,
+  "version": "0.0.1",
+  "type": "module",
+  "description": "Personalized Code Learning Platform - Frontend",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -b && vite build",
+    "preview": "vite preview",
+    "lint": "eslint . --max-warnings 0",
+    "lint:fix": "eslint . --fix",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "type-check": "tsc --noEmit",
+    "prepare": "husky"
+  },
+  "dependencies": {
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-router-dom": "^6.26.2"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.11.1",
+    "@tailwindcss/vite": "^4.3.0",
+    "@types/node": "^25.6.0",
+    "@types/react": "^18.3.10",
+    "@types/react-dom": "^18.3.0",
+    "@vitejs/plugin-react": "^4.3.2",
+    "autoprefixer": "^10.5.0",
+    "eslint": "^9.11.1",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-react-hooks": "^5.1.0-rc.0",
+    "eslint-plugin-react-refresh": "^0.4.12",
+    "globals": "^15.9.0",
+    "husky": "^9.1.6",
+    "lint-staged": "^15.2.10",
+    "postcss": "^8.5.15",
+    "prettier": "^3.3.3",
+    "tailwindcss": "^4.3.0",
+    "typescript": "~5.6.2",
+    "typescript-eslint": "^8.7.0",
+    "vite": "^5.4.8"
+  },
+  "lint-staged": {
+    "*.{ts,tsx,js,jsx}": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "*.{json,css,md,html}": [
+      "prettier --write"
+    ]
+  }
+}
+</file>
+
+<file path="README.md">
+# W.E.B.U - Web Engineering of Bachkhoa Univeristy
+
+**Personalized Code Learning Platform** — Frontend application built with React + TypeScript + Vite.
+
+## 🚀 Tech Stack
+
+- **Framework:** [React 18](https://react.dev/) + [TypeScript](https://www.typescriptlang.org/)
+- **Build tool:** [Vite 5](https://vitejs.dev/)
+- **Routing:** [React Router v6](https://reactrouter.com/)
+- **Code quality:** ESLint (flat config) + Prettier + Husky + lint-staged
+- **CI:** GitHub Actions
+
+## 📋 Prerequisitesx
+
+- Node.js `>= 20`
+- Yarn `>= 1.22` (or npm/pnpm — adjust commands accordingly)
+
+## 🛠 Getting Started
+
+```bash
+# 1. Clone the repo
+git clone <your-repo-url>
+cd pcl-frontend
+
+# 2. Install dependencies
+yarn install
+
+# 3. Initialize Husky hooks (runs automatically via "prepare" script,
+#    but you can run it manually if needed)
+yarn prepare
+
+# 4. Start dev server
+yarn dev
+```
+
+The app will be available at **http://localhost:5173**.
+
+## 📜 Available Scripts
+
+| Command             | Description                                      |
+| ------------------- | ------------------------------------------------ |
+| `yarn dev`          | Start Vite dev server with HMR                   |
+| `yarn build`        | Type-check and build for production into `dist/` |
+| `yarn preview`      | Preview the production build locally             |
+| `yarn lint`         | Run ESLint on all files (fails on any warning)   |
+| `yarn lint:fix`     | Run ESLint and auto-fix issues                   |
+| `yarn format`       | Format all files with Prettier                   |
+| `yarn format:check` | Check formatting without writing (used in CI)    |
+| `yarn type-check`   | Run TypeScript compiler without emitting files   |
+
+## 📁 Project Structure
+
+```
+pcl-frontend/
+├── .github/workflows/    # GitHub Actions CI
+├── .husky/               # Git hooks (pre-commit → lint-staged)
+├── public/               # Static assets served as-is
+├── src/
+│   ├── components/       # Reusable UI components
+│   ├── pages/            # Route-level pages
+│   │   ├── Home.tsx
+│   │   └── Home.css
+│   ├── App.tsx           # Root component + routes
+│   ├── main.tsx          # App entry point
+│   ├── index.css         # Global styles
+│   └── vite-env.d.ts
+├── eslint.config.js      # ESLint flat config
+├── .prettierrc           # Prettier config
+├── vite.config.ts        # Vite config (with `@/` alias to `src/`)
+└── tsconfig.*.json       # TypeScript configs
+```
+
+### Path aliases
+
+`@/*` is aliased to `src/*`, so you can import like:
+
+```ts
+import Home from '@/pages/Home';
+```
+
+## 🎯 Code Quality Workflow
+
+- **Pre-commit:** Husky runs `lint-staged` which auto-fixes ESLint issues and formats staged files with Prettier before every commit.
+- **CI:** On every push or pull request to `main`, GitHub Actions runs lint, format check, type-check, and build.
+</file>
+
+</files>
