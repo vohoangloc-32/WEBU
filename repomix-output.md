@@ -1,58 +1,58 @@
-This file is a merged representation of the entire codebase, combined into a single document by Repomix.
+This file is a merged representation of a subset of the codebase, containing files not matching ignore patterns, combined into a single document by Repomix.
 
-<file_summary>
-This section contains a summary of this file.
+# File Summary
 
-<purpose>
-This file contains a packed representation of the entire repository's contents.
+## Purpose
+
+This file contains a packed representation of a subset of the repository's contents that is considered the most important context.
 It is designed to be easily consumable by AI systems for analysis, code review,
 or other automated processes.
-</purpose>
 
-<file_format>
+## File Format
+
 The content is organized as follows:
+
 1. This summary section
 2. Repository information
 3. Directory structure
 4. Repository files (if enabled)
 5. Multiple file entries, each consisting of:
-  - File path as an attribute
-  - Full contents of the file
-</file_format>
+   a. A header with the file path (## File: path/to/file)
+   b. The full contents of the file in a code block
 
-<usage_guidelines>
+## Usage Guidelines
+
 - This file should be treated as read-only. Any changes should be made to the
   original repository files, not this packed version.
 - When processing this file, use the file path to distinguish
   between different files in the repository.
 - Be aware that this file may contain sensitive information. Handle it with
   the same level of security as you would the original repository.
-</usage_guidelines>
 
-<notes>
+## Notes
+
 - Some files may have been excluded based on .gitignore rules and Repomix's configuration
 - Binary files are not included in this packed representation. Please refer to the Repository Structure section for a complete list of file paths, including binary files
+- Files matching these patterns are excluded: dist, node_modules, coverage, .husky, public/fonts/**, **/_.svg, \*\*/_.png, \*_/_.jpg
 - Files matching patterns in .gitignore are excluded
 - Files matching default ignore patterns are excluded
 - Files are sorted by Git change count (files with more changes are at the bottom)
-</notes>
 
-</file_summary>
+# Directory Structure
 
-<directory_structure>
+```
 .github/workflows/ci.yml
 .gitignore
-.husky/pre-commit
 .prettierignore
 .prettierrc
 eslint.config.js
 index.html
 package.json
 README.md
+repomix.config.json
 src/App.tsx
 src/index.css
 src/main.tsx
-src/pages/Home.css
 src/pages/Home.tsx
 src/vite-env.d.ts
 tsconfig.app.json
@@ -61,12 +61,41 @@ tsconfig.json
 tsconfig.node.json
 tsconfig.node.tsbuildinfo
 vite.config.ts
-</directory_structure>
+```
 
-<files>
-This section contains the contents of the repository's files.
+# Files
 
-<file path=".github/workflows/ci.yml">
+## File: repomix.config.json
+
+```json
+{
+  "output": {
+    "filePath": "repomix-output.md",
+    "style": "markdown",
+    "removeComments": false,
+    "showLineNumbers": false,
+    "topFilesLength": 5
+  },
+  "ignore": {
+    "useGitignore": true,
+    "useDefaultPatterns": true,
+    "customPatterns": [
+      "dist",
+      "node_modules",
+      "coverage",
+      ".husky",
+      "public/fonts/**",
+      "**/*.svg",
+      "**/*.png",
+      "**/*.jpg"
+    ]
+  }
+}
+```
+
+## File: .github/workflows/ci.yml
+
+```yaml
 name: CI
 
 on:
@@ -103,9 +132,11 @@ jobs:
 
       - name: Build project
         run: yarn build
-</file>
+```
 
-<file path=".gitignore">
+## File: .gitignore
+
+```
 # Logs
 logs
 *.log
@@ -144,13 +175,11 @@ build
 
 # Coverage
 coverage
-</file>
+```
 
-<file path=".husky/pre-commit">
-npx lint-staged
-</file>
+## File: .prettierignore
 
-<file path=".prettierignore">
+```
 node_modules
 dist
 build
@@ -161,9 +190,11 @@ package-lock.json
 pnpm-lock.yaml
 *.min.js
 *.min.css
-</file>
+```
 
-<file path=".prettierrc">
+## File: .prettierrc
+
+```
 {
   "semi": true,
   "singleQuote": true,
@@ -174,9 +205,11 @@ pnpm-lock.yaml
   "arrowParens": "always",
   "endOfLine": "lf"
 }
-</file>
+```
 
-<file path="eslint.config.js">
+## File: eslint.config.js
+
+```javascript
 import js from '@eslint/js';
 import globals from 'globals';
 import reactHooks from 'eslint-plugin-react-hooks';
@@ -211,29 +244,11 @@ export default tseslint.config(
   },
   prettierConfig,
 );
-</file>
+```
 
-<file path="index.html">
-<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta
-      name="description"
-      content="Personalized Code Learning Platform - Learn coding with AI-powered personalized paths"
-    />
-    <title>PCL Platform — Personalized Code Learning</title>
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
-  </body>
-</html>
-</file>
+## File: src/App.tsx
 
-<file path="src/App.tsx">
+```typescript
 import { Route, Routes } from 'react-router-dom';
 import Home from './pages/Home';
 
@@ -246,61 +261,11 @@ function App() {
 }
 
 export default App;
-</file>
+```
 
-<file path="src/index.css">
-:root {
-  font-family:
-    system-ui,
-    -apple-system,
-    'Segoe UI',
-    Roboto,
-    sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
-  color-scheme: dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #0b0d14;
+## File: src/main.tsx
 
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-*,
-*::before,
-*::after {
-  box-sizing: border-box;
-}
-
-body {
-  margin: 0;
-  min-height: 100vh;
-  background:
-    radial-gradient(
-      ellipse at top,
-      rgba(100, 108, 255, 0.15) 0%,
-      transparent 50%
-    ),
-    #0b0d14;
-}
-
-a {
-  color: #a5adff;
-  text-decoration: none;
-}
-
-a:hover {
-  color: #c7cbff;
-}
-
-button {
-  font-family: inherit;
-}
-</file>
-
-<file path="src/main.tsx">
+```typescript
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { BrowserRouter } from 'react-router-dom';
@@ -314,147 +279,11 @@ createRoot(document.getElementById('root')!).render(
     </BrowserRouter>
   </StrictMode>,
 );
-</file>
+```
 
-<file path="src/pages/Home.css">
-.home {
-  min-height: 100vh;
-  max-width: 1100px;
-  margin: 0 auto;
-  padding: 4rem 1.5rem 2rem;
-  display: flex;
-  flex-direction: column;
-  gap: 4rem;
-}
+## File: src/pages/Home.tsx
 
-.home__hero {
-  text-align: center;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 1.25rem;
-}
-
-.home__badge {
-  display: inline-block;
-  padding: 0.35rem 0.9rem;
-  border: 1px solid rgba(100, 108, 255, 0.4);
-  background: rgba(100, 108, 255, 0.1);
-  border-radius: 999px;
-  font-size: 0.85rem;
-  color: #a5adff;
-}
-
-.home__title {
-  font-size: clamp(2.25rem, 5vw, 3.75rem);
-  line-height: 1.1;
-  margin: 0;
-  font-weight: 800;
-  background: linear-gradient(135deg, #646cff 0%, #b18cff 100%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-}
-
-.home__subtitle {
-  font-size: 1.1rem;
-  color: rgba(255, 255, 255, 0.7);
-  max-width: 620px;
-  margin: 0;
-  line-height: 1.6;
-}
-
-.home__actions {
-  display: flex;
-  gap: 0.75rem;
-  flex-wrap: wrap;
-  justify-content: center;
-  margin-top: 0.5rem;
-}
-
-.home__btn {
-  padding: 0.75rem 1.5rem;
-  border-radius: 8px;
-  font-size: 1rem;
-  font-weight: 600;
-  cursor: pointer;
-  border: 1px solid transparent;
-  transition:
-    transform 0.15s ease,
-    background 0.2s ease,
-    border-color 0.2s ease;
-}
-
-.home__btn:hover {
-  transform: translateY(-1px);
-}
-
-.home__btn--primary {
-  background: #646cff;
-  color: #fff;
-}
-
-.home__btn--primary:hover {
-  background: #535bf2;
-}
-
-.home__btn--ghost {
-  background: transparent;
-  color: #e5e7eb;
-  border-color: rgba(255, 255, 255, 0.2);
-}
-
-.home__btn--ghost:hover {
-  border-color: rgba(255, 255, 255, 0.45);
-}
-
-.home__features {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-  gap: 1.25rem;
-}
-
-.feature {
-  padding: 1.5rem;
-  border-radius: 12px;
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  transition:
-    transform 0.2s ease,
-    border-color 0.2s ease;
-}
-
-.feature:hover {
-  transform: translateY(-2px);
-  border-color: rgba(100, 108, 255, 0.4);
-}
-
-.feature__icon {
-  font-size: 2rem;
-  margin-bottom: 0.75rem;
-}
-
-.feature h3 {
-  margin: 0 0 0.5rem;
-  font-size: 1.15rem;
-}
-
-.feature p {
-  margin: 0;
-  color: rgba(255, 255, 255, 0.65);
-  line-height: 1.55;
-  font-size: 0.95rem;
-}
-
-.home__footer {
-  text-align: center;
-  color: rgba(255, 255, 255, 0.4);
-  font-size: 0.85rem;
-  margin-top: auto;
-}
-</file>
-
-<file path="src/pages/Home.tsx">
+```typescript
 import './Home.css';
 function Home() {
   return (
@@ -518,13 +347,17 @@ function Home() {
 }
 
 export default Home;
-</file>
+```
 
-<file path="src/vite-env.d.ts">
+## File: src/vite-env.d.ts
+
+```typescript
 /// <reference types="vite/client" />
-</file>
+```
 
-<file path="tsconfig.app.json">
+## File: tsconfig.app.json
+
+```json
 {
   "compilerOptions": {
     "target": "ES2020",
@@ -550,13 +383,17 @@ export default Home;
   },
   "include": ["src"]
 }
-</file>
+```
 
-<file path="tsconfig.app.tsbuildinfo">
+## File: tsconfig.app.tsbuildinfo
+
+```
 {"root":["./src/app.tsx","./src/main.tsx","./src/vite-env.d.ts","./src/pages/home.tsx"],"version":"5.6.3"}
-</file>
+```
 
-<file path="tsconfig.json">
+## File: tsconfig.json
+
+```json
 {
   "files": [],
   "references": [
@@ -564,9 +401,11 @@ export default Home;
     { "path": "./tsconfig.node.json" }
   ]
 }
-</file>
+```
 
-<file path="tsconfig.node.json">
+## File: tsconfig.node.json
+
+```json
 {
   "compilerOptions": {
     "target": "ES2022",
@@ -585,13 +424,356 @@ export default Home;
   },
   "include": ["vite.config.ts"]
 }
-</file>
+```
 
-<file path="tsconfig.node.tsbuildinfo">
+## File: tsconfig.node.tsbuildinfo
+
+```
 {"root":["./vite.config.ts"],"version":"5.6.3"}
-</file>
+```
 
-<file path="vite.config.ts">
+## File: index.html
+
+```html
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Personalized Code Learning Platform - Learn coding with AI-powered personalized paths"
+    />
+    <title>PCL Platform — Personalized Code Learning</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
+```
+
+## File: src/index.css
+
+```css
+@import 'tailwindcss';
+
+/* =========================================
+  THEME VARIABLES
+========================================= */
+@theme {
+  /* --*: initial; */
+
+  /* --- Colors --- */
+  /* surface */
+  --color-surface-a0: #0a0e15;
+  --color-surface-a10: #1d2128;
+  --color-surface-a20: #32363c;
+  --color-surface-a30: #484c52;
+  --color-surface-a40: #606368;
+  --color-surface-a50: #787b80;
+
+  /* surface-tonal */
+  --color-tonal-a0: #0a1222;
+  --color-tonal-a10: #1d2535;
+  --color-tonal-a20: #323a49;
+  --color-tonal-a30: #48505d;
+  --color-tonal-a40: #606673;
+  --color-tonal-a50: #787e89;
+
+  /* primary */
+  --color-primary-a0: #1a3a8a;
+  --color-primary-a10: #2d52b5;
+  --color-primary-a20: #3b6bdf;
+  --color-primary-a30: #5580ed;
+  --color-primary-a40: #7899f5;
+  --color-primary-a50: #a1b8fb;
+  --color-primary-a60: #c9d6fd;
+
+  /* secondary */
+  --color-secondary-a10: #e0f2ff;
+  --color-secondary-a30: #bde0ff;
+  --color-secondary-a50: #85c4ff;
+  --color-secondary-a70: #4ca3ff;
+  --color-secondary-a90: #1a88ff;
+
+  /* neutral */
+  --color-neutral-a50: #f0f4f8;
+  --color-neutral-a100: #d9e2ec;
+  --color-neutral-a200: #bcccdc;
+  --color-neutral-a300: #9fb3c8;
+  --color-neutral-a400: #829ab1;
+  --color-neutral-a500: #627d98;
+  --color-neutral-a600: #486581;
+  --color-neutral-a700: #334e68;
+  --color-neutral-a800: #243b53;
+  --color-neutral-a900: #102a43;
+
+  /* status */
+  --color-success-success-a0: #00d68f;
+  --color-success-success-a10: #33e0a8;
+  --color-success-success-a20: #77eac4;
+  --color-warning-warning-a0: #d69e00;
+  --color-warning-warning-a10: #e6b833;
+  --color-warning-warning-a20: #f0d077;
+  --color-danger-danger-a0: #d63d3d;
+  --color-danger-danger-a10: #e06c6c;
+  --color-danger-danger-a20: #ea9999;
+  --color-info-info-a0: #1a3a8a;
+  --color-info-info-a10: #3b6bdf;
+  --color-info-info-a20: #7899f5;
+  --color-discovery-discovery-a10: #99fff0;
+  --color-discovery-discovery-a30: #5cf5d7;
+  --color-discovery-discovery-a50: #2eeabd;
+  --color-discovery-discovery-a70: #00d6b1;
+  --color-discovery-discovery-a90: #00a37b;
+
+  /* --- Spacing --- */
+  --spacing-0: 0px;
+  --spacing-1: 4px;
+  --spacing-2: 8px;
+  --spacing-3: 12px;
+  --spacing-4: 16px;
+  --spacing-5: 20px;
+  --spacing-6: 24px;
+  --spacing-8: 32px;
+  --spacing-10: 40px;
+  --spacing-12: 48px;
+  --spacing-16: 64px;
+  --spacing-20: 80px;
+  --spacing-24: 96px;
+  --spacing-30: 120px;
+  --spacing-32: 128px;
+}
+
+/* =========================================
+  FONTS
+========================================= */
+@font-face {
+  font-family: 'SFU Futura';
+  src: url('/fonts/SFUFuturaBold.TTF') format('truetype');
+  font-weight: 700;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'SFU Futura';
+  src: url('/fonts/SFUFuturaExtraBold.TTF') format('truetype');
+  font-weight: 800;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'UTM Neo Sans Intel';
+  src: url('/fonts/UTM%20Neo%20Sans%20Intel.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+}
+
+/* =========================================
+  TEXT STYLES
+========================================= */
+@utility ide1 {
+  font-size: 20px;
+  font-family: 'JetBrains Mono', monospace;
+  font-weight: 400;
+  letter-spacing: 0em;
+}
+@utility ide2 {
+  font-size: 18px;
+  font-family: 'JetBrains Mono', monospace;
+  font-weight: 400;
+  letter-spacing: 0em;
+}
+@utility ide3 {
+  font-size: 16px;
+  font-family: 'JetBrains Mono', monospace;
+  font-weight: 400;
+  letter-spacing: 0em;
+}
+@utility ide4 {
+  font-size: 14px;
+  font-family: 'JetBrains Mono', monospace;
+  font-weight: 400;
+  letter-spacing: 0em;
+}
+
+@utility h0 {
+  font-size: 80px;
+  font-family: 'SFU Futura', sans-serif;
+  font-weight: 800;
+  letter-spacing: 0em;
+}
+@utility h00 {
+  font-size: 60px;
+  font-family: 'SFU Futura', sans-serif;
+  font-weight: 800;
+  letter-spacing: 0em;
+}
+
+@utility h1 {
+  font-size: 40px;
+  font-family: 'SFU Futura', sans-serif;
+  font-weight: 700;
+  letter-spacing: 0em;
+}
+@utility h2 {
+  font-size: 36px;
+  font-family: 'SFU Futura', sans-serif;
+  font-weight: 700;
+  letter-spacing: 0em;
+}
+@utility h3 {
+  font-size: 32px;
+  font-family: 'SFU Futura', sans-serif;
+  font-weight: 700;
+  letter-spacing: 0em;
+}
+@utility h4 {
+  font-size: 28px;
+  font-family: 'SFU Futura', sans-serif;
+  font-weight: 700;
+  letter-spacing: 0em;
+}
+@utility h5 {
+  font-size: 24px;
+  font-family: 'SFU Futura', sans-serif;
+  font-weight: 700;
+  letter-spacing: 0em;
+}
+@utility h6 {
+  font-size: 20px;
+  font-family: 'SFU Futura', sans-serif;
+  font-weight: 700;
+  letter-spacing: 0em;
+}
+@utility h7 {
+  font-size: 16px;
+  font-family: 'SFU Futura', sans-serif;
+  font-weight: 700;
+  letter-spacing: 0em;
+}
+@utility h8 {
+  font-size: 12px;
+  font-family: 'SFU Futura', sans-serif;
+  font-weight: 700;
+  letter-spacing: 0em;
+}
+
+@utility p1 {
+  font-size: 40px;
+  font-family: 'UTM Neo Sans Intel', sans-serif;
+  font-weight: 400;
+  letter-spacing: 0em;
+}
+@utility p2 {
+  font-size: 36px;
+  font-family: 'UTM Neo Sans Intel', sans-serif;
+  font-weight: 400;
+  letter-spacing: 0em;
+}
+@utility p3 {
+  font-size: 32px;
+  font-family: 'UTM Neo Sans Intel', sans-serif;
+  font-weight: 400;
+  letter-spacing: 0em;
+}
+@utility p4 {
+  font-size: 28px;
+  font-family: 'UTM Neo Sans Intel', sans-serif;
+  font-weight: 400;
+  letter-spacing: 0em;
+}
+@utility p5 {
+  font-size: 24px;
+  font-family: 'UTM Neo Sans Intel', sans-serif;
+  font-weight: 400;
+  letter-spacing: 0em;
+}
+@utility p6 {
+  font-size: 20px;
+  font-family: 'UTM Neo Sans Intel', sans-serif;
+  font-weight: 400;
+  letter-spacing: 0em;
+}
+@utility p7 {
+  font-size: 16px;
+  font-family: 'UTM Neo Sans Intel', sans-serif;
+  font-weight: 400;
+  letter-spacing: 0em;
+}
+@utility p8 {
+  font-size: 14px;
+  font-family: 'UTM Neo Sans Intel', sans-serif;
+  font-weight: 400;
+  letter-spacing: 0em;
+}
+@utility p9 {
+  font-size: 12px;
+  font-family: 'UTM Neo Sans Intel', sans-serif;
+  font-weight: 400;
+  letter-spacing: 0em;
+}
+
+:root {
+  font-family:
+    system-ui,
+    -apple-system,
+    'Segoe UI',
+    Roboto,
+    sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+  color-scheme: dark;
+  color: rgba(255, 255, 255, 0.87);
+  background-color: #0b0d14;
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background:
+    radial-gradient(
+      ellipse at top,
+      rgba(100, 108, 255, 0.15) 0%,
+      transparent 50%
+    ),
+    #0b0d14;
+}
+
+a {
+  color: #a5adff;
+  text-decoration: none;
+}
+
+a:hover {
+  color: #c7cbff;
+}
+
+button {
+  font-family: inherit;
+}
+```
+
+## File: vite.config.ts
+
+```typescript
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import path from 'node:path';
@@ -599,10 +781,7 @@ import tailwindcss from '@tailwindcss/vite';
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [
-    react(),
-    tailwindcss()
-  ],
+  plugins: [react(), tailwindcss()],
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),
@@ -613,66 +792,11 @@ export default defineConfig({
     open: true,
   },
 });
-</file>
+```
 
-<file path="package.json">
-{
-  "name": "webu-frontend",
-  "private": true,
-  "version": "0.0.1",
-  "type": "module",
-  "description": "Personalized Code Learning Platform - Frontend",
-  "scripts": {
-    "dev": "vite",
-    "build": "tsc -b && vite build",
-    "preview": "vite preview",
-    "lint": "eslint . --max-warnings 0",
-    "lint:fix": "eslint . --fix",
-    "format": "prettier --write .",
-    "format:check": "prettier --check .",
-    "type-check": "tsc --noEmit",
-    "prepare": "husky"
-  },
-  "dependencies": {
-    "react": "^18.3.1",
-    "react-dom": "^18.3.1",
-    "react-router-dom": "^6.26.2"
-  },
-  "devDependencies": {
-    "@eslint/js": "^9.11.1",
-    "@tailwindcss/vite": "^4.3.0",
-    "@types/node": "^25.6.0",
-    "@types/react": "^18.3.10",
-    "@types/react-dom": "^18.3.0",
-    "@vitejs/plugin-react": "^4.3.2",
-    "autoprefixer": "^10.5.0",
-    "eslint": "^9.11.1",
-    "eslint-config-prettier": "^9.1.0",
-    "eslint-plugin-react-hooks": "^5.1.0-rc.0",
-    "eslint-plugin-react-refresh": "^0.4.12",
-    "globals": "^15.9.0",
-    "husky": "^9.1.6",
-    "lint-staged": "^15.2.10",
-    "postcss": "^8.5.15",
-    "prettier": "^3.3.3",
-    "tailwindcss": "^4.3.0",
-    "typescript": "~5.6.2",
-    "typescript-eslint": "^8.7.0",
-    "vite": "^5.4.8"
-  },
-  "lint-staged": {
-    "*.{ts,tsx,js,jsx}": [
-      "eslint --fix",
-      "prettier --write"
-    ],
-    "*.{json,css,md,html}": [
-      "prettier --write"
-    ]
-  }
-}
-</file>
+## File: README.md
 
-<file path="README.md">
+````markdown
 # W.E.B.U - Web Engineering of Bachkhoa Univeristy
 
 **Personalized Code Learning Platform** — Frontend application built with React + TypeScript + Vite.
@@ -757,6 +881,58 @@ import Home from '@/pages/Home';
 
 - **Pre-commit:** Husky runs `lint-staged` which auto-fixes ESLint issues and formats staged files with Prettier before every commit.
 - **CI:** On every push or pull request to `main`, GitHub Actions runs lint, format check, type-check, and build.
-</file>
+````
 
-</files>
+## File: package.json
+
+```json
+{
+  "name": "webu-frontend",
+  "private": true,
+  "version": "0.0.1",
+  "type": "module",
+  "description": "Personalized Code Learning Platform - Frontend",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -b && vite build",
+    "preview": "vite preview",
+    "lint": "eslint . --max-warnings 0",
+    "lint:fix": "eslint . --fix",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "type-check": "tsc --noEmit",
+    "prepare": "husky"
+  },
+  "dependencies": {
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-router-dom": "^6.26.2"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.11.1",
+    "@tailwindcss/vite": "^4.3.0",
+    "@types/node": "^25.6.0",
+    "@types/react": "^18.3.10",
+    "@types/react-dom": "^18.3.0",
+    "@vitejs/plugin-react": "^4.3.2",
+    "autoprefixer": "^10.5.0",
+    "eslint": "^9.11.1",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-react-hooks": "^5.1.0-rc.0",
+    "eslint-plugin-react-refresh": "^0.4.12",
+    "globals": "^15.9.0",
+    "husky": "^9.1.6",
+    "lint-staged": "^15.2.10",
+    "postcss": "^8.5.15",
+    "prettier": "^3.3.3",
+    "tailwindcss": "^4.3.0",
+    "typescript": "~5.6.2",
+    "typescript-eslint": "^8.7.0",
+    "vite": "^5.4.8"
+  },
+  "lint-staged": {
+    "*.{ts,tsx,js,jsx}": ["eslint --fix", "prettier --write"],
+    "*.{json,css,md,html}": ["prettier --write"]
+  }
+}
+```
