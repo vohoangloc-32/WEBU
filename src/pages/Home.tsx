@@ -1,63 +1,69 @@
-import './Home.css';
-function Home() {
+import React from 'react';
+import { Logo2 } from '../components/ui/Logo2';
+import { Button } from '../components/ui/Button';
+
+export const Home = (): JSX.Element => {
   return (
-    <main className="home">
-      <section className="home__hero">
-        <span className="home__badge">Cooking cooking cooking</span>
-        <h1 className="home__title">
-          Wibu wibu wibu wibu wibu
-          <br />
-          wibu wibu wibu wibu wibu
-        </h1>
-        <p className="home__subtitle">
-          Học lập trình theo lộ trình được cá nhân hoá — phù hợp với trình độ,
-          mục tiêu và tốc độ của riêng bạn.
-        </p>
+    <div className="w-full max-w-[1440px] min-h-screen mx-auto px-28 py-20 bg-tonal-a0 flex flex-col justify-between items-stretch overflow-hidden select-none">
+      <header className="self-stretch flex justify-start items-center">
+        <Logo2 />
+      </header>
 
-        <div className="home__actions">
-          <button className="home__btn home__btn--primary" type="button">
-            Bắt đầu học
-          </button>
-          <button className="home__btn home__btn--ghost" type="button">
-            Tìm hiểu thêm
-          </button>
+      <main className="self-stretch flex flex-col justify-center items-center text-center gap-10 my-12">
+        <div className="flex flex-col gap-4">
+          <h1 className="text-neutral-a50 text-6xl font-extrabold font-['SFU_Futura'] tracking-normal leading-tight uppercase">
+            LEARN CODE BY FLASHCARD
+          </h1>
+          <p className="text-neutral-a50 text-4xl font-bold font-['SFU_Futura'] tracking-normal opacity-90">
+            Get personalized learning track
+          </p>
         </div>
-      </section>
 
-      <section className="home__features">
-        <article className="feature">
-          <div className="feature__icon">🧭</div>
-          <h3>Lộ trình cá nhân hoá</h3>
-          <p>
-            Nhận lộ trình học phù hợp với trình độ và mục tiêu nghề nghiệp của
-            bạn.
-          </p>
-        </article>
+        <div className="text-neutral-a50 text-4xl font-bold font-['SFU_Futura'] opacity-70 italic flex flex-col gap-2">
+          <span>Remind you everyday</span>
+        </div>
 
-        <article className="feature">
-          <div className="feature__icon">💻</div>
-          <h3>Học qua thực hành</h3>
-          <p>
-            Thực hành trực tiếp với các bài tập code và dự án thực tế, có phản
-            hồi chi tiết.
-          </p>
-        </article>
+        <div className="w-[280px]">
+          <Button
+            className="px-10 py-2.5 rounded-[20px] outline outline-1 outline-offset-[-1px] outline-secondary-a90"
+            onClick={() => console.log('Get Started Clicked!')}
+          >
+            Get Started →
+          </Button>
+        </div>
 
-        <article className="feature">
-          <div className="feature__icon">🤖</div>
-          <h3>Trợ lý AI</h3>
-          <p>
-            Được hỗ trợ bởi AI để giải đáp thắc mắc và gợi ý bài học tiếp theo
-            cho bạn.
-          </p>
-        </article>
-      </section>
+        <button
+          type="button"
+          className="text-neutral-a50 text-xl font-bold font-['SFU_Futura'] underline cursor-pointer hover:text-secondary-a50 transition-colors"
+        >
+          About US
+        </button>
+      </main>
 
-      <footer className="home__footer">
-        <p>Yahooooooo</p>
+      <footer className="self-stretch flex justify-center items-center gap-32 border-t border-solid border-tonal-a20 pt-8 overflow-hidden">
+        <div className="w-44 h-24 flex justify-start items-center gap-5">
+          <div className="w-4 h-3 bg-neutral-a50 rounded-sm" />
+          <span className="text-neutral-a50 text-xs font-normal font-['UTM_Neo_Sans_Intel'] whitespace-nowrap">
+            discord.gg/webu
+          </span>
+        </div>
+
+        <div className="w-44 h-24 flex justify-start items-center gap-5">
+          <div className="w-5 h-4 bg-neutral-a50 rounded-sm" />
+          <span className="text-neutral-a50 text-xs font-normal font-['UTM_Neo_Sans_Intel'] whitespace-nowrap">
+            webu@gmail.com
+          </span>
+        </div>
+
+        <div className="w-44 h-24 flex justify-start items-center gap-5">
+          <div className="w-2.5 h-4 bg-neutral-a50 rounded-sm" />
+          <span className="text-neutral-a50 text-xs font-normal font-['UTM_Neo_Sans_Intel'] whitespace-nowrap">
+            facebook.com/webu
+          </span>
+        </div>
       </footer>
-    </main>
+    </div>
   );
-}
+};
 
 export default Home;

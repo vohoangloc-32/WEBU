@@ -52,23 +52,23 @@
   --color-neutral-a900: #102a43;
 
   /* status */
-  --color-success-success-a0: #00d68f;
-  --color-success-success-a10: #33e0a8;
-  --color-success-success-a20: #77eac4;
-  --color-warning-warning-a0: #d69e00;
-  --color-warning-warning-a10: #e6b833;
-  --color-warning-warning-a20: #f0d077;
-  --color-danger-danger-a0: #d63d3d;
-  --color-danger-danger-a10: #e06c6c;
-  --color-danger-danger-a20: #ea9999;
-  --color-info-info-a0: #1a3a8a;
-  --color-info-info-a10: #3b6bdf;
-  --color-info-info-a20: #7899f5;
-  --color-discovery-discovery-a10: #99fff0;
-  --color-discovery-discovery-a30: #5cf5d7;
-  --color-discovery-discovery-a50: #2eeabd;
-  --color-discovery-discovery-a70: #00d6b1;
-  --color-discovery-discovery-a90: #00a37b;
+  --color-success-a0: #00d68f;
+  --color-success-a10: #33e0a8;
+  --color-success-a20: #77eac4;
+  --color-warning-a0: #d69e00;
+  --color-warning-a10: #e6b833;
+  --color-warning-a20: #f0d077;
+  --color-danger-a0: #d63d3d;
+  --color-danger-a10: #e06c6c;
+  --color-danger-a20: #ea9999;
+  --color-info-a0: #1a3a8a;
+  --color-info-a10: #3b6bdf;
+  --color-info-a20: #7899f5;
+  --color-discovery-a10: #99fff0;
+  --color-discovery-a30: #5cf5d7;
+  --color-discovery-a50: #2eeabd;
+  --color-discovery-a70: #00d6b1;
+  --color-discovery-a90: #00a37b;
 
   /* --- Spacing --- */
   --spacing-0: 0px;
@@ -86,6 +86,81 @@
   --spacing-24: 96px;
   --spacing-30: 120px;
   --spacing-32: 128px;
+
+  /* --- Animations --- */
+  --animate-fade-in: fade-in 1s var(--animation-delay, 0s) ease forwards;
+  --animate-fade-up: fade-up 1s var(--animation-delay, 0s) ease forwards;
+  --animate-marquee: marquee var(--duration) infinite linear;
+  --animate-marquee-vertical: marquee-vertical var(--duration) linear infinite;
+  --animate-shimmer: shimmer 8s infinite;
+  --animate-spin: spin 1s linear infinite;
+
+  /* --- Keyframes --- */
+  @keyframes spin {
+    to {
+      transform: rotate(1turn);
+    }
+  }
+  @keyframes image-glow {
+    0% {
+      opacity: 0;
+      animation-timing-function: cubic-bezier(0.74, 0.25, 0.76, 1);
+    }
+    10% {
+      opacity: 0.7;
+      animation-timing-function: cubic-bezier(0.12, 0.01, 0.08, 0.99);
+    }
+    to {
+      opacity: 0.4;
+    }
+  }
+  @keyframes fade-in {
+    0% {
+      opacity: 0;
+      transform: translateY(-10px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+  @keyframes fade-up {
+    0% {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+  @keyframes shimmer {
+    0%,
+    90%,
+    to {
+      background-position: calc(-100% - var(--shimmer-width)) 0;
+    }
+    30%,
+    60% {
+      background-position: calc(100% + var(--shimmer-width)) 0;
+    }
+  }
+  @keyframes marquee {
+    0% {
+      transform: translate(0);
+    }
+    to {
+      transform: translateX(calc(-100% - var(--gap)));
+    }
+  }
+  @keyframes marquee-vertical {
+    0% {
+      transform: translateY(0);
+    }
+    to {
+      transform: translateY(calc(-100% - var(--gap)));
+    }
+  }
 }
 
 /* =========================================
@@ -110,6 +185,28 @@
   src: url('/fonts/UTM%20Neo%20Sans%20Intel.ttf') format('truetype');
   font-weight: 400;
   font-style: normal;
+}
+
+@font-face {
+  font-family: 'Nadoor';
+  src: url('/fonts/NADOORBOLDITALIC.OTF') format('opentype');
+  font-weight: 700;
+  font-style: italic;
+}
+
+/* =========================================
+  BASE STYLES
+========================================= */
+@layer base {
+  button,
+  input,
+  select,
+  textarea {
+    appearance: none;
+    background-color: transparent;
+    border-width: 0;
+    outline: none;
+  }
 }
 
 /* =========================================
@@ -255,6 +352,10 @@
   font-family: 'UTM Neo Sans Intel', sans-serif;
   font-weight: 400;
   letter-spacing: 0em;
+}
+
+@utility all-unset {
+  all: unset;
 }
 
 :root {

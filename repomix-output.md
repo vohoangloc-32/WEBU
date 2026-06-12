@@ -51,9 +51,17 @@ package.json
 README.md
 repomix.config.json
 src/App.tsx
+src/components/ui/Button.tsx
+src/components/ui/Logo.tsx
+src/components/ui/Logo2.tsx
+src/components/ui/MainNavigation.tsx
+src/components/ui/Tab.tsx
+src/components/ui/UserIcon.tsx
 src/index.css
 src/main.tsx
 src/pages/Home.tsx
+src/tailwind.config.js.txt
+src/tailwind.css.txt
 src/vite-env.d.ts
 tsconfig.app.json
 tsconfig.app.tsbuildinfo
@@ -65,30 +73,688 @@ vite.config.ts
 
 # Files
 
-## File: repomix.config.json
+## File: src/components/ui/Button.tsx
 
-```json
-{
-  "output": {
-    "filePath": "repomix-output.md",
-    "style": "markdown",
-    "removeComments": false,
-    "showLineNumbers": false,
-    "topFilesLength": 5
+```typescript
+import React, { useState } from 'react';
+
+export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+  children: React.ReactNode;
+  isProcessing?: boolean;
+}
+
+export const Button: React.FC<ButtonProps> = ({
+  children,
+  isProcessing = false,
+  disabled,
+  className = '',
+  onMouseEnter,
+  onMouseLeave,
+  ...props
+}) => {
+  const [isHovered, setIsHovered] = useState(false);
+
+  const isEffectiveDisabled = disabled || isProcessing;
+
+  let stateWrapperClass = '';
+  let stateTextClass = '';
+
+  if (isProcessing) {
+    stateWrapperClass =
+      'bg-info-a0 border-primary-a0 border-dashed cursor-not-allowed';
+    stateTextClass = 'text-secondary-a30';
+  } else if (isHovered) {
+    stateWrapperClass = 'bg-info-a20 border-primary-a20 cursor-pointer';
+    stateTextClass = 'text-secondary-a10';
+  } else {
+    stateWrapperClass = 'bg-tonal-a20 border-secondary-a70 cursor-pointer';
+    stateTextClass = 'text-secondary-a70';
+  }
+
+  const commonWrapperClass =
+    'flex items-center justify-center gap-2.5 p-2.5 relative w-full flex-[0_0_auto] rounded-[10px] border border-solid transition-all duration-200';
+  const finalTextClass = `relative w-fit mt-[-1.00px] h2 ${stateTextClass}`;
+
+  const handleMouseEnter = (event: React.MouseEvent<HTMLButtonElement>) => {
+    if (!isEffectiveDisabled) {
+      setIsHovered(true);
+    }
+    if (onMouseEnter) {
+      onMouseEnter(event);
+    }
+  };
+
+  const handleMouseLeave = (event: React.MouseEvent<HTMLButtonElement>) => {
+    if (!isEffectiveDisabled) {
+      setIsHovered(false);
+    }
+    if (onMouseLeave) {
+      onMouseLeave(event);
+    }
+  };
+
+  return (
+    <button
+      type="button"
+      className={`${commonWrapperClass} ${stateWrapperClass} ${className}`.trim()}
+      disabled={isEffectiveDisabled}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
+      {...props}
+    >
+      <span className={finalTextClass}>{children}</span>
+    </button>
+  );
+};
+```
+
+## File: src/components/ui/Logo.tsx
+
+```typescript
+import LogoItem1 from '@/assets/logo-item-1.svg?react';
+import LogoItem2 from '@/assets/logo-item-2.svg?react';
+
+export const Logo = (): JSX.Element => {
+  return (
+    <figure
+      className="relative m-0 w-47.75 h-35"
+      role="img"
+      aria-label="W.E.B.U logo"
+    >
+      <LogoItem2
+        className="absolute w-[74.87%] h-[67.14%] top-[32.86%] left-[25.13%] pointer-events-none select-none text-discovery-a50"
+        aria-hidden="true"
+      />
+
+      <figcaption className="absolute h-[26.09%] top-[54.35%] left-[calc(50.00%-51px)] w-34.5 flex items-center aspect-[3.78] font-['Nadoor-BoldItalic',Helvetica] font-bold italic text-discovery-a50 text-[40px] leading-normal whitespace-nowrap">
+        W.E.B.U
+      </figcaption>
+
+      <div
+        className="absolute h-0.5 top-[81.33%] left-[calc(50.00%-41px)] w-15.5 bg-discovery-a50 rounded-[10px]"
+        aria-hidden="true"
+      />
+
+      <LogoItem1
+        className="absolute w-full h-full top-0 left-0 aspect-[1.11] pointer-events-none select-none text-discovery-a50"
+        aria-hidden="true"
+      />
+    </figure>
+  );
+};
+
+export default Logo;
+```
+
+## File: src/components/ui/Logo2.tsx
+
+```typescript
+import LogoItem1 from '@/assets/logo-2-item-1.svg?react';
+import LogoItem2 from '@/assets/logo-2-item-2.svg?react';
+
+export const Logo2 = (): JSX.Element => {
+  return (
+    <figure
+      className="relative m-0 w-36 h-28 aspect-[1.28]"
+      role="img"
+      aria-label="W.E.B.U logo"
+    >
+      <LogoItem2
+        className="absolute w-[74.87%] h-[67.14%] top-[32.86%] left-[25.13%] pointer-events-none select-none text-discovery-a50"
+        aria-hidden="true"
+      />
+
+      <figcaption className="absolute h-[26.09%] top-[54.35%] left-[calc(50.00%-38px)] w-27.5 flex items-center aspect-[3.78] font-['Nadoor-BoldItalic',Helvetica] font-bold italic text-discovery-a50 text-[28px] tracking-normal leading-[normal] whitespace-nowrap">
+        W.E.B.U
+      </figcaption>
+
+      <div
+        className="absolute h-0.5 top-[81.33%] left-[calc(50.00%-35px)] w-12.5 bg-discovery-a50 rounded-[10px] aspect-[27.54]"
+        aria-hidden="true"
+      />
+
+      <LogoItem1
+        className="absolute w-full h-full top-0 left-0 aspect-[1.04] pointer-events-none select-none text-discovery-a50"
+        aria-hidden="true"
+      />
+    </figure>
+  );
+};
+
+export default Logo2;
+```
+
+## File: src/components/ui/MainNavigation.tsx
+
+```typescript
+import React, { useState } from 'react';
+import Logo2 from '@/components/ui/Logo2';
+import Tab from '@/components/ui/Tab';
+import UserIcon from '@/components/ui/UserIcon';
+
+type NavTab = 'DASHBOARD' | 'PROBLEM' | 'NOTEBOOK';
+
+export const MainNavigation = (): JSX.Element => {
+  const [activeTab, setActiveTab] = useState<NavTab>('DASHBOARD');
+
+  return (
+    <div className="w-370 p-5 bg-tonal-a10 rounded-[5px] border border-purple-600 inline-flex flex-col justify-start items-start gap-5 overflow-hidden">
+      <div className="self-stretch h-28 px-8 bg-tonal-a0 inline-flex flex-row justify-between items-center overflow-hidden">
+        <div className="flex items-center justify-start">
+          <Logo2 />
+        </div>
+
+        <div className="flex items-center gap-2 h-full">
+          <Tab
+            isActive={activeTab === 'DASHBOARD'}
+            onClick={() => setActiveTab('DASHBOARD')}
+          >
+            DASHBOARD
+          </Tab>
+
+          <Tab
+            isActive={activeTab === 'PROBLEM'}
+            onClick={() => setActiveTab('PROBLEM')}
+          >
+            PROBLEM
+          </Tab>
+
+          <Tab
+            isActive={activeTab === 'NOTEBOOK'}
+            onClick={() => setActiveTab('NOTEBOOK')}
+          >
+            NOTEBOOK
+          </Tab>
+        </div>
+
+        <div className="flex items-center justify-end">
+          <UserIcon />
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default MainNavigation;
+```
+
+## File: src/components/ui/Tab.tsx
+
+```typescript
+import React from 'react';
+
+interface TabProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+  children: React.ReactNode;
+  isActive?: boolean;
+}
+
+export const Tab = ({
+  children,
+  isActive = false,
+  className = '',
+  ...props
+}: TabProps): JSX.Element => {
+  const baseClasses =
+    "px-5 py-5 inline-flex justify-center items-center gap-2 overflow-hidden text-center text-2xl font-bold font-['SFU_Futura'] transition-all duration-200 select-none cursor-pointer";
+
+  const stateClasses = isActive
+    ? 'text-secondary-a30 bg-transparent hover:bg-info-a10 rounded-t-xl border-b-[6px] border-secondary-a50'
+    : 'text-neutral-a100 bg-transparent hover:bg-info-a20 hover:text-neutral-a50 rounded-xl border-b-[6px] border-transparent hover:border-transparent';
+
+  return (
+    <button
+      type="button"
+      className={`${baseClasses} ${stateClasses} ${className}`.trim()}
+      {...props}
+    >
+      {children}
+    </button>
+  );
+};
+
+export default Tab;
+```
+
+## File: src/components/ui/UserIcon.tsx
+
+```typescript
+import React from 'react';
+
+export const UserIcon = (): JSX.Element => {
+  return (
+    <div className="w-14 h-14 bg-neutral-a50 rounded-full flex items-center justify-center cursor-pointer select-none">
+      <svg
+        className="w-8 h-8 text-tonal-a0"
+        viewBox="0 0 24 24"
+        fill="currentColor"
+      >
+        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z" />
+      </svg>
+    </div>
+  );
+};
+
+export default UserIcon;
+```
+
+## File: src/tailwind.config.js.txt
+
+```
+/** @type {import('tailwindcss').Config} */
+module.exports = {
+  content: ["./src/**/*.{html,js,ts,jsx,tsx}"],
+  theme: {
+    extend: {
+      colors: {
+        "neutral-neutral-a100": "var(--neutral-neutral-a100)",
+        "neutral-neutral-a200": "var(--neutral-neutral-a200)",
+        "neutral-neutral-a300": "var(--neutral-neutral-a300)",
+        "neutral-neutral-a400": "var(--neutral-neutral-a400)",
+        "neutral-neutral-a50": "var(--neutral-neutral-a50)",
+        "neutral-neutral-a500": "var(--neutral-neutral-a500)",
+        "neutral-neutral-a600": "var(--neutral-neutral-a600)",
+        "neutral-neutral-a700": "var(--neutral-neutral-a700)",
+        "neutral-neutral-a800": "var(--neutral-neutral-a800)",
+        "neutral-neutral-a900": "var(--neutral-neutral-a900)",
+        "primary-primary-a0": "var(--primary-primary-a0)",
+        "primary-primary-a10": "var(--primary-primary-a10)",
+        "primary-primary-a20": "var(--primary-primary-a20)",
+        "primary-primary-a30": "var(--primary-primary-a30)",
+        "primary-primary-a40": "var(--primary-primary-a40)",
+        "primary-primary-a50": "var(--primary-primary-a50)",
+        "primary-primary-a60": "var(--primary-primary-a60)",
+        "secondary-secondary-a10": "var(--secondary-secondary-a10)",
+        "secondary-secondary-a30": "var(--secondary-secondary-a30)",
+        "secondary-secondary-a50": "var(--secondary-secondary-a50)",
+        "secondary-secondary-a70": "var(--secondary-secondary-a70)",
+        "secondary-secondary-a90": "var(--secondary-secondary-a90)",
+        "status-danger-danger-a0": "var(--status-danger-danger-a0)",
+        "status-danger-danger-a10": "var(--status-danger-danger-a10)",
+        "status-danger-danger-a20": "var(--status-danger-danger-a20)",
+        "status-discovery-discovery-a10":
+          "var(--status-discovery-discovery-a10)",
+        "status-discovery-discovery-a30":
+          "var(--status-discovery-discovery-a30)",
+        "status-discovery-discovery-a50":
+          "var(--status-discovery-discovery-a50)",
+        "status-discovery-discovery-a70":
+          "var(--status-discovery-discovery-a70)",
+        "status-discovery-discovery-a90":
+          "var(--status-discovery-discovery-a90)",
+        "status-info-info-a0": "var(--status-info-info-a0)",
+        "status-info-info-a10": "var(--status-info-info-a10)",
+        "status-info-info-a20": "var(--status-info-info-a20)",
+        "status-success-success-a0": "var(--status-success-success-a0)",
+        "status-success-success-a10": "var(--status-success-success-a10)",
+        "status-success-success-a20": "var(--status-success-success-a20)",
+        "status-warning-warning-a0": "var(--status-warning-warning-a0)",
+        "status-warning-warning-a10": "var(--status-warning-warning-a10)",
+        "status-warning-warning-a20": "var(--status-warning-warning-a20)",
+        "surface-surface-a0": "var(--surface-surface-a0)",
+        "surface-surface-a10": "var(--surface-surface-a10)",
+        "surface-surface-a20": "var(--surface-surface-a20)",
+        "surface-surface-a30": "var(--surface-surface-a30)",
+        "surface-surface-a40": "var(--surface-surface-a40)",
+        "surface-surface-a50": "var(--surface-surface-a50)",
+        "surface-tonal-tonal-a0": "var(--surface-tonal-tonal-a0)",
+        "surface-tonal-tonal-a10": "var(--surface-tonal-tonal-a10)",
+        "surface-tonal-tonal-a20": "var(--surface-tonal-tonal-a20)",
+        "surface-tonal-tonal-a30": "var(--surface-tonal-tonal-a30)",
+        "surface-tonal-tonal-a40": "var(--surface-tonal-tonal-a40)",
+        "surface-tonal-tonal-a50": "var(--surface-tonal-tonal-a50)",
+      },
+      fontFamily: {
+        h0: "var(--h0-font-family)",
+        h00: "var(--h00-font-family)",
+        "heading-h1": "var(--heading-h1-font-family)",
+        "heading-h2": "var(--heading-h2-font-family)",
+        "heading-h3": "var(--heading-h3-font-family)",
+        "heading-h4": "var(--heading-h4-font-family)",
+        "heading-h5": "var(--heading-h5-font-family)",
+        "heading-h6": "var(--heading-h6-font-family)",
+        "heading-h7": "var(--heading-h7-font-family)",
+        "heading-h8": "var(--heading-h8-font-family)",
+        "IDE-1": "var(--IDE-1-font-family)",
+        "IDE-2": "var(--IDE-2-font-family)",
+        "IDE-3": "var(--IDE-3-font-family)",
+        "IDE-4": "var(--IDE-4-font-family)",
+        "paragraph-p1": "var(--paragraph-p1-font-family)",
+        "paragraph-p2": "var(--paragraph-p2-font-family)",
+        "paragraph-p3": "var(--paragraph-p3-font-family)",
+        "paragraph-p4": "var(--paragraph-p4-font-family)",
+        "paragraph-p5": "var(--paragraph-p5-font-family)",
+        "paragraph-p6": "var(--paragraph-p6-font-family)",
+        "paragraph-p7": "var(--paragraph-p7-font-family)",
+        "paragraph-p8": "var(--paragraph-p8-font-family)",
+        "paragraph-p9": "var(--paragraph-p9-font-family)",
+      },
+    },
   },
-  "ignore": {
-    "useGitignore": true,
-    "useDefaultPatterns": true,
-    "customPatterns": [
-      "dist",
-      "node_modules",
-      "coverage",
-      ".husky",
-      "public/fonts/**",
-      "**/*.svg",
-      "**/*.png",
-      "**/*.jpg"
-    ]
+  plugins: [],
+};
+```
+
+## File: src/tailwind.css.txt
+
+```
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  button,
+  input,
+  select,
+  textarea {
+    @apply appearance-none bg-transparent border-0 outline-none;
+  }
+}
+
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+  .all-\[unset\] {
+    all: unset;
+  }
+}
+
+:root {
+  --h0-font-family: "SFU Futura", Helvetica;
+  --h0-font-size: 80px;
+  --h0-font-style: normal;
+  --h0-font-weight: 800;
+  --h0-letter-spacing: 0px;
+  --h0-line-height: normal;
+  --h00-font-family: "SFU Futura", Helvetica;
+  --h00-font-size: 60px;
+  --h00-font-style: normal;
+  --h00-font-weight: 800;
+  --h00-letter-spacing: 0px;
+  --h00-line-height: normal;
+  --heading-h1-font-family: "SFU Futura", Helvetica;
+  --heading-h1-font-size: 40px;
+  --heading-h1-font-style: normal;
+  --heading-h1-font-weight: 700;
+  --heading-h1-letter-spacing: 0px;
+  --heading-h1-line-height: normal;
+  --heading-h2-font-family: "SFU Futura", Helvetica;
+  --heading-h2-font-size: 36px;
+  --heading-h2-font-style: normal;
+  --heading-h2-font-weight: 700;
+  --heading-h2-letter-spacing: 0px;
+  --heading-h2-line-height: normal;
+  --heading-h3-font-family: "SFU Futura", Helvetica;
+  --heading-h3-font-size: 32px;
+  --heading-h3-font-style: normal;
+  --heading-h3-font-weight: 700;
+  --heading-h3-letter-spacing: 0px;
+  --heading-h3-line-height: normal;
+  --heading-h4-font-family: "SFU Futura", Helvetica;
+  --heading-h4-font-size: 28px;
+  --heading-h4-font-style: normal;
+  --heading-h4-font-weight: 700;
+  --heading-h4-letter-spacing: 0px;
+  --heading-h4-line-height: normal;
+  --heading-h5-font-family: "SFU Futura", Helvetica;
+  --heading-h5-font-size: 24px;
+  --heading-h5-font-style: normal;
+  --heading-h5-font-weight: 700;
+  --heading-h5-letter-spacing: 0px;
+  --heading-h5-line-height: normal;
+  --heading-h6-font-family: "SFU Futura", Helvetica;
+  --heading-h6-font-size: 20px;
+  --heading-h6-font-style: normal;
+  --heading-h6-font-weight: 700;
+  --heading-h6-letter-spacing: 0px;
+  --heading-h6-line-height: normal;
+  --heading-h7-font-family: "SFU Futura", Helvetica;
+  --heading-h7-font-size: 16px;
+  --heading-h7-font-style: normal;
+  --heading-h7-font-weight: 700;
+  --heading-h7-letter-spacing: 0px;
+  --heading-h7-line-height: normal;
+  --heading-h8-font-family: "SFU Futura", Helvetica;
+  --heading-h8-font-size: 12px;
+  --heading-h8-font-style: normal;
+  --heading-h8-font-weight: 700;
+  --heading-h8-letter-spacing: 0px;
+  --heading-h8-line-height: normal;
+  --IDE-1-font-family: "JetBrains Mono", Helvetica;
+  --IDE-1-font-size: 20px;
+  --IDE-1-font-style: normal;
+  --IDE-1-font-weight: 400;
+  --IDE-1-letter-spacing: 0px;
+  --IDE-1-line-height: normal;
+  --IDE-2-font-family: "JetBrains Mono", Helvetica;
+  --IDE-2-font-size: 18px;
+  --IDE-2-font-style: normal;
+  --IDE-2-font-weight: 400;
+  --IDE-2-letter-spacing: 0px;
+  --IDE-2-line-height: normal;
+  --IDE-3-font-family: "JetBrains Mono", Helvetica;
+  --IDE-3-font-size: 16px;
+  --IDE-3-font-style: normal;
+  --IDE-3-font-weight: 400;
+  --IDE-3-letter-spacing: 0px;
+  --IDE-3-line-height: normal;
+  --IDE-4-font-family: "JetBrains Mono", Helvetica;
+  --IDE-4-font-size: 14px;
+  --IDE-4-font-style: normal;
+  --IDE-4-font-weight: 400;
+  --IDE-4-letter-spacing: 0px;
+  --IDE-4-line-height: normal;
+  --neutral-neutral-a100: rgba(217, 226, 236, 1);
+  --neutral-neutral-a200: rgba(188, 204, 220, 1);
+  --neutral-neutral-a300: rgba(159, 179, 200, 1);
+  --neutral-neutral-a400: rgba(130, 154, 177, 1);
+  --neutral-neutral-a50: rgba(240, 244, 248, 1);
+  --neutral-neutral-a500: rgba(98, 125, 152, 1);
+  --neutral-neutral-a600: rgba(72, 101, 129, 1);
+  --neutral-neutral-a700: rgba(51, 78, 104, 1);
+  --neutral-neutral-a800: rgba(36, 59, 83, 1);
+  --neutral-neutral-a900: rgba(16, 42, 67, 1);
+  --paragraph-p1-font-family: "UTM Neo Sans Intel", Helvetica;
+  --paragraph-p1-font-size: 40px;
+  --paragraph-p1-font-style: normal;
+  --paragraph-p1-font-weight: 400;
+  --paragraph-p1-letter-spacing: 0px;
+  --paragraph-p1-line-height: normal;
+  --paragraph-p2-font-family: "UTM Neo Sans Intel", Helvetica;
+  --paragraph-p2-font-size: 36px;
+  --paragraph-p2-font-style: normal;
+  --paragraph-p2-font-weight: 400;
+  --paragraph-p2-letter-spacing: 0px;
+  --paragraph-p2-line-height: normal;
+  --paragraph-p3-font-family: "UTM Neo Sans Intel", Helvetica;
+  --paragraph-p3-font-size: 32px;
+  --paragraph-p3-font-style: normal;
+  --paragraph-p3-font-weight: 400;
+  --paragraph-p3-letter-spacing: 0px;
+  --paragraph-p3-line-height: normal;
+  --paragraph-p4-font-family: "UTM Neo Sans Intel", Helvetica;
+  --paragraph-p4-font-size: 28px;
+  --paragraph-p4-font-style: normal;
+  --paragraph-p4-font-weight: 400;
+  --paragraph-p4-letter-spacing: 0px;
+  --paragraph-p4-line-height: normal;
+  --paragraph-p5-font-family: "UTM Neo Sans Intel", Helvetica;
+  --paragraph-p5-font-size: 24px;
+  --paragraph-p5-font-style: normal;
+  --paragraph-p5-font-weight: 400;
+  --paragraph-p5-letter-spacing: 0px;
+  --paragraph-p5-line-height: normal;
+  --paragraph-p6-font-family: "UTM Neo Sans Intel", Helvetica;
+  --paragraph-p6-font-size: 20px;
+  --paragraph-p6-font-style: normal;
+  --paragraph-p6-font-weight: 400;
+  --paragraph-p6-letter-spacing: 0px;
+  --paragraph-p6-line-height: normal;
+  --paragraph-p7-font-family: "UTM Neo Sans Intel", Helvetica;
+  --paragraph-p7-font-size: 16px;
+  --paragraph-p7-font-style: normal;
+  --paragraph-p7-font-weight: 400;
+  --paragraph-p7-letter-spacing: 0px;
+  --paragraph-p7-line-height: normal;
+  --paragraph-p8-font-family: "UTM Neo Sans Intel", Helvetica;
+  --paragraph-p8-font-size: 14px;
+  --paragraph-p8-font-style: normal;
+  --paragraph-p8-font-weight: 400;
+  --paragraph-p8-letter-spacing: 0px;
+  --paragraph-p8-line-height: normal;
+  --paragraph-p9-font-family: "UTM Neo Sans Intel", Helvetica;
+  --paragraph-p9-font-size: 12px;
+  --paragraph-p9-font-style: normal;
+  --paragraph-p9-font-weight: 400;
+  --paragraph-p9-letter-spacing: 0px;
+  --paragraph-p9-line-height: normal;
+  --primary-primary-a0: rgba(26, 58, 138, 1);
+  --primary-primary-a10: rgba(45, 82, 181, 1);
+  --primary-primary-a20: rgba(59, 107, 223, 1);
+  --primary-primary-a30: rgba(85, 128, 237, 1);
+  --primary-primary-a40: rgba(120, 153, 245, 1);
+  --primary-primary-a50: rgba(161, 184, 251, 1);
+  --primary-primary-a60: rgba(201, 214, 253, 1);
+  --secondary-secondary-a10: rgba(224, 242, 255, 1);
+  --secondary-secondary-a30: rgba(189, 224, 255, 1);
+  --secondary-secondary-a50: rgba(133, 196, 255, 1);
+  --secondary-secondary-a70: rgba(76, 163, 255, 1);
+  --secondary-secondary-a90: rgba(26, 136, 255, 1);
+  --status-danger-danger-a0: rgba(214, 61, 61, 1);
+  --status-danger-danger-a10: rgba(224, 108, 108, 1);
+  --status-danger-danger-a20: rgba(234, 153, 153, 1);
+  --status-discovery-discovery-a10: rgba(153, 255, 240, 1);
+  --status-discovery-discovery-a30: rgba(92, 245, 215, 1);
+  --status-discovery-discovery-a50: rgba(46, 234, 189, 1);
+  --status-discovery-discovery-a70: rgba(0, 214, 177, 1);
+  --status-discovery-discovery-a90: rgba(0, 163, 123, 1);
+  --status-info-info-a0: rgba(26, 58, 138, 1);
+  --status-info-info-a10: rgba(59, 107, 223, 1);
+  --status-info-info-a20: rgba(120, 153, 245, 1);
+  --status-success-success-a0: rgba(0, 214, 143, 1);
+  --status-success-success-a10: rgba(51, 224, 168, 1);
+  --status-success-success-a20: rgba(119, 234, 196, 1);
+  --status-warning-warning-a0: rgba(214, 158, 0, 1);
+  --status-warning-warning-a10: rgba(230, 184, 51, 1);
+  --status-warning-warning-a20: rgba(240, 208, 119, 1);
+  --surface-surface-a0: rgba(10, 14, 21, 1);
+  --surface-surface-a10: rgba(29, 33, 40, 1);
+  --surface-surface-a20: rgba(50, 54, 60, 1);
+  --surface-surface-a30: rgba(72, 76, 82, 1);
+  --surface-surface-a40: rgba(96, 99, 104, 1);
+  --surface-surface-a50: rgba(120, 123, 128, 1);
+  --surface-tonal-tonal-a0: rgba(10, 18, 34, 1);
+  --surface-tonal-tonal-a10: rgba(29, 37, 53, 1);
+  --surface-tonal-tonal-a20: rgba(50, 58, 73, 1);
+  --surface-tonal-tonal-a30: rgba(72, 80, 93, 1);
+  --surface-tonal-tonal-a40: rgba(96, 102, 115, 1);
+  --surface-tonal-tonal-a50: rgba(120, 126, 137, 1);
+}
+
+:root {
+  --animate-spin: spin 1s linear infinite;
+}
+
+.animate-fade-in {
+  animation: fade-in 1s var(--animation-delay, 0s) ease forwards;
+}
+
+.animate-fade-up {
+  animation: fade-up 1s var(--animation-delay, 0s) ease forwards;
+}
+
+.animate-marquee {
+  animation: marquee var(--duration) infinite linear;
+}
+
+.animate-marquee-vertical {
+  animation: marquee-vertical var(--duration) linear infinite;
+}
+
+.animate-shimmer {
+  animation: shimmer 8s infinite;
+}
+
+.animate-spin {
+  animation: var(--animate-spin);
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(1turn);
+  }
+}
+
+@keyframes image-glow {
+  0% {
+    opacity: 0;
+    animation-timing-function: cubic-bezier(0.74, 0.25, 0.76, 1);
+  }
+
+  10% {
+    opacity: 0.7;
+    animation-timing-function: cubic-bezier(0.12, 0.01, 0.08, 0.99);
+  }
+
+  to {
+    opacity: 0.4;
+  }
+}
+
+@keyframes fade-in {
+  0% {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes fade-up {
+  0% {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes shimmer {
+  0%,
+  90%,
+  to {
+    background-position: calc(-100% - var(--shimmer-width)) 0;
+  }
+
+  30%,
+  60% {
+    background-position: calc(100% + var(--shimmer-width)) 0;
+  }
+}
+
+@keyframes marquee {
+  0% {
+    transform: translate(0);
+  }
+
+  to {
+    transform: translateX(calc(-100% - var(--gap)));
+  }
+}
+
+@keyframes marquee-vertical {
+  0% {
+    transform: translateY(0);
+  }
+
+  to {
+    transform: translateY(calc(-100% - var(--gap)));
   }
 }
 ```
@@ -246,6 +912,34 @@ export default tseslint.config(
 );
 ```
 
+## File: repomix.config.json
+
+```json
+{
+  "output": {
+    "filePath": "repomix-output.md",
+    "style": "markdown",
+    "removeComments": false,
+    "showLineNumbers": false,
+    "topFilesLength": 5
+  },
+  "ignore": {
+    "useGitignore": true,
+    "useDefaultPatterns": true,
+    "customPatterns": [
+      "dist",
+      "node_modules",
+      "coverage",
+      ".husky",
+      "public/fonts/**",
+      "**/*.svg",
+      "**/*.png",
+      "**/*.jpg"
+    ]
+  }
+}
+```
+
 ## File: src/App.tsx
 
 ```typescript
@@ -353,6 +1047,7 @@ export default Home;
 
 ```typescript
 /// <reference types="vite/client" />
+/// <reference types="vite-plugin-svgr/client" />
 ```
 
 ## File: tsconfig.app.json
@@ -446,6 +1141,9 @@ export default Home;
       content="Personalized Code Learning Platform - Learn coding with AI-powered personalized paths"
     />
     <title>PCL Platform — Personalized Code Learning</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+
     <link
       href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400&display=swap"
       rel="stylesheet"
@@ -515,23 +1213,23 @@ export default Home;
   --color-neutral-a900: #102a43;
 
   /* status */
-  --color-success-success-a0: #00d68f;
-  --color-success-success-a10: #33e0a8;
-  --color-success-success-a20: #77eac4;
-  --color-warning-warning-a0: #d69e00;
-  --color-warning-warning-a10: #e6b833;
-  --color-warning-warning-a20: #f0d077;
-  --color-danger-danger-a0: #d63d3d;
-  --color-danger-danger-a10: #e06c6c;
-  --color-danger-danger-a20: #ea9999;
-  --color-info-info-a0: #1a3a8a;
-  --color-info-info-a10: #3b6bdf;
-  --color-info-info-a20: #7899f5;
-  --color-discovery-discovery-a10: #99fff0;
-  --color-discovery-discovery-a30: #5cf5d7;
-  --color-discovery-discovery-a50: #2eeabd;
-  --color-discovery-discovery-a70: #00d6b1;
-  --color-discovery-discovery-a90: #00a37b;
+  --color-success-a0: #00d68f;
+  --color-success-a10: #33e0a8;
+  --color-success-a20: #77eac4;
+  --color-warning-a0: #d69e00;
+  --color-warning-a10: #e6b833;
+  --color-warning-a20: #f0d077;
+  --color-danger-a0: #d63d3d;
+  --color-danger-a10: #e06c6c;
+  --color-danger-a20: #ea9999;
+  --color-info-a0: #1a3a8a;
+  --color-info-a10: #3b6bdf;
+  --color-info-a20: #7899f5;
+  --color-discovery-a10: #99fff0;
+  --color-discovery-a30: #5cf5d7;
+  --color-discovery-a50: #2eeabd;
+  --color-discovery-a70: #00d6b1;
+  --color-discovery-a90: #00a37b;
 
   /* --- Spacing --- */
   --spacing-0: 0px;
@@ -549,6 +1247,81 @@ export default Home;
   --spacing-24: 96px;
   --spacing-30: 120px;
   --spacing-32: 128px;
+
+  /* --- Animations --- */
+  --animate-fade-in: fade-in 1s var(--animation-delay, 0s) ease forwards;
+  --animate-fade-up: fade-up 1s var(--animation-delay, 0s) ease forwards;
+  --animate-marquee: marquee var(--duration) infinite linear;
+  --animate-marquee-vertical: marquee-vertical var(--duration) linear infinite;
+  --animate-shimmer: shimmer 8s infinite;
+  --animate-spin: spin 1s linear infinite;
+
+  /* --- Keyframes --- */
+  @keyframes spin {
+    to {
+      transform: rotate(1turn);
+    }
+  }
+  @keyframes image-glow {
+    0% {
+      opacity: 0;
+      animation-timing-function: cubic-bezier(0.74, 0.25, 0.76, 1);
+    }
+    10% {
+      opacity: 0.7;
+      animation-timing-function: cubic-bezier(0.12, 0.01, 0.08, 0.99);
+    }
+    to {
+      opacity: 0.4;
+    }
+  }
+  @keyframes fade-in {
+    0% {
+      opacity: 0;
+      transform: translateY(-10px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+  @keyframes fade-up {
+    0% {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+  @keyframes shimmer {
+    0%,
+    90%,
+    to {
+      background-position: calc(-100% - var(--shimmer-width)) 0;
+    }
+    30%,
+    60% {
+      background-position: calc(100% + var(--shimmer-width)) 0;
+    }
+  }
+  @keyframes marquee {
+    0% {
+      transform: translate(0);
+    }
+    to {
+      transform: translateX(calc(-100% - var(--gap)));
+    }
+  }
+  @keyframes marquee-vertical {
+    0% {
+      transform: translateY(0);
+    }
+    to {
+      transform: translateY(calc(-100% - var(--gap)));
+    }
+  }
 }
 
 /* =========================================
@@ -573,6 +1346,28 @@ export default Home;
   src: url('/fonts/UTM%20Neo%20Sans%20Intel.ttf') format('truetype');
   font-weight: 400;
   font-style: normal;
+}
+
+@font-face {
+  font-family: 'Nadoor';
+  src: url('/fonts/NADOORBOLDITALIC.OTF') format('opentype');
+  font-weight: 700;
+  font-style: italic;
+}
+
+/* =========================================
+  BASE STYLES
+========================================= */
+@layer base {
+  button,
+  input,
+  select,
+  textarea {
+    appearance: none;
+    background-color: transparent;
+    border-width: 0;
+    outline: none;
+  }
 }
 
 /* =========================================
@@ -720,6 +1515,10 @@ export default Home;
   letter-spacing: 0em;
 }
 
+@utility all-unset {
+  all: unset;
+}
+
 :root {
   font-family:
     system-ui,
@@ -778,10 +1577,11 @@ import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import path from 'node:path';
 import tailwindcss from '@tailwindcss/vite';
+import svgr from 'vite-plugin-svgr';
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [react(), tailwindcss()],
+  plugins: [react(), tailwindcss(), svgr()],
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),
@@ -923,12 +1723,14 @@ import Home from '@/pages/Home';
     "globals": "^15.9.0",
     "husky": "^9.1.6",
     "lint-staged": "^15.2.10",
+    "plop": "^4.0.5",
     "postcss": "^8.5.15",
     "prettier": "^3.3.3",
     "tailwindcss": "^4.3.0",
     "typescript": "~5.6.2",
     "typescript-eslint": "^8.7.0",
-    "vite": "^5.4.8"
+    "vite": "^5.4.8",
+    "vite-plugin-svgr": "^5.2.0"
   },
   "lint-staged": {
     "*.{ts,tsx,js,jsx}": ["eslint --fix", "prettier --write"],
