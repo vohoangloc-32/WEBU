@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { twMerge } from 'tailwind-merge';
 
 export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   children: React.ReactNode;
@@ -15,7 +16,6 @@ export const Button: React.FC<ButtonProps> = ({
   ...props
 }) => {
   const [isHovered, setIsHovered] = useState(false);
-
   const isEffectiveDisabled = disabled || isProcessing;
 
   let stateWrapperClass = '';
@@ -34,8 +34,16 @@ export const Button: React.FC<ButtonProps> = ({
   }
 
   const commonWrapperClass =
-    'flex items-center justify-center gap-2.5 p-2.5 relative w-full flex-[0_0_auto] rounded-[10px] border border-solid transition-all duration-200';
-  const finalTextClass = `relative w-fit mt-[-1.00px] h2 ${stateTextClass}`;
+    'flex items-center justify-center relative w-full flex-[0_0_auto] border border-solid transition-all duration-200';
+
+  const finalWrapperClass = twMerge(
+    commonWrapperClass,
+    'p-2.5 rounded-[10px] gap-2.5 h2',
+    stateWrapperClass,
+    className,
+  );
+
+  const finalTextClass = `relative w-fit mt-[-1.00px] ${stateTextClass}`;
 
   const handleMouseEnter = (event: React.MouseEvent<HTMLButtonElement>) => {
     if (!isEffectiveDisabled) {
@@ -58,13 +66,13 @@ export const Button: React.FC<ButtonProps> = ({
   return (
     <button
       type="button"
-      className={`${commonWrapperClass} ${stateWrapperClass} ${className}`.trim()}
+      className={finalWrapperClass}
       disabled={isEffectiveDisabled}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
       {...props}
     >
-      <span className={finalTextClass}>{children}</span>
+      <span className={`${finalTextClass} text-inherit`}>{children}</span>
     </button>
   );
 };
