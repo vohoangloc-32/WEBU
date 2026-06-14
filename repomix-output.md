@@ -59,7 +59,11 @@ src/components/ui/Tab.tsx
 src/components/ui/UserIcon.tsx
 src/index.css
 src/main.tsx
+src/pages/Dashboard.tsx
 src/pages/Home.tsx
+src/pages/Notebook.tsx
+src/pages/Problem.tsx
+src/routes/index.tsx
 src/tailwind.config.js.txt
 src/tailwind.css.txt
 src/vite-env.d.ts
@@ -73,155 +77,247 @@ vite.config.ts
 
 # Files
 
-## File: src/components/ui/Button.tsx
+## File: src/pages/Dashboard.tsx
 
 ```typescript
-import React, { useState } from 'react';
+import React from 'react';
+import { Logo2 } from '@/components/ui/Logo2';
+import { Button } from '@/components/ui/Button';
+import HomePageImage from '@/assets/HomePageImage.png';
+import { useNavigate } from 'react-router-dom';
 
-export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  children: React.ReactNode;
-  isProcessing?: boolean;
+export const Dashboard = (): JSX.Element => {
+  const navigate = useNavigate();
+
+  return (
+    <div className="w-full min-h-screen bg-tonal-a0 px-20 py-5 flex flex-col justify-between items-stretch overflow-hidden select-none">
+      <header className="self-stretch flex flex-row justify-start gap-10">
+        <Logo2 />
+        <span className="text-discovery-a50 h4 font-['Nadoor'] font-bold italic tracking-normal py-14">
+          W.E.B.U - Web Engineering of BackKhoa University
+        </span>
+      </header>
+    </div>
+  );
+};
+
+export default Dashboard;
+```
+
+## File: src/pages/Notebook.tsx
+
+```typescript
+
+```
+
+## File: src/pages/Problem.tsx
+
+```typescript
+
+```
+
+## File: src/routes/index.tsx
+
+```typescript
+
+```
+
+## File: .github/workflows/ci.yml
+
+```yaml
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  quality:
+    name: Lint, Format, Type-check & Build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'yarn'
+
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+
+      - name: Run ESLint
+        run: yarn lint
+
+      - name: Check Prettier formatting
+        run: yarn format:check
+
+      - name: Type-check
+        run: yarn type-check
+
+      - name: Build project
+        run: yarn build
+```
+
+## File: .gitignore
+
+```
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# Dependencies
+node_modules
+.pnp
+.pnp.js
+
+# Build outputs
+dist
+dist-ssr
+build
+*.local
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Env files
+.env
+.env.local
+.env.*.local
+
+# Coverage
+coverage
+```
+
+## File: .prettierignore
+
+```
+node_modules
+dist
+build
+coverage
+.husky
+yarn.lock
+package-lock.json
+pnpm-lock.yaml
+*.min.js
+*.min.css
+```
+
+## File: .prettierrc
+
+```
+{
+  "semi": true,
+  "singleQuote": true,
+  "trailingComma": "all",
+  "printWidth": 80,
+  "tabWidth": 2,
+  "useTabs": false,
+  "arrowParens": "always",
+  "endOfLine": "lf"
+}
+```
+
+## File: eslint.config.js
+
+```javascript
+import js from '@eslint/js';
+import globals from 'globals';
+import reactHooks from 'eslint-plugin-react-hooks';
+import reactRefresh from 'eslint-plugin-react-refresh';
+import tseslint from 'typescript-eslint';
+import prettierConfig from 'eslint-config-prettier';
+
+export default tseslint.config(
+  { ignores: ['dist', 'node_modules', '.husky'] },
+  {
+    extends: [js.configs.recommended, ...tseslint.configs.recommended],
+    files: ['**/*.{ts,tsx}'],
+    languageOptions: {
+      ecmaVersion: 2020,
+      globals: globals.browser,
+    },
+    plugins: {
+      'react-hooks': reactHooks,
+      'react-refresh': reactRefresh,
+    },
+    rules: {
+      ...reactHooks.configs.recommended.rules,
+      'react-refresh/only-export-components': [
+        'warn',
+        { allowConstantExport: true },
+      ],
+      '@typescript-eslint/no-unused-vars': [
+        'error',
+        { argsIgnorePattern: '^_', varsIgnorePattern: '^_' },
+      ],
+    },
+  },
+  prettierConfig,
+);
+```
+
+## File: repomix.config.json
+
+```json
+{
+  "output": {
+    "filePath": "repomix-output.md",
+    "style": "markdown",
+    "removeComments": false,
+    "showLineNumbers": false,
+    "topFilesLength": 5
+  },
+  "ignore": {
+    "useGitignore": true,
+    "useDefaultPatterns": true,
+    "customPatterns": [
+      "dist",
+      "node_modules",
+      "coverage",
+      ".husky",
+      "public/fonts/**",
+      "**/*.svg",
+      "**/*.png",
+      "**/*.jpg"
+    ]
+  }
+}
+```
+
+## File: src/App.tsx
+
+```typescript
+import { Route, Routes } from 'react-router-dom';
+import Home from './pages/Home';
+
+function App() {
+  return (
+    <Routes>
+      <Route path="/" element={<Home />} />
+    </Routes>
+  );
 }
 
-export const Button: React.FC<ButtonProps> = ({
-  children,
-  isProcessing = false,
-  disabled,
-  className = '',
-  onMouseEnter,
-  onMouseLeave,
-  ...props
-}) => {
-  const [isHovered, setIsHovered] = useState(false);
-
-  const isEffectiveDisabled = disabled || isProcessing;
-
-  let stateWrapperClass = '';
-  let stateTextClass = '';
-
-  if (isProcessing) {
-    stateWrapperClass =
-      'bg-info-a0 border-primary-a0 border-dashed cursor-not-allowed';
-    stateTextClass = 'text-secondary-a30';
-  } else if (isHovered) {
-    stateWrapperClass = 'bg-info-a20 border-primary-a20 cursor-pointer';
-    stateTextClass = 'text-secondary-a10';
-  } else {
-    stateWrapperClass = 'bg-tonal-a20 border-secondary-a70 cursor-pointer';
-    stateTextClass = 'text-secondary-a70';
-  }
-
-  const commonWrapperClass =
-    'flex items-center justify-center gap-2.5 p-2.5 relative w-full flex-[0_0_auto] rounded-[10px] border border-solid transition-all duration-200';
-  const finalTextClass = `relative w-fit mt-[-1.00px] h2 ${stateTextClass}`;
-
-  const handleMouseEnter = (event: React.MouseEvent<HTMLButtonElement>) => {
-    if (!isEffectiveDisabled) {
-      setIsHovered(true);
-    }
-    if (onMouseEnter) {
-      onMouseEnter(event);
-    }
-  };
-
-  const handleMouseLeave = (event: React.MouseEvent<HTMLButtonElement>) => {
-    if (!isEffectiveDisabled) {
-      setIsHovered(false);
-    }
-    if (onMouseLeave) {
-      onMouseLeave(event);
-    }
-  };
-
-  return (
-    <button
-      type="button"
-      className={`${commonWrapperClass} ${stateWrapperClass} ${className}`.trim()}
-      disabled={isEffectiveDisabled}
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
-      {...props}
-    >
-      <span className={finalTextClass}>{children}</span>
-    </button>
-  );
-};
-```
-
-## File: src/components/ui/Logo.tsx
-
-```typescript
-import LogoItem1 from '@/assets/logo-item-1.svg?react';
-import LogoItem2 from '@/assets/logo-item-2.svg?react';
-
-export const Logo = (): JSX.Element => {
-  return (
-    <figure
-      className="relative m-0 w-47.75 h-35"
-      role="img"
-      aria-label="W.E.B.U logo"
-    >
-      <LogoItem2
-        className="absolute w-[74.87%] h-[67.14%] top-[32.86%] left-[25.13%] pointer-events-none select-none text-discovery-a50"
-        aria-hidden="true"
-      />
-
-      <figcaption className="absolute h-[26.09%] top-[54.35%] left-[calc(50.00%-51px)] w-34.5 flex items-center aspect-[3.78] font-['Nadoor-BoldItalic',Helvetica] font-bold italic text-discovery-a50 text-[40px] leading-normal whitespace-nowrap">
-        W.E.B.U
-      </figcaption>
-
-      <div
-        className="absolute h-0.5 top-[81.33%] left-[calc(50.00%-41px)] w-15.5 bg-discovery-a50 rounded-[10px]"
-        aria-hidden="true"
-      />
-
-      <LogoItem1
-        className="absolute w-full h-full top-0 left-0 aspect-[1.11] pointer-events-none select-none text-discovery-a50"
-        aria-hidden="true"
-      />
-    </figure>
-  );
-};
-
-export default Logo;
-```
-
-## File: src/components/ui/Logo2.tsx
-
-```typescript
-import LogoItem1 from '@/assets/logo-2-item-1.svg?react';
-import LogoItem2 from '@/assets/logo-2-item-2.svg?react';
-
-export const Logo2 = (): JSX.Element => {
-  return (
-    <figure
-      className="relative m-0 w-36 h-28 aspect-[1.28]"
-      role="img"
-      aria-label="W.E.B.U logo"
-    >
-      <LogoItem2
-        className="absolute w-[74.87%] h-[67.14%] top-[32.86%] left-[25.13%] pointer-events-none select-none text-discovery-a50"
-        aria-hidden="true"
-      />
-
-      <figcaption className="absolute h-[26.09%] top-[54.35%] left-[calc(50.00%-38px)] w-27.5 flex items-center aspect-[3.78] font-['Nadoor-BoldItalic',Helvetica] font-bold italic text-discovery-a50 text-[28px] tracking-normal leading-[normal] whitespace-nowrap">
-        W.E.B.U
-      </figcaption>
-
-      <div
-        className="absolute h-0.5 top-[81.33%] left-[calc(50.00%-35px)] w-12.5 bg-discovery-a50 rounded-[10px] aspect-[27.54]"
-        aria-hidden="true"
-      />
-
-      <LogoItem1
-        className="absolute w-full h-full top-0 left-0 aspect-[1.04] pointer-events-none select-none text-discovery-a50"
-        aria-hidden="true"
-      />
-    </figure>
-  );
-};
-
-export default Logo2;
+export default App;
 ```
 
 ## File: src/components/ui/MainNavigation.tsx
@@ -335,6 +431,24 @@ export const UserIcon = (): JSX.Element => {
 };
 
 export default UserIcon;
+```
+
+## File: src/main.tsx
+
+```typescript
+import { StrictMode } from 'react';
+import { createRoot } from 'react-dom/client';
+import { BrowserRouter } from 'react-router-dom';
+import App from './App';
+import './index.css';
+
+createRoot(document.getElementById('root')!).render(
+  <StrictMode>
+    <BrowserRouter>
+      <App />
+    </BrowserRouter>
+  </StrictMode>,
+);
 ```
 
 ## File: src/tailwind.config.js.txt
@@ -759,297 +873,6 @@ module.exports = {
 }
 ```
 
-## File: .github/workflows/ci.yml
-
-```yaml
-name: CI
-
-on:
-  push:
-    branches: [main]
-  pull_request:
-    branches: [main]
-
-jobs:
-  quality:
-    name: Lint, Format, Type-check & Build
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20
-          cache: 'yarn'
-
-      - name: Install dependencies
-        run: yarn install --frozen-lockfile
-
-      - name: Run ESLint
-        run: yarn lint
-
-      - name: Check Prettier formatting
-        run: yarn format:check
-
-      - name: Type-check
-        run: yarn type-check
-
-      - name: Build project
-        run: yarn build
-```
-
-## File: .gitignore
-
-```
-# Logs
-logs
-*.log
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-pnpm-debug.log*
-lerna-debug.log*
-
-# Dependencies
-node_modules
-.pnp
-.pnp.js
-
-# Build outputs
-dist
-dist-ssr
-build
-*.local
-
-# Editor directories and files
-.vscode/*
-!.vscode/extensions.json
-.idea
-.DS_Store
-*.suo
-*.ntvs*
-*.njsproj
-*.sln
-*.sw?
-
-# Env files
-.env
-.env.local
-.env.*.local
-
-# Coverage
-coverage
-```
-
-## File: .prettierignore
-
-```
-node_modules
-dist
-build
-coverage
-.husky
-yarn.lock
-package-lock.json
-pnpm-lock.yaml
-*.min.js
-*.min.css
-```
-
-## File: .prettierrc
-
-```
-{
-  "semi": true,
-  "singleQuote": true,
-  "trailingComma": "all",
-  "printWidth": 80,
-  "tabWidth": 2,
-  "useTabs": false,
-  "arrowParens": "always",
-  "endOfLine": "lf"
-}
-```
-
-## File: eslint.config.js
-
-```javascript
-import js from '@eslint/js';
-import globals from 'globals';
-import reactHooks from 'eslint-plugin-react-hooks';
-import reactRefresh from 'eslint-plugin-react-refresh';
-import tseslint from 'typescript-eslint';
-import prettierConfig from 'eslint-config-prettier';
-
-export default tseslint.config(
-  { ignores: ['dist', 'node_modules', '.husky'] },
-  {
-    extends: [js.configs.recommended, ...tseslint.configs.recommended],
-    files: ['**/*.{ts,tsx}'],
-    languageOptions: {
-      ecmaVersion: 2020,
-      globals: globals.browser,
-    },
-    plugins: {
-      'react-hooks': reactHooks,
-      'react-refresh': reactRefresh,
-    },
-    rules: {
-      ...reactHooks.configs.recommended.rules,
-      'react-refresh/only-export-components': [
-        'warn',
-        { allowConstantExport: true },
-      ],
-      '@typescript-eslint/no-unused-vars': [
-        'error',
-        { argsIgnorePattern: '^_', varsIgnorePattern: '^_' },
-      ],
-    },
-  },
-  prettierConfig,
-);
-```
-
-## File: repomix.config.json
-
-```json
-{
-  "output": {
-    "filePath": "repomix-output.md",
-    "style": "markdown",
-    "removeComments": false,
-    "showLineNumbers": false,
-    "topFilesLength": 5
-  },
-  "ignore": {
-    "useGitignore": true,
-    "useDefaultPatterns": true,
-    "customPatterns": [
-      "dist",
-      "node_modules",
-      "coverage",
-      ".husky",
-      "public/fonts/**",
-      "**/*.svg",
-      "**/*.png",
-      "**/*.jpg"
-    ]
-  }
-}
-```
-
-## File: src/App.tsx
-
-```typescript
-import { Route, Routes } from 'react-router-dom';
-import Home from './pages/Home';
-
-function App() {
-  return (
-    <Routes>
-      <Route path="/" element={<Home />} />
-    </Routes>
-  );
-}
-
-export default App;
-```
-
-## File: src/main.tsx
-
-```typescript
-import { StrictMode } from 'react';
-import { createRoot } from 'react-dom/client';
-import { BrowserRouter } from 'react-router-dom';
-import App from './App';
-import './index.css';
-
-createRoot(document.getElementById('root')!).render(
-  <StrictMode>
-    <BrowserRouter>
-      <App />
-    </BrowserRouter>
-  </StrictMode>,
-);
-```
-
-## File: src/pages/Home.tsx
-
-```typescript
-import './Home.css';
-function Home() {
-  return (
-    <main className="home">
-      <section className="home__hero">
-        <span className="home__badge">Cooking cooking cooking</span>
-        <h1 className="home__title">
-          Wibu wibu wibu wibu wibu
-          <br />
-          wibu wibu wibu wibu wibu
-        </h1>
-        <p className="home__subtitle">
-          Học lập trình theo lộ trình được cá nhân hoá — phù hợp với trình độ,
-          mục tiêu và tốc độ của riêng bạn.
-        </p>
-
-        <div className="home__actions">
-          <button className="home__btn home__btn--primary" type="button">
-            Bắt đầu học
-          </button>
-          <button className="home__btn home__btn--ghost" type="button">
-            Tìm hiểu thêm
-          </button>
-        </div>
-      </section>
-
-      <section className="home__features">
-        <article className="feature">
-          <div className="feature__icon">🧭</div>
-          <h3>Lộ trình cá nhân hoá</h3>
-          <p>
-            Nhận lộ trình học phù hợp với trình độ và mục tiêu nghề nghiệp của
-            bạn.
-          </p>
-        </article>
-
-        <article className="feature">
-          <div className="feature__icon">💻</div>
-          <h3>Học qua thực hành</h3>
-          <p>
-            Thực hành trực tiếp với các bài tập code và dự án thực tế, có phản
-            hồi chi tiết.
-          </p>
-        </article>
-
-        <article className="feature">
-          <div className="feature__icon">🤖</div>
-          <h3>Trợ lý AI</h3>
-          <p>
-            Được hỗ trợ bởi AI để giải đáp thắc mắc và gợi ý bài học tiếp theo
-            cho bạn.
-          </p>
-        </article>
-      </section>
-
-      <footer className="home__footer">
-        <p>Yahooooooo</p>
-      </footer>
-    </main>
-  );
-}
-
-export default Home;
-```
-
-## File: src/vite-env.d.ts
-
-```typescript
-/// <reference types="vite/client" />
-/// <reference types="vite-plugin-svgr/client" />
-```
-
 ## File: tsconfig.app.json
 
 ```json
@@ -1127,6 +950,386 @@ export default Home;
 {"root":["./vite.config.ts"],"version":"5.6.3"}
 ```
 
+## File: src/components/ui/Button.tsx
+
+```typescript
+import React, { useState } from 'react';
+import { twMerge } from 'tailwind-merge';
+
+export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+  children: React.ReactNode;
+  isProcessing?: boolean;
+}
+
+export const Button: React.FC<ButtonProps> = ({
+  children,
+  isProcessing = false,
+  disabled,
+  className = '',
+  onMouseEnter,
+  onMouseLeave,
+  ...props
+}) => {
+  const [isHovered, setIsHovered] = useState(false);
+  const isEffectiveDisabled = disabled || isProcessing;
+
+  let stateWrapperClass = '';
+  let stateTextClass = '';
+
+  if (isProcessing) {
+    stateWrapperClass =
+      'bg-info-a0 border-primary-a0 border-dashed cursor-not-allowed';
+    stateTextClass = 'text-secondary-a30';
+  } else if (isHovered) {
+    stateWrapperClass = 'bg-info-a20 border-primary-a20 cursor-pointer';
+    stateTextClass = 'text-secondary-a10';
+  } else {
+    stateWrapperClass = 'bg-tonal-a20 border-secondary-a70 cursor-pointer';
+    stateTextClass = 'text-secondary-a70';
+  }
+
+  const commonWrapperClass =
+    'flex items-center justify-center relative w-full flex-[0_0_auto] border border-solid transition-all duration-200';
+
+  const finalWrapperClass = twMerge(
+    commonWrapperClass,
+    'p-2.5 rounded-[10px] gap-2.5 h2',
+    stateWrapperClass,
+    className,
+  );
+
+  const finalTextClass = `relative w-fit mt-[-1.00px] ${stateTextClass}`;
+
+  const handleMouseEnter = (event: React.MouseEvent<HTMLButtonElement>) => {
+    if (!isEffectiveDisabled) {
+      setIsHovered(true);
+    }
+    if (onMouseEnter) {
+      onMouseEnter(event);
+    }
+  };
+
+  const handleMouseLeave = (event: React.MouseEvent<HTMLButtonElement>) => {
+    if (!isEffectiveDisabled) {
+      setIsHovered(false);
+    }
+    if (onMouseLeave) {
+      onMouseLeave(event);
+    }
+  };
+
+  return (
+    <button
+      type="button"
+      className={finalWrapperClass}
+      disabled={isEffectiveDisabled}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
+      {...props}
+    >
+      <span className={`${finalTextClass} text-inherit`}>{children}</span>
+    </button>
+  );
+};
+```
+
+## File: src/components/ui/Logo.tsx
+
+```typescript
+export const Logo = (): JSX.Element => {
+  return (
+    <svg
+      width="137"
+      height="109"
+      viewBox="0 0 137 109"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <g filter="url(#filter0_ddddd_4167_2651)">
+        <path
+          d="M42.0754 104.147C42.073 104.147 42.0701 104.146 42.0676 104.146C45.7489 104.144 49.4302 104.141 53.1116 104.138C49.4328 104.141 45.7541 104.145 42.0754 104.147ZM126.047 37.0048C129.165 37.0052 131.485 38.8869 131.992 41.8739C132.111 42.5706 132.105 43.3002 132.106 44.0146C132.124 61.7872 132.135 79.5603 132.148 97.3329C132.151 101.74 130.009 104.141 126.033 104.142C124.788 104.142 123.543 104.141 122.297 104.141C126.088 104.129 128.129 101.858 128.126 97.6952C128.114 80.8678 128.104 64.0402 128.087 47.2128C128.086 46.5365 128.092 45.8459 127.979 45.1864C127.492 42.3583 125.269 40.5775 122.282 40.5771C108.922 40.5758 95.5616 40.5761 82.2014 40.5761V40.6444C68.8414 40.6444 55.4814 40.6457 42.1213 40.6444C38.4183 40.644 36.3526 42.881 36.3167 46.9315C36.3161 45.9 36.3151 44.8684 36.3147 43.8368C36.3128 39.4833 38.4744 37.0768 42.3752 37.0771C56.3204 37.0783 70.266 37.0771 84.2112 37.0771V37.0048C98.1564 37.0048 112.102 37.0035 126.047 37.0048ZM41.344 85.4706C41.5669 85.9647 42.2304 85.87 42.7327 85.87C55.3816 85.8717 68.031 85.8681 80.6799 85.8651C80.7092 85.9457 80.7252 86.0381 80.7219 86.1444C80.7087 86.5712 80.4313 86.7964 80.0501 86.83C79.8677 86.8459 79.6833 86.8378 79.5002 86.8378C67.1549 86.8407 54.8085 86.8443 42.4631 86.8427C41.8681 86.8427 41.0369 86.9794 41.0598 86.0302C41.0677 85.7119 41.1804 85.5494 41.344 85.4706Z"
+          fill="#00D6B1"
+        />
+        <path
+          d="M62.0854 61.0312L51.9573 77.4952H50.6373L49.2693 70.2472C47.7573 72.6712 46.2453 75.0712 44.7573 77.4952H43.4373L40.3653 61.0312H43.9653L45.8133 71.8552L48.6933 67.1752L47.5653 61.0312H51.1653L53.0133 71.8552C55.2213 68.2792 57.5013 64.6072 59.6613 61.0312H62.0854ZM44.8533 73.3912L45.2853 72.7192L43.4133 62.1832H42.8853L44.8533 73.3912ZM50.6133 62.1832H50.0853L52.0533 73.3912L52.4613 72.8392L50.6133 62.1832ZM61.2176 77.4952L61.7456 74.9272H64.2416L63.7136 77.4952H61.2176ZM61.3376 74.9272L60.8096 77.4952H60.2576L60.7856 74.9272H61.3376ZM77.2292 77.4952H65.2292L68.7092 61.0312H78.8852L79.1012 62.1832H72.0212L70.7732 68.0392H76.5092L76.2692 69.1912H70.5332L69.0212 76.3432H77.4692L77.2292 77.4952ZM70.9172 62.1832L67.9172 76.3432H68.4452L71.4452 62.1832H70.9172ZM79.3348 77.4952L79.8628 74.9272H82.3588L81.8308 77.4952H79.3348ZM79.4548 74.9272L78.9268 77.4952H78.3748L78.9028 74.9272H79.4548ZM95.7063 77.4952H83.3463L86.8263 61.0312H98.5863L95.2743 68.6392H95.2503C95.3943 71.5672 95.5383 74.5672 95.7063 77.4952ZM92.8743 69.2872H88.5303L87.0423 76.3432H93.2343C93.1143 74.1352 92.9703 71.4952 92.8743 69.2872ZM90.0423 62.1832L88.7703 68.1832H93.1623L95.6343 62.1832H90.0423ZM89.0103 62.1832L86.0103 76.3432H86.4423L89.4423 62.1832H89.0103ZM97.8738 77.4952L98.4018 74.9272H100.898L100.37 77.4952H97.8738ZM97.9938 74.9272L97.4658 77.4952H96.9138L97.4418 74.9272H97.9938ZM108.389 61.0552H108.989L105.749 76.3432H110.765L114.005 61.0552H114.629C114.605 61.0552 112.469 71.2312 111.389 76.3432H111.917L115.157 61.0552H117.653L114.173 77.4952H101.885L105.365 61.0552H107.861L104.621 76.3432H105.149L108.389 61.0552Z"
+          fill="#2EEABD"
+        />
+        <rect
+          x="35.9692"
+          y="85.4736"
+          width="44.5457"
+          height="1.61738"
+          rx="0.808692"
+          fill="#2EEABD"
+        />
+        <path
+          d="M89.1735 4.70915C92.9841 3.19941 96.0019 4.76812 97.3298 8.9777C100.082 17.7036 102.825 26.4333 105.57 35.1623C105.961 36.4063 105.961 36.4371 104.764 36.4377C102.296 28.4152 99.8294 20.3919 97.3542 12.3722C96.1024 8.31655 93.2578 6.80558 89.6657 8.25993C76.2777 13.6812 62.8939 19.1178 49.4987 24.5168C37.6278 29.3012 25.7429 34.0427 13.865 38.8049C13.0136 39.1463 12.167 39.4966 11.4509 40.1506C9.52387 41.9097 9.01143 44.4119 10.0027 47.55C13.2437 57.8106 16.506 68.063 19.7497 78.3224C21.7875 84.7677 23.7835 91.2296 25.8444 97.6652C26.4816 99.6548 27.508 100.977 28.82 101.597C25.4119 102.79 22.7308 101.34 21.4743 97.5011C19.2882 90.8219 17.171 84.1152 15.0095 77.4259C11.5687 66.778 8.10863 56.1377 4.67062 45.4884C3.61899 42.2313 4.16255 39.6336 6.20675 37.8078C6.96631 37.1292 7.86427 36.7657 8.7673 36.4113C21.367 31.4688 33.9739 26.5478 46.5661 21.5822C60.7753 15.9787 74.972 10.3357 89.1735 4.70915Z"
+          fill="#5CF5D7"
+        />
+      </g>
+      <defs>
+        <filter
+          id="filter0_ddddd_4167_2651"
+          x="1.66893e-05"
+          y="1.66893e-05"
+          width="136.295"
+          height="108.295"
+          filterUnits="userSpaceOnUse"
+          color-interpolation-filters="sRGB"
+        >
+          <feFlood flood-opacity="0" result="BackgroundImageFix" />
+          <feColorMatrix
+            in="SourceAlpha"
+            type="matrix"
+            values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
+            result="hardAlpha"
+          />
+          <feOffset />
+          <feGaussianBlur stdDeviation="0.0864" />
+          <feColorMatrix
+            type="matrix"
+            values="0 0 0 0 0.77922 0 0 0 0 1 0 0 0 0 1 0 0 0 1 0"
+          />
+          <feBlend
+            mode="normal"
+            in2="BackgroundImageFix"
+            result="effect1_dropShadow_4167_2651"
+          />
+          <feColorMatrix
+            in="SourceAlpha"
+            type="matrix"
+            values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
+            result="hardAlpha"
+          />
+          <feOffset />
+          <feGaussianBlur stdDeviation="0.1728" />
+          <feColorMatrix
+            type="matrix"
+            values="0 0 0 0 0.77922 0 0 0 0 1 0 0 0 0 1 0 0 0 1 0"
+          />
+          <feBlend
+            mode="normal"
+            in2="effect1_dropShadow_4167_2651"
+            result="effect2_dropShadow_4167_2651"
+          />
+          <feColorMatrix
+            in="SourceAlpha"
+            type="matrix"
+            values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
+            result="hardAlpha"
+          />
+          <feOffset />
+          <feGaussianBlur stdDeviation="0.6048" />
+          <feColorMatrix
+            type="matrix"
+            values="0 0 0 0 0.77922 0 0 0 0 1 0 0 0 0 1 0 0 0 1 0"
+          />
+          <feBlend
+            mode="normal"
+            in2="effect2_dropShadow_4167_2651"
+            result="effect3_dropShadow_4167_2651"
+          />
+          <feColorMatrix
+            in="SourceAlpha"
+            type="matrix"
+            values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
+            result="hardAlpha"
+          />
+          <feOffset />
+          <feGaussianBlur stdDeviation="1.2096" />
+          <feColorMatrix
+            type="matrix"
+            values="0 0 0 0 0 0 0 0 0 0.639216 0 0 0 0 0.482353 0 0 0 1 0"
+          />
+          <feBlend
+            mode="normal"
+            in2="effect3_dropShadow_4167_2651"
+            result="effect4_dropShadow_4167_2651"
+          />
+          <feColorMatrix
+            in="SourceAlpha"
+            type="matrix"
+            values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
+            result="hardAlpha"
+          />
+          <feOffset />
+          <feGaussianBlur stdDeviation="2.0736" />
+          <feColorMatrix
+            type="matrix"
+            values="0 0 0 0 0 0 0 0 0 0.639216 0 0 0 0 0.482353 0 0 0 1 0"
+          />
+          <feBlend
+            mode="normal"
+            in2="effect4_dropShadow_4167_2651"
+            result="effect5_dropShadow_4167_2651"
+          />
+          <feBlend
+            mode="normal"
+            in="SourceGraphic"
+            in2="effect5_dropShadow_4167_2651"
+            result="shape"
+          />
+        </filter>
+      </defs>
+    </svg>
+  );
+};
+
+export default Logo;
+```
+
+## File: src/components/ui/Logo2.tsx
+
+```typescript
+export const Logo2 = (): JSX.Element => {
+  return (
+    <svg
+      width="153"
+      height="121"
+      viewBox="0 0 153 121"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <g filter="url(#filter0_ddddd_4167_2651)">
+        <path
+          d="M46.8157 116.147C46.8127 116.147 46.8098 116.146 46.8069 116.146C53.0994 116.141 59.3923 116.131 65.6848 116.13C59.3953 116.132 53.1051 116.143 46.8157 116.147ZM141.284 40.9478C144.792 40.9483 147.402 43.0555 147.974 46.401C148.107 47.1811 148.1 47.9985 148.101 48.7984C148.121 68.7037 148.134 88.609 148.148 108.514C148.151 113.451 145.742 116.14 141.269 116.14C139.869 116.14 138.469 116.139 137.07 116.139C141.332 116.125 143.628 113.581 143.624 108.92C143.611 90.0738 143.599 71.2271 143.579 52.3804C143.579 51.623 143.585 50.8496 143.457 50.1109C142.91 46.9434 140.409 44.9483 137.049 44.9478C122.019 44.9465 106.988 44.9478 91.9583 44.9478V45.024C76.9283 45.024 61.8984 45.0254 46.8684 45.024C42.6999 45.0235 40.3747 47.5319 40.3372 52.0738C40.3366 50.9156 40.3367 49.7574 40.3362 48.5992C40.334 43.7231 42.7659 41.0274 47.1545 41.0279C62.8427 41.0294 78.5308 41.0279 94.219 41.0279V40.9469C109.907 40.9469 125.596 40.9464 141.284 40.9478ZM45.9934 95.2281C46.2438 95.7825 46.9905 95.6763 47.5559 95.6763C61.7862 95.6782 76.017 95.6738 90.2473 95.6705C90.2802 95.7608 90.2979 95.8647 90.2942 95.984C90.2793 96.4621 89.9665 96.7141 89.5374 96.7515C89.3323 96.7693 89.1251 96.7603 88.9192 96.7603C75.0308 96.7635 61.1416 96.767 47.2532 96.7652C46.5837 96.7652 45.648 96.9188 45.6741 95.8551C45.683 95.4986 45.8093 95.3163 45.9934 95.2281Z"
+          fill="#00D6B1"
+        />
+        <path
+          d="M68.4563 67.8085L56.6403 87.0165H55.1003L53.5043 78.5605C51.7403 81.3885 49.9763 84.1885 48.2403 87.0165H46.7003L43.1163 67.8085H47.3163L49.4723 80.4365L52.8323 74.9765L51.5163 67.8085H55.7163L57.8723 80.4365C60.4483 76.2645 63.1083 71.9805 65.6283 67.8085H68.4563ZM48.3523 82.2285L48.8563 81.4445L46.6723 69.1525H46.0563L48.3523 82.2285ZM55.0723 69.1525H54.4563L56.7523 82.2285L57.2283 81.5845L55.0723 69.1525ZM67.4439 87.0165L68.0599 84.0205H70.9719L70.3559 87.0165H67.4439ZM67.5839 84.0205L66.9679 87.0165H66.3239L66.9399 84.0205H67.5839ZM86.124 87.0165H72.124L76.184 67.8085H88.056L88.308 69.1525H80.048L78.592 75.9845H85.284L85.004 77.3285H78.312L76.548 85.6725H86.404L86.124 87.0165ZM78.76 69.1525L75.26 85.6725H75.876L79.376 69.1525H78.76ZM88.5806 87.0165L89.1966 84.0205H92.1086L91.4926 87.0165H88.5806ZM88.7206 84.0205L88.1046 87.0165H87.4606L88.0766 84.0205H88.7206ZM107.681 87.0165H93.2608L97.3208 67.8085H111.041L107.177 76.6845H107.149C107.317 80.1005 107.485 83.6005 107.681 87.0165ZM104.377 77.4405H99.3088L97.5728 85.6725H104.797C104.657 83.0965 104.489 80.0165 104.377 77.4405ZM101.073 69.1525L99.5888 76.1525H104.713L107.597 69.1525H101.073ZM99.8688 69.1525L96.3688 85.6725H96.8728L100.373 69.1525H99.8688ZM110.21 87.0165L110.826 84.0205H113.738L113.122 87.0165H110.21ZM110.35 84.0205L109.734 87.0165H109.09L109.706 84.0205H110.35ZM122.478 67.8365H123.178L119.398 85.6725H125.25L129.03 67.8365H129.758C129.73 67.8365 127.238 79.7085 125.978 85.6725H126.594L130.374 67.8365H133.286L129.226 87.0165H114.89L118.95 67.8365H121.862L118.082 85.6725H118.698L122.478 67.8365Z"
+          fill="#2EEABD"
+        />
+        <rect
+          x="41.2964"
+          y="95.2323"
+          width="49.8912"
+          height="1.81147"
+          rx="0.905735"
+          fill="#2EEABD"
+        />
+        <path
+          d="M99.8025 4.77636C104.089 3.08578 107.483 4.84294 108.977 9.55761C112.074 19.3305 115.16 29.1075 118.248 38.8838C118.688 40.2771 118.688 40.3118 117.342 40.3125C114.565 31.3272 111.789 22.3415 109.005 13.3594C107.596 8.81682 104.396 7.12393 100.355 8.75292C85.2937 14.8247 70.2373 20.9141 55.1678 26.9609C41.8129 32.3195 28.4426 37.6302 15.0799 42.9639C14.1221 43.3463 13.1696 43.7383 12.364 44.4707C10.196 46.441 9.61982 49.244 10.7351 52.7588C14.3814 64.2507 18.0508 75.7332 21.7 87.2236C23.9925 94.4424 26.2379 101.68 28.5564 108.888C29.2733 111.116 30.4286 112.597 31.9051 113.291C28.0706 114.627 25.054 113.004 23.6404 108.704C21.181 101.223 18.7987 93.7119 16.367 86.2197C12.496 74.294 8.60389 62.3764 4.73611 50.4492C3.55309 46.8014 4.16421 43.8926 6.46365 41.8476C7.31822 41.0874 8.32943 40.6802 9.34549 40.2832C23.5201 34.7476 37.7027 29.2353 51.8689 23.6738C67.8541 17.398 83.8258 11.0781 99.8025 4.77636Z"
+          fill="#5CF5D7"
+        />
+      </g>
+      <defs>
+        <filter
+          id="filter0_ddddd_4167_2651"
+          x="1.66893e-05"
+          y="-0.000227451"
+          width="152.295"
+          height="120.295"
+          filterUnits="userSpaceOnUse"
+          color-interpolation-filters="sRGB"
+        >
+          <feFlood flood-opacity="0" result="BackgroundImageFix" />
+          <feColorMatrix
+            in="SourceAlpha"
+            type="matrix"
+            values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
+            result="hardAlpha"
+          />
+          <feOffset />
+          <feGaussianBlur stdDeviation="0.0864" />
+          <feColorMatrix
+            type="matrix"
+            values="0 0 0 0 0.77922 0 0 0 0 1 0 0 0 0 1 0 0 0 1 0"
+          />
+          <feBlend
+            mode="normal"
+            in2="BackgroundImageFix"
+            result="effect1_dropShadow_4167_2651"
+          />
+          <feColorMatrix
+            in="SourceAlpha"
+            type="matrix"
+            values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
+            result="hardAlpha"
+          />
+          <feOffset />
+          <feGaussianBlur stdDeviation="0.1728" />
+          <feColorMatrix
+            type="matrix"
+            values="0 0 0 0 0.77922 0 0 0 0 1 0 0 0 0 1 0 0 0 1 0"
+          />
+          <feBlend
+            mode="normal"
+            in2="effect1_dropShadow_4167_2651"
+            result="effect2_dropShadow_4167_2651"
+          />
+          <feColorMatrix
+            in="SourceAlpha"
+            type="matrix"
+            values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
+            result="hardAlpha"
+          />
+          <feOffset />
+          <feGaussianBlur stdDeviation="0.6048" />
+          <feColorMatrix
+            type="matrix"
+            values="0 0 0 0 0.77922 0 0 0 0 1 0 0 0 0 1 0 0 0 1 0"
+          />
+          <feBlend
+            mode="normal"
+            in2="effect2_dropShadow_4167_2651"
+            result="effect3_dropShadow_4167_2651"
+          />
+          <feColorMatrix
+            in="SourceAlpha"
+            type="matrix"
+            values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
+            result="hardAlpha"
+          />
+          <feOffset />
+          <feGaussianBlur stdDeviation="1.2096" />
+          <feColorMatrix
+            type="matrix"
+            values="0 0 0 0 0 0 0 0 0 0.639216 0 0 0 0 0.482353 0 0 0 1 0"
+          />
+          <feBlend
+            mode="normal"
+            in2="effect3_dropShadow_4167_2651"
+            result="effect4_dropShadow_4167_2651"
+          />
+          <feColorMatrix
+            in="SourceAlpha"
+            type="matrix"
+            values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
+            result="hardAlpha"
+          />
+          <feOffset />
+          <feGaussianBlur stdDeviation="2.0736" />
+          <feColorMatrix
+            type="matrix"
+            values="0 0 0 0 0 0 0 0 0 0.639216 0 0 0 0 0.482353 0 0 0 1 0"
+          />
+          <feBlend
+            mode="normal"
+            in2="effect4_dropShadow_4167_2651"
+            result="effect5_dropShadow_4167_2651"
+          />
+          <feBlend
+            mode="normal"
+            in="SourceGraphic"
+            in2="effect5_dropShadow_4167_2651"
+            result="shape"
+          />
+        </filter>
+      </defs>
+    </svg>
+  );
+};
+
+export default Logo2;
+```
+
+## File: src/vite-env.d.ts
+
+```typescript
+/// <reference types="vite/client" />
+/// <reference types="vite-plugin-svgr/client" />
+```
+
 ## File: index.html
 
 ```html
@@ -1155,6 +1358,95 @@ export default Home;
   </body>
 </html>
 ```
+
+## File: README.md
+
+````markdown
+# W.E.B.U - Web Engineering of Bachkhoa Univeristy
+
+**Personalized Code Learning Platform** — Frontend application built with React + TypeScript + Vite.
+
+## 🚀 Tech Stack
+
+- **Framework:** [React 18](https://react.dev/) + [TypeScript](https://www.typescriptlang.org/)
+- **Build tool:** [Vite 5](https://vitejs.dev/)
+- **Routing:** [React Router v6](https://reactrouter.com/)
+- **Code quality:** ESLint (flat config) + Prettier + Husky + lint-staged
+- **CI:** GitHub Actions
+
+## 📋 Prerequisitesx
+
+- Node.js `>= 20`
+- Yarn `>= 1.22` (or npm/pnpm — adjust commands accordingly)
+
+## 🛠 Getting Started
+
+```bash
+# 1. Clone the repo
+git clone <your-repo-url>
+cd pcl-frontend
+
+# 2. Install dependencies
+yarn install
+
+# 3. Initialize Husky hooks (runs automatically via "prepare" script,
+#    but you can run it manually if needed)
+yarn prepare
+
+# 4. Start dev server
+yarn dev
+```
+
+The app will be available at **http://localhost:5173**.
+
+## 📜 Available Scripts
+
+| Command             | Description                                      |
+| ------------------- | ------------------------------------------------ |
+| `yarn dev`          | Start Vite dev server with HMR                   |
+| `yarn build`        | Type-check and build for production into `dist/` |
+| `yarn preview`      | Preview the production build locally             |
+| `yarn lint`         | Run ESLint on all files (fails on any warning)   |
+| `yarn lint:fix`     | Run ESLint and auto-fix issues                   |
+| `yarn format`       | Format all files with Prettier                   |
+| `yarn format:check` | Check formatting without writing (used in CI)    |
+| `yarn type-check`   | Run TypeScript compiler without emitting files   |
+
+## 📁 Project Structure
+
+```
+pcl-frontend/
+├── .github/workflows/    # GitHub Actions CI
+├── .husky/               # Git hooks (pre-commit → lint-staged)
+├── public/               # Static assets served as-is
+├── src/
+│   ├── components/       # Reusable UI components
+│   ├── pages/            # Route-level pages
+│   │   ├── Home.tsx
+│   │   └── Home.css
+│   ├── App.tsx           # Root component + routes
+│   ├── main.tsx          # App entry point
+│   ├── index.css         # Global styles
+│   └── vite-env.d.ts
+├── eslint.config.js      # ESLint flat config
+├── .prettierrc           # Prettier config
+├── vite.config.ts        # Vite config (with `@/` alias to `src/`)
+└── tsconfig.*.json       # TypeScript configs
+```
+
+### Path aliases
+
+`@/*` is aliased to `src/*`, so you can import like:
+
+```ts
+import Home from '@/pages/Home';
+```
+
+## 🎯 Code Quality Workflow
+
+- **Pre-commit:** Husky runs `lint-staged` which auto-fixes ESLint issues and formats staged files with Prettier before every commit.
+- **CI:** On every push or pull request to `main`, GitHub Actions runs lint, format check, type-check, and build.
+````
 
 ## File: src/index.css
 
@@ -1570,6 +1862,95 @@ button {
 }
 ```
 
+## File: src/pages/Home.tsx
+
+```typescript
+import React from 'react';
+import { Logo2 } from '@/components/ui/Logo2';
+import { Button } from '@/components/ui/Button';
+import HomePageImage from '@/assets/HomePageImage.png';
+import { useNavigate } from 'react-router-dom';
+
+export const Home = (): JSX.Element => {
+  const navigate = useNavigate();
+
+  return (
+    <div className="w-full min-h-screen bg-tonal-a0 px-20 py-5 flex flex-col justify-between items-stretch overflow-hidden select-none">
+      <header className="self-stretch flex flex-row justify-start gap-10">
+        <Logo2 />
+        <span className="text-discovery-a50 h4 font-['Nadoor'] font-bold italic tracking-normal py-14">
+          W.E.B.U - Web Engineering of BackKhoa University
+        </span>
+      </header>
+
+      <main className="self-stretch flex flex-row">
+        <div className="flex-1 flex flex-col justify-center items-start gap-4 my-12">
+          <h1 className="text-neutral-a50 h1 font-extrabold font-['SFU_Futura'] tracking-normal leading-tight uppercase my-10">
+            LEARN CODE BY FLASHCARD
+          </h1>
+          <div className="text-neutral-a50 h6 font-bold font-['SFU_Futura'] tracking-normal opacity-90 italic flex flex-col gap-5">
+            <span>Get personalized learning track </span>
+            <span>Remind you everyday</span>
+          </div>
+
+          <div className="w-auto my-10">
+            <Button
+              className="px-10 py-2.5 rounded-[20px] outline -outline-offset-1 outline-secondary-a90 h4"
+              onClick={() => {
+                // const signedUp = localStorage.getItem('isSignedUp'); (chưa làm)
+                const signedUp = false;
+                navigate(signedUp ? '/signup' : '/dashboard');
+              }}
+            >
+              Get Started →
+            </Button>
+          </div>
+
+          <button
+            type="button"
+            className="text-neutral-a50 text-xl font-bold font-['SFU_Futura'] underline cursor-pointer hover:text-secondary-a50 transition-colors opacity-40"
+          >
+            About US
+          </button>
+        </div>
+        <div className="flex-1 flex justify-center items-center">
+          <img
+            src={HomePageImage}
+            alt="Home Page"
+            className="w-full h-auto max-w-full object-contain"
+          />
+        </div>{' '}
+      </main>
+
+      <footer className="self-stretch flex justify-center items-center gap-32 border-t border-solid border-tonal-a20 pt-8 overflow-hidden">
+        <div className="w-44 h-24 flex justify-start items-center gap-5">
+          <div className="w-4 h-3 bg-neutral-a50 rounded-sm" />
+          <span className="text-neutral-a50 text-xs font-normal font-['UTM_Neo_Sans_Intel'] whitespace-nowrap">
+            discord.gg/webu
+          </span>
+        </div>
+
+        <div className="w-44 h-24 flex justify-start items-center gap-5">
+          <div className="w-5 h-4 bg-neutral-a50 rounded-sm" />
+          <span className="text-neutral-a50 text-xs font-normal font-['UTM_Neo_Sans_Intel'] whitespace-nowrap">
+            webu@gmail.com
+          </span>
+        </div>
+
+        <div className="w-44 h-24 flex justify-start items-center gap-5">
+          <div className="w-2.5 h-4 bg-neutral-a50 rounded-sm" />
+          <span className="text-neutral-a50 text-xs font-normal font-['UTM_Neo_Sans_Intel'] whitespace-nowrap">
+            facebook.com/webu
+          </span>
+        </div>
+      </footer>
+    </div>
+  );
+};
+
+export default Home;
+```
+
 ## File: vite.config.ts
 
 ```typescript
@@ -1594,95 +1975,6 @@ export default defineConfig({
 });
 ```
 
-## File: README.md
-
-````markdown
-# W.E.B.U - Web Engineering of Bachkhoa Univeristy
-
-**Personalized Code Learning Platform** — Frontend application built with React + TypeScript + Vite.
-
-## 🚀 Tech Stack
-
-- **Framework:** [React 18](https://react.dev/) + [TypeScript](https://www.typescriptlang.org/)
-- **Build tool:** [Vite 5](https://vitejs.dev/)
-- **Routing:** [React Router v6](https://reactrouter.com/)
-- **Code quality:** ESLint (flat config) + Prettier + Husky + lint-staged
-- **CI:** GitHub Actions
-
-## 📋 Prerequisitesx
-
-- Node.js `>= 20`
-- Yarn `>= 1.22` (or npm/pnpm — adjust commands accordingly)
-
-## 🛠 Getting Started
-
-```bash
-# 1. Clone the repo
-git clone <your-repo-url>
-cd pcl-frontend
-
-# 2. Install dependencies
-yarn install
-
-# 3. Initialize Husky hooks (runs automatically via "prepare" script,
-#    but you can run it manually if needed)
-yarn prepare
-
-# 4. Start dev server
-yarn dev
-```
-
-The app will be available at **http://localhost:5173**.
-
-## 📜 Available Scripts
-
-| Command             | Description                                      |
-| ------------------- | ------------------------------------------------ |
-| `yarn dev`          | Start Vite dev server with HMR                   |
-| `yarn build`        | Type-check and build for production into `dist/` |
-| `yarn preview`      | Preview the production build locally             |
-| `yarn lint`         | Run ESLint on all files (fails on any warning)   |
-| `yarn lint:fix`     | Run ESLint and auto-fix issues                   |
-| `yarn format`       | Format all files with Prettier                   |
-| `yarn format:check` | Check formatting without writing (used in CI)    |
-| `yarn type-check`   | Run TypeScript compiler without emitting files   |
-
-## 📁 Project Structure
-
-```
-pcl-frontend/
-├── .github/workflows/    # GitHub Actions CI
-├── .husky/               # Git hooks (pre-commit → lint-staged)
-├── public/               # Static assets served as-is
-├── src/
-│   ├── components/       # Reusable UI components
-│   ├── pages/            # Route-level pages
-│   │   ├── Home.tsx
-│   │   └── Home.css
-│   ├── App.tsx           # Root component + routes
-│   ├── main.tsx          # App entry point
-│   ├── index.css         # Global styles
-│   └── vite-env.d.ts
-├── eslint.config.js      # ESLint flat config
-├── .prettierrc           # Prettier config
-├── vite.config.ts        # Vite config (with `@/` alias to `src/`)
-└── tsconfig.*.json       # TypeScript configs
-```
-
-### Path aliases
-
-`@/*` is aliased to `src/*`, so you can import like:
-
-```ts
-import Home from '@/pages/Home';
-```
-
-## 🎯 Code Quality Workflow
-
-- **Pre-commit:** Husky runs `lint-staged` which auto-fixes ESLint issues and formats staged files with Prettier before every commit.
-- **CI:** On every push or pull request to `main`, GitHub Actions runs lint, format check, type-check, and build.
-````
-
 ## File: package.json
 
 ```json
@@ -1706,7 +1998,8 @@ import Home from '@/pages/Home';
   "dependencies": {
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
-    "react-router-dom": "^6.26.2"
+    "react-router-dom": "^6.26.2",
+    "tailwind-merge": "^3.6.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.11.1",

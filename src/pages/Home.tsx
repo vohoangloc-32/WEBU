@@ -2,8 +2,11 @@ import React from 'react';
 import { Logo2 } from '@/components/ui/Logo2';
 import { Button } from '@/components/ui/Button';
 import HomePageImage from '@/assets/HomePageImage.png';
+import { useNavigate } from 'react-router-dom';
 
 export const Home = (): JSX.Element => {
+  const navigate = useNavigate();
+
   return (
     <div className="w-full min-h-screen bg-tonal-a0 px-20 py-5 flex flex-col justify-between items-stretch overflow-hidden select-none">
       <header className="self-stretch flex flex-row justify-start gap-10">
@@ -26,7 +29,11 @@ export const Home = (): JSX.Element => {
           <div className="w-auto my-10">
             <Button
               className="px-10 py-2.5 rounded-[20px] outline -outline-offset-1 outline-secondary-a90 h4"
-              onClick={() => console.log('Get Started Clicked!')}
+              onClick={() => {
+                // const signedUp = localStorage.getItem('isSignedUp'); (chưa làm)
+                const signedUp = false;
+                navigate(signedUp ? '/signup' : '/dashboard');
+              }}
             >
               Get Started →
             </Button>
