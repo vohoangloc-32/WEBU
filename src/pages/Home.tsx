@@ -30,9 +30,7 @@ export const Home = (): JSX.Element => {
             <Button
               className="px-10 py-2.5 rounded-[20px] outline -outline-offset-1 outline-secondary-a90 h4"
               onClick={() => {
-                // const signedUp = localStorage.getItem('isSignedUp'); (chưa làm)
-                const signedUp = false;
-                navigate(signedUp ? '/signup' : '/dashboard');
+                navigate('/signup');
               }}
             >
               Get Started →
