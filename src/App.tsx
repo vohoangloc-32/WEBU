@@ -6,6 +6,7 @@ import Problem from './pages/Problem';
 import { PcSignup } from './pages/Signup';
 import ForgetPassword from './pages/ForgetPassword';
 import { Survey } from './pages/Survey';
+import CodeDescription from './pages/CodeDescription';
 
 function App() {
   return (
@@ -14,6 +15,7 @@ function App() {
       <Route path="/dashboard" element={<Dashboard />} />
       <Route path="/notebook" element={<Notebook />} />
       <Route path="/problems" element={<Problem />} />
+      <Route path="/problems/:problemId" element={<CodeDescription />} />
       <Route path="/signup" element={<PcSignup />} />
       <Route path="/forget-password" element={<ForgetPassword />} />
       <Route path="/survey" element={<Survey />} />

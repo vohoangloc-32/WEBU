@@ -1,4 +1,3 @@
-import React from 'react';
 import { Logo2 } from '@/components/ui/Logo2';
 import { Button } from '@/components/ui/Button';
 import HomePageImage from '@/assets/HomePageImage.png';
