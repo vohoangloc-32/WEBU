@@ -281,6 +281,13 @@
   font-style: italic;
 }
 
+@font-face {
+  font-family: 'HYWenHei-85W';
+  src: url('/fonts/zhcn.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
 /* =========================================
   BASE STYLES
 ========================================= */
