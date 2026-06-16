@@ -33,7 +33,7 @@ The content is organized as follows:
 
 - Some files may have been excluded based on .gitignore rules and Repomix's configuration
 - Binary files are not included in this packed representation. Please refer to the Repository Structure section for a complete list of file paths, including binary files
-- Files matching these patterns are excluded: dist, node_modules, coverage, .husky, public/fonts/**, **/_.svg, \*\*/_.png, \*_/_.jpg
+- Files matching these patterns are excluded: dist, node*modules, coverage, .husky, public/fonts/**, **/*.svg, \*\*/_.png, \*_/\_.jpg
 - Files matching patterns in .gitignore are excluded
 - Files matching default ignore patterns are excluded
 - Files are sorted by Git change count (files with more changes are at the bottom)
