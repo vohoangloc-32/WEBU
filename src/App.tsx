@@ -3,6 +3,7 @@ import Home from './pages/Home';
 import Dashboard from './pages/Dashboard';
 import Notebook from './pages/Notebook';
 import Problem from './pages/Problem';
+import CreateProblem from './pages/CreateProblem';
 
 function App() {
   return (
@@ -11,6 +12,7 @@ function App() {
       <Route path="/dashboard" element={<Dashboard />} />
       <Route path="/notebook" element={<Notebook />} />
       <Route path="/problems" element={<Problem />} />
+      <Route path="/create-problem" element={<CreateProblem />} />
     </Routes>
   );
 }
