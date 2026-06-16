@@ -1,6 +1,8 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 
 export const NotebookHeader = () => {
+  const navigate = useNavigate();
   return (
     <div className="w-full flex justify-between items-center">
       <h1
@@ -9,7 +11,10 @@ export const NotebookHeader = () => {
       >
         Notebook
       </h1>
-      <button className="flex justify-center items-center px-10 py-3 gap-3 rounded-[10px] border border-[#4CA3FF] bg-[#323A49] text-white font-semibold cursor-pointer hover:opacity-80 transition-opacity">
+      <button
+        onClick={() => navigate('/create-problem')}
+        className="flex justify-center items-center px-10 py-3 gap-3 rounded-[10px] border border-[#4CA3FF] bg-[#323A49] text-white font-semibold cursor-pointer hover:opacity-80 transition-opacity"
+      >
         Create new problem
       </button>
     </div>
