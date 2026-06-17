@@ -1,5 +1,3 @@
-import React, { useState } from 'react';
-
 interface NotebookProblemProps {
   id: string;
   title: string;
@@ -7,6 +5,7 @@ interface NotebookProblemProps {
   tags: string[];
   difficulty: 'Easy' | 'Medium' | 'Hard';
   isFavorite?: boolean;
+  onToggleFavorite?: () => void;
 }
 
 export const NotebookProblem = ({
@@ -16,9 +15,8 @@ export const NotebookProblem = ({
   tags,
   difficulty,
   isFavorite = false,
+  onToggleFavorite,
 }: NotebookProblemProps) => {
-  const [isFav, setIsFav] = useState(isFavorite);
-
   const getDifficultyBg = () => {
     if (difficulty === 'Easy') return 'bg-success-a0';
     if (difficulty === 'Medium') return 'bg-warning-a20';
@@ -31,10 +29,10 @@ export const NotebookProblem = ({
         <span className="h4 text-secondary-a10">{id}.</span>
 
         <div
-          onClick={() => setIsFav(!isFav)}
+          onClick={onToggleFavorite}
           className="flex items-center gap-1 p8 text-neutral-a50 cursor-pointer hover:text-white transition-colors select-none"
         >
-          <span>{isFav ? '★ Favorited' : '☆ Favorite'}</span>
+          <span>{isFavorite ? '★ Favorited' : '☆ Favorite'}</span>
         </div>
       </div>
 

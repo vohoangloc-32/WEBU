@@ -2,18 +2,10 @@ import { useState } from 'react';
 import SelectDropdown from '@/components/ui/SelectDropdown';
 import ChipBoard from '@/components/ui/ChipBoard';
 import { Button } from '@/components/ui/Button';
+import { useNavigate } from 'react-router-dom';
 
-const TAG_OPTIONS = [
-  'Array',
-  'String',
-  'Dynamic Programming',
-  'Graph',
-  'Tree',
-  'Math',
-  'Greedy',
-  'Backtracking',
-];
-const GROUP_OPTIONS = ['KTLT', 'DSA', 'CTRR'];
+const TAG_OPTIONS = ['Array', 'Math', 'Linked List', 'Hash Table'];
+const GROUP_OPTIONS = ['KTLT', 'DSA'];
 const DIFFICULTY_OPTIONS = ['Easy', 'Medium', 'Hard'];
 
 const CreateProblem = () => {
@@ -32,6 +24,14 @@ const CreateProblem = () => {
 
   const removeChip = (chip: string) => {
     setChips((prev) => prev.filter((c) => c !== chip));
+  };
+
+  const handleCancel = useNavigate();
+  const handleCreate = () => {
+    // Handle the creation logic here, e.g., send data to the server
+    console.log('Creating problem with:', { name, chips, code });
+    // After creation, navigate back to the notebook or another page
+    handleCancel('/notebook');
   };
 
   return (
@@ -86,6 +86,7 @@ const CreateProblem = () => {
             className="w-fit flex items-center justify-center rounded-lg border-2 border-secondary-a70 px-6 py-2 h2 text-center"
             onClick={() => {
               // Handle save logic here
+              handleCancel('/notebook');
             }}
           >
             {' '}
@@ -95,6 +96,7 @@ const CreateProblem = () => {
             className="w-fit flex items-center justify-center rounded-lg border-2 border-secondary-a70 px-6 py-2 h2 text-center"
             onClick={() => {
               // Handle save logic here
+              handleCreate();
             }}
           >
             {' '}
