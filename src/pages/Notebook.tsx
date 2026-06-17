@@ -1,12 +1,16 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { MainNavigation } from '@/components/ui/MainNavigation';
 import { NotebookHeader } from '@/components/notebook/NotebookHeader';
 import { NotebookFilter } from '@/components/notebook/NotebookFilter';
 import { NotebookProblem } from '@/components/notebook/NotebookProblem';
 import { Pagination } from '@/components/notebook/Pagination';
-import { mockProblems } from '@/components/notebook/MockData';
+import {
+  mockProblems as initialProblems,
+  ProblemType,
+} from '@/components/notebook/MockData';
 
 export const Notebook = (): JSX.Element => {
+  const [problems, setProblems] = useState<ProblemType[]>(initialProblems);
   const [currentPage, setCurrentPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
@@ -16,23 +20,38 @@ export const Notebook = (): JSX.Element => {
   useEffect(() => {
     setCurrentPage(1);
   }, [searchQuery, selectedTags, selectedCourses]);
-  const filteredProblems = mockProblems.filter((problem) => {
-    const matchSearch = problem.title
-      .toLowerCase()
-      .includes(searchQuery.toLowerCase());
-    const matchTags =
-      selectedTags.length === 0 ||
-      selectedTags.every((tag) => problem.tags.includes(tag));
-    const matchCourses =
-      selectedCourses.length === 0 ||
-      selectedCourses.every((course) => problem.tags.includes(course));
-    return matchSearch && matchTags && matchCourses;
-  });
 
-  const totalPages = Math.ceil(filteredProblems.length / itemsPerPage);
+  const handleToggleFavorite = (id: string) => {
+    setProblems((prevProblems) =>
+      prevProblems.map((problem) =>
+        problem.id === id
+          ? { ...problem, isFavorite: !problem.isFavorite }
+          : problem,
+      ),
+    );
+  };
+
+  const processedProblems = useMemo(() => {
+    const result = problems.filter((problem) => {
+      const matchSearch = problem.title
+        .toLowerCase()
+        .includes(searchQuery.toLowerCase());
+      const matchTags =
+        selectedTags.length === 0 ||
+        selectedTags.every((tag) => problem.tags.includes(tag));
+      const matchCourses =
+        selectedCourses.length === 0 ||
+        selectedCourses.every((course) => problem.tags.includes(course));
+      return matchSearch && matchTags && matchCourses;
+    });
+    result.sort((a, b) => (b.isFavorite ? 1 : 0) - (a.isFavorite ? 1 : 0));
+    return result;
+  }, [problems, searchQuery, selectedTags, selectedCourses]);
+
+  const totalPages = Math.ceil(processedProblems.length / itemsPerPage);
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentProblems = filteredProblems.slice(
+  const currentProblems = processedProblems.slice(
     indexOfFirstItem,
     indexOfLastItem,
   );
@@ -57,7 +76,7 @@ export const Notebook = (): JSX.Element => {
           />
 
           {currentProblems.length > 0 ? (
-            <div className="w-full grid grid-cols-3 gap-[80px]">
+            <div className="w-full grid grid-cols-3 gap-20">
               {currentProblems.map((problem) => (
                 <NotebookProblem
                   key={problem.id}
@@ -67,6 +86,7 @@ export const Notebook = (): JSX.Element => {
                   tags={problem.tags}
                   difficulty={problem.difficulty}
                   isFavorite={problem.isFavorite}
+                  onToggleFavorite={() => handleToggleFavorite(problem.id)}
                 />
               ))}
             </div>
