@@ -26,7 +26,7 @@ export const MainNavigation = (): JSX.Element => {
   return (
     <div className="w-full bg-tonal-a10 rounded-[5px] inline-flex flex-col justify-start items-start gap-5 overflow-hidden">
       <div className="self-stretch h-28 px-8 bg-tonal-a0 inline-flex flex-row justify-between items-center overflow-hidden">
-        <div className="flex items-center justify-start">
+        <div className="flex items-center justify-start px-10">
           <Logo2 />
         </div>
 

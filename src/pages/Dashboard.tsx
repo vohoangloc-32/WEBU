@@ -1,6 +1,4 @@
 import React from 'react';
-// import { Logo2 } from '@/components/ui/Logo2';
-// import { Button } from '@/components/ui/Button';
 import { useNavigate } from 'react-router-dom';
 import { Suggest } from '@/components/dashboard/Suggest';
 import { MainNavigation } from '@/components/ui/MainNavigation';

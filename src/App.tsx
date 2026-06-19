@@ -12,6 +12,7 @@ function App() {
       <Route path="/dashboard" element={<Dashboard />} />
       <Route path="/notebook" element={<Notebook />} />
       <Route path="/problem" element={<Problem />} />
+      <Route path="/problems/:problemSlug" element={<Ide />} />
       <Route path="/create-problem" element={<CreateProblem />} />
     </Routes>
   );

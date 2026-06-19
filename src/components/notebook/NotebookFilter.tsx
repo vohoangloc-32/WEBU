@@ -44,13 +44,13 @@ export const NotebookFilter = ({
     <div className="w-full flex flex-col gap-4">
       <div className="w-full flex justify-between items-center gap-4">
         <div className="flex-1 h-[42px] bg-info-a0 rounded-[6px] px-3 flex items-center gap-2 border border-transparent focus-within:border-secondary-a70 transition-colors">
-          <span className="text-white text-lg">🔍</span>
+          <span className="p6 text-neutral-a50">🔍</span>
           <input
             type="text"
             placeholder="Search..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full h-full bg-transparent border-none outline-none text-white p8 placeholder:text-neutral-a50"
+            className="w-full h-full bg-transparent border-none outline-none text-neutral-a50 p6 placeholder:text-neutral-a50"
           />
         </div>
 
