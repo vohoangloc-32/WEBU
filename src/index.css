@@ -161,6 +161,93 @@
       transform: translateY(calc(-100% - var(--gap)));
     }
   }
+
+  /* Anima Compatibility Colors */
+  --color-neutral-neutral-a50: var(--color-neutral-a50);
+  --color-neutral-neutral-a100: var(--color-neutral-a100);
+  --color-neutral-neutral-a200: var(--color-neutral-a200);
+  --color-neutral-neutral-a300: var(--color-neutral-a300);
+  --color-neutral-neutral-a400: var(--color-neutral-a400);
+  --color-neutral-neutral-a500: var(--color-neutral-a500);
+  --color-neutral-neutral-a600: var(--color-neutral-a600);
+  --color-neutral-neutral-a700: var(--color-neutral-a700);
+  --color-neutral-neutral-a800: var(--color-neutral-a800);
+  --color-neutral-neutral-a900: var(--color-neutral-a900);
+
+  --color-primary-primary-a0: var(--color-primary-a0);
+  --color-primary-primary-a10: var(--color-primary-a10);
+  --color-primary-primary-a20: var(--color-primary-a20);
+  --color-primary-primary-a30: var(--color-primary-a30);
+  --color-primary-primary-a40: var(--color-primary-a40);
+  --color-primary-primary-a50: var(--color-primary-a50);
+  --color-primary-primary-a60: var(--color-primary-a60);
+
+  --color-secondary-secondary-a10: var(--color-secondary-a10);
+  --color-secondary-secondary-a30: var(--color-secondary-a30);
+  --color-secondary-secondary-a50: var(--color-secondary-a50);
+  --color-secondary-secondary-a70: var(--color-secondary-a70);
+  --color-secondary-secondary-a90: var(--color-secondary-a90);
+
+  --color-status-danger-danger-a0: var(--color-danger-a0);
+  --color-status-danger-danger-a10: var(--color-danger-a10);
+  --color-status-danger-danger-a20: var(--color-danger-a20);
+
+  --color-status-discovery-discovery-a10: var(--color-discovery-a10);
+  --color-status-discovery-discovery-a30: var(--color-discovery-a30);
+  --color-status-discovery-discovery-a50: var(--color-discovery-a50);
+  --color-status-discovery-discovery-a70: var(--color-discovery-a70);
+  --color-status-discovery-discovery-a90: var(--color-discovery-a90);
+
+  --color-status-info-info-a0: var(--color-info-a0);
+  --color-status-info-info-a10: var(--color-info-a10);
+  --color-status-info-info-a20: var(--color-info-a20);
+
+  --color-status-success-success-a0: var(--color-success-a0);
+  --color-status-success-success-a10: var(--color-success-a10);
+  --color-status-success-success-a20: var(--color-success-a20);
+
+  --color-status-warning-warning-a0: var(--color-warning-a0);
+  --color-status-warning-warning-a10: var(--color-warning-a10);
+  --color-status-warning-warning-a20: var(--color-warning-a20);
+
+  --color-surface-surface-a0: var(--color-surface-a0);
+  --color-surface-surface-a10: var(--color-surface-a10);
+  --color-surface-surface-a20: var(--color-surface-a20);
+  --color-surface-surface-a30: var(--color-surface-a30);
+  --color-surface-surface-a40: var(--color-surface-a40);
+  --color-surface-surface-a50: var(--color-surface-a50);
+
+  --color-surface-tonal-tonal-a0: var(--color-tonal-a0);
+  --color-surface-tonal-tonal-a10: var(--color-tonal-a10);
+  --color-surface-tonal-tonal-a20: var(--color-tonal-a20);
+  --color-surface-tonal-tonal-a30: var(--color-tonal-a30);
+  --color-surface-tonal-tonal-a40: var(--color-tonal-a40);
+  --color-surface-tonal-tonal-a50: var(--color-tonal-a50);
+
+  /* Anima Compatibility Font Families */
+  --font-h0: 'SFU Futura', sans-serif;
+  --font-h00: 'SFU Futura', sans-serif;
+  --font-heading-h1: 'SFU Futura', sans-serif;
+  --font-heading-h2: 'SFU Futura', sans-serif;
+  --font-heading-h3: 'SFU Futura', sans-serif;
+  --font-heading-h4: 'SFU Futura', sans-serif;
+  --font-heading-h5: 'SFU Futura', sans-serif;
+  --font-heading-h6: 'SFU Futura', sans-serif;
+  --font-heading-h7: 'SFU Futura', sans-serif;
+  --font-heading-h8: 'SFU Futura', sans-serif;
+  --font-IDE-1: 'JetBrains Mono', monospace;
+  --font-IDE-2: 'JetBrains Mono', monospace;
+  --font-IDE-3: 'JetBrains Mono', monospace;
+  --font-IDE-4: 'JetBrains Mono', monospace;
+  --font-paragraph-p1: 'UTM Neo Sans Intel', sans-serif;
+  --font-paragraph-p2: 'UTM Neo Sans Intel', sans-serif;
+  --font-paragraph-p3: 'UTM Neo Sans Intel', sans-serif;
+  --font-paragraph-p4: 'UTM Neo Sans Intel', sans-serif;
+  --font-paragraph-p5: 'UTM Neo Sans Intel', sans-serif;
+  --font-paragraph-p6: 'UTM Neo Sans Intel', sans-serif;
+  --font-paragraph-p7: 'UTM Neo Sans Intel', sans-serif;
+  --font-paragraph-p8: 'UTM Neo Sans Intel', sans-serif;
+  --font-paragraph-p9: 'UTM Neo Sans Intel', sans-serif;
 }
 
 /* =========================================
@@ -192,6 +279,13 @@
   src: url('/fonts/NADOORBOLDITALIC.OTF') format('opentype');
   font-weight: 700;
   font-style: italic;
+}
+
+@font-face {
+  font-family: 'HYWenHei-85W';
+  src: url('/fonts/zhcn.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
 }
 
 /* =========================================
