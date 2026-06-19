@@ -1,7 +1,8 @@
-import { useNavigate, useLocation } from 'react-router-dom';
+import React from 'react';
 import Logo2 from '@/components/ui/Logo2';
 import Tab from '@/components/ui/Tab';
 import UserIcon from '@/components/ui/UserIcon';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 export const MainNavigation = (): JSX.Element => {
   const navigate = useNavigate();
@@ -10,7 +11,8 @@ export const MainNavigation = (): JSX.Element => {
   // Determine active tab from current URL pathname
   const getActiveTab = () => {
     const path = location.pathname;
-    if (path.startsWith('/problems')) return 'PROBLEM';
+    if (path.startsWith('/problems') || path.startsWith('/problem'))
+      return 'PROBLEM';
     if (path.startsWith('/notebook')) return 'NOTEBOOK';
     return 'DASHBOARD';
   };

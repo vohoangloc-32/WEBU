@@ -1,19 +1,109 @@
-import { Logo2 } from '@/components/ui/Logo2';
-// import { Button } from '@/components/ui/Button';
-// import { useNavigate } from 'react-router-dom';
-// import { Dashboard } from './Dashboard';
+import { useState, useEffect, useMemo } from 'react';
+import { MainNavigation } from '@/components/ui/MainNavigation';
+import { NotebookHeader } from '@/components/notebook/NotebookHeader';
+import { NotebookFilter } from '@/components/notebook/NotebookFilter';
+import { NotebookProblem } from '@/components/notebook/NotebookProblem';
+import { Pagination } from '@/components/notebook/Pagination';
+import {
+  mockProblems as initialProblems,
+  ProblemType,
+} from '@/components/notebook/MockData';
 
 export const Notebook = (): JSX.Element => {
-  // const navigate = useNavigate();
+  const [problems, setProblems] = useState<ProblemType[]>(initialProblems);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [selectedTags, setSelectedTags] = useState<string[]>([]);
+  const [selectedCourses, setSelectedCourses] = useState<string[]>([]);
+  const itemsPerPage = 6;
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchQuery, selectedTags, selectedCourses]);
+
+  const handleToggleFavorite = (id: string) => {
+    setProblems((prevProblems) =>
+      prevProblems.map((problem) =>
+        problem.id === id
+          ? { ...problem, isFavorite: !problem.isFavorite }
+          : problem,
+      ),
+    );
+  };
+
+  const processedProblems = useMemo(() => {
+    const result = problems.filter((problem) => {
+      const matchSearch = problem.title
+        .toLowerCase()
+        .includes(searchQuery.toLowerCase());
+      const matchTags =
+        selectedTags.length === 0 ||
+        selectedTags.every((tag) => problem.tags.includes(tag));
+      const matchCourses =
+        selectedCourses.length === 0 ||
+        selectedCourses.every((course) => problem.tags.includes(course));
+      return matchSearch && matchTags && matchCourses;
+    });
+    result.sort((a, b) => (b.isFavorite ? 1 : 0) - (a.isFavorite ? 1 : 0));
+    return result;
+  }, [problems, searchQuery, selectedTags, selectedCourses]);
+
+  const totalPages = Math.ceil(processedProblems.length / itemsPerPage);
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentProblems = processedProblems.slice(
+    indexOfFirstItem,
+    indexOfLastItem,
+  );
 
   return (
-    <div className="w-full min-h-screen bg-tonal-a0 px-20 py-5 flex flex-col justify-between items-stretch overflow-hidden select-none">
-      <header className="self-stretch flex flex-row justify-start gap-10">
-        <Logo2 />
-        <span className="text-discovery-a50 h4 font-['Nadoor'] font-bold italic tracking-normal py-14">
-          W.E.B.U - Web Engineering of BackKhoa University
-        </span>
+    <div>
+      <header className="self-stretch flex flex-row justify-start gap-10 sticky top-0 z-10">
+        <MainNavigation />
       </header>
+
+      <div className="w-full min-h-screen bg-tonal-a10 px-20 py-5 flex flex-col items-center overflow-hidden select-none gap-10 pb-20">
+        <div className="w-full max-w-[1200px] flex flex-col gap-10 mt-5">
+          <NotebookHeader />
+
+          <NotebookFilter
+            searchQuery={searchQuery}
+            setSearchQuery={setSearchQuery}
+            selectedTags={selectedTags}
+            setSelectedTags={setSelectedTags}
+            selectedCourses={selectedCourses}
+            setSelectedCourses={setSelectedCourses}
+          />
+
+          {currentProblems.length > 0 ? (
+            <div className="w-full grid grid-cols-3 gap-20">
+              {currentProblems.map((problem) => (
+                <NotebookProblem
+                  key={problem.id}
+                  id={problem.id}
+                  title={problem.title}
+                  description={problem.description}
+                  tags={problem.tags}
+                  difficulty={problem.difficulty}
+                  isFavorite={problem.isFavorite}
+                  onToggleFavorite={() => handleToggleFavorite(problem.id)}
+                />
+              ))}
+            </div>
+          ) : (
+            <div className="w-full flex justify-center items-center py-20 text-neutral-a50 text-xl">
+              No exercises were found that match your filters.
+            </div>
+          )}
+          {totalPages > 1 && (
+            <Pagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              onPageChange={(page) => setCurrentPage(page)}
+            />
+          )}
+        </div>
+      </div>
     </div>
   );
 };
