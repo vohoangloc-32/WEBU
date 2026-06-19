@@ -1,4 +1,3 @@
-import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Suggest } from '@/components/dashboard/Suggest';
 import { MainNavigation } from '@/components/ui/MainNavigation';
