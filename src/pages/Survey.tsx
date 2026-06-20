@@ -88,7 +88,6 @@ export const Survey = (): JSX.Element => {
           Survey
         </h1>
 
-        {/* Progress Bar (25% -> 50% -> 75% -> 100%) */}
         <div
           className="flex w-[calc(100%_-_253px)] md:w-[577px] h-[66px] items-center justify-center gap-5 absolute top-[136px] left-[120px]"
           aria-label="Survey progress"
