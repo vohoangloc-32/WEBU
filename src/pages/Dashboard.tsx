@@ -1,11 +1,37 @@
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Suggest } from '@/components/dashboard/Suggest';
 import { MainNavigation } from '@/components/ui/MainNavigation';
 import { Review } from '@/components/ui/Review';
 import { GenerateProblem } from '@/components/dashboard/GenerateProblem';
+import { problemApi } from '@/api/problemService';
 
 export const Dashboard = (): JSX.Element => {
   const navigate = useNavigate();
+  const [isProcessing, setIsProcessing] = useState(false);
+  const [aiError, setAiError] = useState<string | null>(null);
+
+  const handleGenerate = async (prompt: string, imageFile: File | null) => {
+    if (!prompt.trim() && !imageFile) return;
+
+    setAiError(null);
+    setIsProcessing(true);
+
+    try {
+      const aiProblem = await problemApi.generateFromAi(prompt, imageFile);
+
+      navigate('/create-problem', {
+        state: { aiProblem },
+      });
+    } catch (err) {
+      console.error('Lỗi gọi AI đọc đề bài:', err);
+      setAiError(
+        'Không thể đọc đề bài từ ảnh hoặc prompt. Vui lòng thử lại hoặc nhập tay.',
+      );
+    } finally {
+      setIsProcessing(false);
+    }
+  };
 
   return (
     <div>
@@ -22,16 +48,16 @@ export const Dashboard = (): JSX.Element => {
           </h1>
           <div className="w-full flex justify-center items-center mt-5">
             <GenerateProblem
-              onGenerate={(prompt, imageFile) => {
-                console.log('Prompt:', prompt);
-                console.log('Image File:', imageFile);
-                // Navigate to the problem creation page with the prompt and image file
-                navigate('/create-problem', {
-                  state: { prompt, imageFile },
-                });
-              }}
+              onGenerate={handleGenerate}
+              isProcessing={isProcessing}
             />
           </div>
+          {aiError && (
+            <p className="text-danger-a10 text-center mt-3 p7">{aiError}</p>
+          )}
+        </div>
+        <div className="self-stretch flex-1 flex flex-row justify-center items-center py-1 gap-10">
+          <div></div>
         </div>
         <div className="self-stretch flex-1 flex flex-row justify-center items-center py-1 gap-10">
           <div>
