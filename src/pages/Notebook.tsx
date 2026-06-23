@@ -91,7 +91,7 @@ export const Notebook = (): JSX.Element => {
               ))}
             </div>
           ) : (
-            <div className="w-full flex justify-center items-center py-20 text-neutral-a50 text-xl">
+            <div className="w-full flex justify-center items-center py-20 text-neutral-a50 p6">
               No exercises were found that match your filters.
             </div>
           )}

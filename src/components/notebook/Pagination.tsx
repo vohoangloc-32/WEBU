@@ -23,7 +23,7 @@ export const Pagination = ({
             : 'bg-tonal-a50 text-secondary-a10 hover:bg-tonal-a40'
         }`}
       >
-        <span className="text-[20px] font-bold">{page}</span>
+        <span className="h6">{page}</span>
       </div>
     );
   };

@@ -53,7 +53,7 @@ export const ProblemFilter = ({
     <div className="w-full flex flex-col gap-4">
       <div className="w-full flex justify-between items-center gap-4">
         <div className="flex-1 h-[42px] bg-info-a0 rounded-[6px] px-3 flex items-center gap-2 border border-transparent focus-within:border-secondary-a70 transition-colors">
-          <span className="text-white text-lg">🔍</span>
+          <span className="text-white p7">🔍</span>
           <input
             type="text"
             placeholder="Search..."
@@ -69,7 +69,7 @@ export const ProblemFilter = ({
             className="w-full h-full bg-info-a0 rounded-[6px] px-3 flex justify-between items-center cursor-pointer border border-transparent hover:border-secondary-a70 transition-colors select-none"
           >
             <span className="text-white h7 font-bold">Tags</span>
-            <span className="text-white text-xs opacity-70">▼</span>
+            <span className="text-white p9 opacity-70">▼</span>
           </div>
 
           {isTagOpen && (
@@ -93,7 +93,7 @@ export const ProblemFilter = ({
             className="w-full h-full bg-info-a0 rounded-[6px] px-3 flex justify-between items-center cursor-pointer border border-transparent hover:border-secondary-a70 transition-colors select-none"
           >
             <span className="text-white h7 font-bold">Course</span>
-            <span className="text-white text-xs opacity-70">▼</span>
+            <span className="text-white p9 opacity-70">▼</span>
           </div>
 
           {isCourseOpen && (
@@ -123,7 +123,7 @@ export const ProblemFilter = ({
               <span className="text-secondary-a10 p8 font-bold">{course}</span>
               <span
                 onClick={() => removeCourse(course)}
-                className="text-neutral-a50 hover:text-danger-a10 cursor-pointer font-bold ml-1 text-lg leading-none"
+                className="text-neutral-a50 hover:text-danger-a10 cursor-pointer font-bold ml-1 p7 leading-none"
               >
                 ×
               </span>
@@ -137,7 +137,7 @@ export const ProblemFilter = ({
               <span className="text-white p8">{tag}</span>
               <span
                 onClick={() => removeTag(tag)}
-                className="text-neutral-a50 hover:text-danger-a10 cursor-pointer font-bold ml-1 text-lg leading-none"
+                className="text-neutral-a50 hover:text-danger-a10 cursor-pointer font-bold ml-1 p7 leading-none"
               >
                 ×
               </span>
