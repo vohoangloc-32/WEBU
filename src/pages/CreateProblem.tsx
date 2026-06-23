@@ -1,8 +1,9 @@
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import SelectDropdown from '@/components/ui/SelectDropdown';
 import ChipBoard from '@/components/ui/ChipBoard';
 import { Button } from '@/components/ui/Button';
-import { useNavigate } from 'react-router-dom';
+import type { AiGeneratedProblem } from '@/types/problem';
 
 const TAG_OPTIONS = ['Array', 'Math', 'Linked List', 'Hash Table'];
 const GROUP_OPTIONS = ['KTLT', 'DSA'];
@@ -15,28 +16,74 @@ export const CreateProblem = (): JSX.Element => {
     'int main() {\n  // Your code here\n  return 0;\n}',
   );
 
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  const { aiProblem } =
+    (location.state as { aiProblem?: AiGeneratedProblem }) || {};
+
+  const hasAppliedAiProblem = useRef(false);
+
+  useEffect(() => {
+    if (!aiProblem || hasAppliedAiProblem.current) return;
+    hasAppliedAiProblem.current = true;
+
+    setName(aiProblem.title || '');
+
+    const parsedDescription = aiProblem.description
+      ? `/*\n${aiProblem.description}\n*/\n\n`
+      : '';
+    const boilerplate = aiProblem.boilerplateCode?.cpp || '';
+    if (parsedDescription || boilerplate) {
+      setCode(parsedDescription + boilerplate);
+    }
+
+    if (aiProblem.difficulty) {
+      const diffFormatted =
+        aiProblem.difficulty.charAt(0).toUpperCase() +
+        aiProblem.difficulty.slice(1).toLowerCase();
+      addChip('Difficulty', diffFormatted);
+    }
+
+    if (aiProblem.group) {
+      addChip('Group', aiProblem.group);
+    }
+
+    if (aiProblem.tags && aiProblem.tags.length > 0) {
+      aiProblem.tags.forEach((tag) => addChip('Tag', tag));
+    }
+  }, [aiProblem]);
+
   const addChip = (prefix: string, value: string) => {
     const chip = `${prefix}: ${value}`;
-    if (!chips.includes(chip)) {
-      setChips((prev) => [...prev, chip]);
-    }
+
+    setChips((prev) => {
+      if (prev.includes(chip)) return prev;
+
+      if (prefix === 'Tag') {
+        return [...prev, chip];
+      }
+
+      const withoutSamePrefix = prev.filter(
+        (c) => !c.startsWith(`${prefix}: `),
+      );
+      return [...withoutSamePrefix, chip];
+    });
   };
 
   const removeChip = (chip: string) => {
     setChips((prev) => prev.filter((c) => c !== chip));
   };
 
-  const handleCancel = useNavigate();
   const handleCreate = () => {
-    // Handle the creation logic here, e.g., send data to the server
     console.log('Creating problem with:', { name, chips, code });
-    // After creation, navigate back to the notebook or another page
-    handleCancel('/notebook');
+    // TODO: gọi API tạo problem + generate test case ở đây (bước tiếp theo)
+    navigate('/notebook');
   };
 
   return (
     <div className="w-full min-h-screen bg-tonal-a0 px-30 py-20 flex flex-col justify-between items-stretch overflow-hidden select-none">
-      <div className="bg-tonal-a20 w-full rounded-lg flex flex-col px-30 py-10 gap-10">
+      <div className="bg-tonal-a20 w-full rounded-lg flex flex-col px-30 py-10 gap-10 relative">
         <h1 className="text-neutral-a50 h1 text-center tracking-normal leading-tight uppercase">
           CREATING NEW PROBLEM
         </h1>
@@ -81,8 +128,8 @@ export const CreateProblem = (): JSX.Element => {
             placeholder="Enter your code here"
             value={code}
             onChange={(e) => setCode(e.target.value)}
-            className="px-4 py-2 bg-black ide4 w-full rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-            rows={10}
+            className="px-4 py-2 bg-black ide4 w-full rounded focus:outline-none focus:ring-2 focus:ring-blue-500 text-green-400 font-mono"
+            rows={12}
           />
         </div>
 
@@ -90,21 +137,17 @@ export const CreateProblem = (): JSX.Element => {
           <Button
             className="w-fit flex items-center justify-center rounded-lg border-2 border-secondary-a70 px-6 py-2 h2 text-center"
             onClick={() => {
-              // Handle save logic here
-              handleCancel('/notebook');
+              navigate('/notebook');
             }}
           >
-            {' '}
             Cancel
           </Button>
           <Button
             className="w-fit flex items-center justify-center rounded-lg border-2 border-secondary-a70 px-6 py-2 h2 text-center"
             onClick={() => {
-              // Handle save logic here
               handleCreate();
             }}
           >
-            {' '}
             Create
           </Button>
         </div>
