@@ -10,7 +10,7 @@ export const NotebookHeader = () => {
         onClick={() => navigate('/create-problem')}
         className="flex justify-center items-center px-10 py-3 gap-3 rounded-[10px] border border-secondary-a70 bg-tonal-a20 text-white p7 font-bold cursor-pointer hover:opacity-80 transition-opacity"
       >
-        Create new problem
+        Create New Problem
       </button>
     </div>
   );

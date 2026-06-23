@@ -8,7 +8,7 @@ const TAG_OPTIONS = ['Array', 'Math', 'Linked List', 'Hash Table'];
 const GROUP_OPTIONS = ['KTLT', 'DSA'];
 const DIFFICULTY_OPTIONS = ['Easy', 'Medium', 'Hard'];
 
-const CreateProblem = () => {
+export const CreateProblem = (): JSX.Element => {
   const [name, setName] = useState('');
   const [chips, setChips] = useState<string[]>([]);
   const [code, setCode] = useState(
@@ -42,9 +42,13 @@ const CreateProblem = () => {
         </h1>
 
         <div className="flex items-center gap-4">
-          <label className="text-neutral-a50 h4">Name:</label>
+          <label htmlFor="problem-name" className="text-neutral-a50 h4">
+            Name:
+          </label>
           <input
+            id="problem-name"
             type="text"
+            placeholder="Enter problem name"
             value={name}
             onChange={(e) => setName(e.target.value)}
             className="flex-1 px-4 py-2 bg-secondary-a10 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 text-black p4"
@@ -74,6 +78,7 @@ const CreateProblem = () => {
         <div>
           <p className="text-neutral-a50 h4 mb-10">Code Editor:</p>
           <textarea
+            placeholder="Enter your code here"
             value={code}
             onChange={(e) => setCode(e.target.value)}
             className="px-4 py-2 bg-black ide4 w-full rounded focus:outline-none focus:ring-2 focus:ring-blue-500"

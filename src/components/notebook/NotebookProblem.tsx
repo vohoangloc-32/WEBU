@@ -39,7 +39,7 @@ export const NotebookProblem = ({
       <h3 className="h4 text-neutral-a50 m-0">{title}</h3>
 
       <div className="bg-primary-a20 rounded-[10px] p-3 flex-1">
-        <p className="p8 text-neutral-a50 line-clamp-[10] m-0">{description}</p>
+        <p className="p8 text-neutral-a50 line-clamp-10 m-0">{description}</p>
       </div>
 
       <div className="flex flex-col gap-2 mt-2">

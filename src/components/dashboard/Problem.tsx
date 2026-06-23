@@ -1,5 +1,3 @@
-import React from 'react';
-
 interface ProblemProps {
   difficulty: 'Easy' | 'Medium' | 'Hard';
   tags?: string[];

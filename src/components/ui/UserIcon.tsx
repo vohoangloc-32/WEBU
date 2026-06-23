@@ -1,5 +1,3 @@
-import React from 'react';
-
 export const UserIcon = (): JSX.Element => {
   return (
     <div className="w-14 h-14 bg-neutral-a50 rounded-full flex items-center justify-center cursor-pointer select-none">

@@ -50,7 +50,7 @@ export const NotebookFilter = ({
             placeholder="Search..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full h-full bg-transparent border-none outline-none text-white p8 placeholder:text-neutral-a50"
+            className="w-full h-full bg-transparent border-none outline-none text-neutral-a50 p6 placeholder:text-neutral-a50"
           />
         </div>
 

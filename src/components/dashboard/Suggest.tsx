@@ -1,4 +1,4 @@
-import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { ExpandIcon } from '@/components/ui/ExpandIcon';
 import { Problem } from '@/components/dashboard/Problem';
 
@@ -10,9 +10,10 @@ interface SuggestProps {
 
 export const Suggest = ({
   onExpandClick,
-  onReviewClick,
   title = '',
 }: SuggestProps): JSX.Element => {
+  const navigate = useNavigate();
+
   return (
     <div className="w-145 min-h-140 p-8 bg-tonal-a20 rounded-[10px] flex flex-col gap-8">
       <div className="flex justify-between items-center w-full">
@@ -30,19 +31,21 @@ export const Suggest = ({
           difficulty="Easy"
           tags={['Array', 'Hash Table']}
           title="Two Sum"
-          onReviewClick={onReviewClick}
+          onReviewClick={() => navigate('/problems/two-sum')}
         />
         <Problem
           difficulty="Medium"
           tags={['Linked List', 'Two Pointers']}
           title="Add Two Numbers"
-          onReviewClick={onReviewClick}
+          onReviewClick={() => navigate('/problems/add-two-numbers')}
         />
         <Problem
           difficulty="Hard"
           tags={['Dynamic Programming', 'Graph']}
           title="Longest Palindromic Substring"
-          onReviewClick={onReviewClick}
+          onReviewClick={() =>
+            navigate('/problems/longest-palindromic-substring')
+          }
         />
       </div>
     </div>
