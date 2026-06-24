@@ -1,4 +1,3 @@
-import React from 'react';
 import Logo2 from '@/components/ui/Logo2';
 import Tab from '@/components/ui/Tab';
 import UserIcon from '@/components/ui/UserIcon';

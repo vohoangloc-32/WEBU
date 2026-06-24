@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { MainNavigation } from '@/components/ui/MainNavigation';
 import { ProblemFilter } from '@/components/problem/ProblemFilter';
 import { ProblemTable } from '@/components/problem/ProblemTable';
