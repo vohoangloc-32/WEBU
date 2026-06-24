@@ -38,10 +38,10 @@ const signInFields: FormField[] = [
   },
 ];
 
-export const PcSignup = (): JSX.Element => {
+export const SignUp = (): JSX.Element => {
   const formId = useId();
   const navigate = useNavigate();
-  const [activeTab, setActiveTab] = useState<'signup' | 'signin'>('signup');
+
   const [formData, setFormData] = useState({
     email: '',
     username: '',
@@ -194,9 +194,19 @@ export const PcSignup = (): JSX.Element => {
       setFormError('');
       setGoogleError('');
     }
+    if (password !== confirmPassword) {
+      alert('Mật khẩu xác nhận không khớp!');
+      return;
+    }
+    navigate('/survey');
   };
 
-  const fields = activeTab === 'signup' ? signUpFields : signInFields;
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFormData((current) => ({
+      ...current,
+      [e.target.name]: e.target.value,
+    }));
+  };
 
   return (
     <>
@@ -402,4 +412,4 @@ export const PcSignup = (): JSX.Element => {
   );
 };
 
-export default PcSignup;
+export default SignUp;

@@ -11,7 +11,7 @@ export const MainNavigation = (): JSX.Element => {
   // Determine active tab from current URL pathname
   const getActiveTab = () => {
     const path = location.pathname;
-    if (path.startsWith('/problems') || path.startsWith('/problem'))
+    if (path.startsWith('/problem') || path.startsWith('/problem'))
       return 'PROBLEM';
     if (path.startsWith('/notebook')) return 'NOTEBOOK';
     return 'DASHBOARD';
@@ -23,7 +23,7 @@ export const MainNavigation = (): JSX.Element => {
     <div className="w-full bg-tonal-a10 rounded-[5px] inline-flex flex-col justify-start items-start gap-5 overflow-hidden">
       <div className="self-stretch h-28 px-8 bg-tonal-a0 inline-flex flex-row justify-between items-center overflow-hidden">
         <div
-          className="flex items-center justify-start cursor-pointer"
+          className="flex items-center justify-start px-10 cursor-pointer"
           onClick={() => navigate('/dashboard')}
         >
           <Logo2 />
@@ -39,7 +39,7 @@ export const MainNavigation = (): JSX.Element => {
 
           <Tab
             isActive={activeTab === 'PROBLEM'}
-            onClick={() => navigate('/problems')}
+            onClick={() => navigate('/problem')}
           >
             PROBLEM
           </Tab>

@@ -48,12 +48,7 @@ export const Problem = (): JSX.Element => {
 
       <div className="w-full min-h-screen bg-tonal-a10 px-20 py-10 flex flex-col items-center overflow-hidden select-none">
         <div className="w-full max-w-[1200px] flex flex-col gap-8">
-          <h1
-            className="font-bold text-[40px] text-[#F2F2F2] leading-normal"
-            style={{ fontFamily: "'SFU Futura', sans-serif" }}
-          >
-            Problem
-          </h1>
+          <h1 className="h1 text-neutral-a50 leading-normal">Problem</h1>
 
           <ProblemFilter
             searchQuery={searchQuery}

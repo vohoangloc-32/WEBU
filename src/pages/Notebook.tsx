@@ -63,7 +63,7 @@ export const Notebook = (): JSX.Element => {
       </header>
 
       <div className="w-full min-h-screen bg-tonal-a10 px-20 py-5 flex flex-col items-center overflow-hidden select-none gap-10 pb-20">
-        <div className="w-full max-w-[1200px] flex flex-col gap-10 mt-5">
+        <div className="w-full max-w-300 flex flex-col gap-10 mt-5">
           <NotebookHeader />
 
           <NotebookFilter
@@ -91,7 +91,7 @@ export const Notebook = (): JSX.Element => {
               ))}
             </div>
           ) : (
-            <div className="w-full flex justify-center items-center py-20 text-neutral-a50 text-xl">
+            <div className="w-full flex justify-center items-center py-20 text-neutral-a50 p6">
               No exercises were found that match your filters.
             </div>
           )}
