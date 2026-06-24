@@ -1,12 +1,17 @@
 import { FormEvent, useId, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { GoogleLogin, CredentialResponse } from '@react-oauth/google';
-import { googleLogin, register, saveAuthToken } from '@/api/authService';
+import { googleLogin, login, register, saveAuthToken } from '@/api/authService';
 import { LinkAccountModal } from '@/components/ui/LinkAccountModal';
-import { Button } from '@/components/ui/Button';
-import { Sign } from '@/components/ui/Sign';
 
-const signUpFields = [
+type FormField = {
+  id: 'email' | 'username' | 'password' | 'confirmPassword';
+  label: string;
+  type: 'email' | 'text' | 'password';
+  autoComplete: string;
+};
+
+const signUpFields: FormField[] = [
   { id: 'email', label: 'Email', type: 'email', autoComplete: 'email' },
   { id: 'username', label: 'Username', type: 'text', autoComplete: 'username' },
   {
@@ -21,12 +26,22 @@ const signUpFields = [
     type: 'password',
     autoComplete: 'new-password',
   },
-] as const;
+];
+
+const signInFields: FormField[] = [
+  { id: 'email', label: 'Email', type: 'email', autoComplete: 'email' },
+  {
+    id: 'password',
+    label: 'Password',
+    type: 'password',
+    autoComplete: 'current-password',
+  },
+];
 
 export const SignUp = (): JSX.Element => {
   const formId = useId();
   const navigate = useNavigate();
-
+  const [activeTab, setActiveTab] = useState<'signup' | 'signin'>('signup');
   const [formData, setFormData] = useState({
     email: '',
     username: '',
@@ -34,6 +49,7 @@ export const SignUp = (): JSX.Element => {
     confirmPassword: '',
   });
 
+  // Loading / error state cho form thường
   const [isLoading, setIsLoading] = useState(false);
   const [formError, setFormError] = useState('');
 
@@ -41,7 +57,7 @@ export const SignUp = (): JSX.Element => {
   const [googleLoading, setGoogleLoading] = useState(false);
   const [googleError, setGoogleError] = useState('');
 
-  // Link account modal state (when Google account already exists with password)
+  // Branch B: link account modal state
   const [linkModal, setLinkModal] = useState<{
     visible: boolean;
     email: string;
@@ -49,47 +65,73 @@ export const SignUp = (): JSX.Element => {
   }>({ visible: false, email: '', idToken: '' });
   const [linkLoading, setLinkLoading] = useState(false);
 
+  // ─── Computed fields dựa theo activeTab ───────────────────────────────
+  const fields =
+    activeTab === 'signup'
+      ? signUpFields
+      : (signInFields as unknown as FormField[]);
+
+  // ─── Form Submit (register / login thường) ────────────────────────────
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const { email, username, password, confirmPassword } = formData;
     setFormError('');
 
-    if (!email.trim() || !username.trim() || !password || !confirmPassword) {
-      setFormError('Vui lòng nhập đầy đủ tất cả các trường!');
-      return;
-    }
-    if (!email.includes('@')) {
-      setFormError('Email không hợp lệ!');
-      return;
-    }
-    if (password !== confirmPassword) {
-      setFormError('Mật khẩu xác nhận không khớp!');
-      return;
-    }
+    if (activeTab === 'signup') {
+      if (!email.trim() || !username.trim() || !password || !confirmPassword) {
+        setFormError('Vui lòng nhập đầy đủ tất cả các trường!');
+        return;
+      }
+      if (!email.includes('@')) {
+        setFormError('Email không hợp lệ!');
+        return;
+      }
+      if (password !== confirmPassword) {
+        setFormError('Mật khẩu xác nhận không khớp!');
+        return;
+      }
 
-    setIsLoading(true);
-    try {
-      await register(username, email, password);
-      navigate('/survey');
-    } catch (err: unknown) {
-      const msg =
-        err instanceof Error
-          ? err.message
-          : 'Đăng ký thất bại. Vui lòng thử lại.';
-      setFormError(msg);
-    } finally {
-      setIsLoading(false);
+      setIsLoading(true);
+      try {
+        await register(username, email, password);
+        navigate('/survey');
+      } catch (err: unknown) {
+        const msg =
+          err instanceof Error
+            ? err.message
+            : 'Đăng ký thất bại. Vui lòng thử lại.';
+        setFormError(msg);
+      } finally {
+        setIsLoading(false);
+      }
+    } else {
+      if (!email.trim() || !password) {
+        setFormError('Vui lòng nhập đầy đủ Email và Mật khẩu!');
+        return;
+      }
+      if (!email.includes('@')) {
+        setFormError('Email không hợp lệ!');
+        return;
+      }
+
+      setIsLoading(true);
+      try {
+        const res = await login(email, password);
+        saveAuthToken(res.token);
+        navigate('/dashboard');
+      } catch (err: unknown) {
+        const msg =
+          err instanceof Error
+            ? err.message
+            : 'Email hoặc mật khẩu không chính xác.';
+        setFormError(msg);
+      } finally {
+        setIsLoading(false);
+      }
     }
   };
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData((current) => ({
-      ...current,
-      [e.target.name]: e.target.value,
-    }));
-  };
-
-  // Google Sign-In Success Handler
+  // ─── Google Sign-In ────────────────────────────────────────────────────
   const handleGoogleSuccess = async (
     credentialResponse: CredentialResponse,
   ) => {
@@ -102,17 +144,19 @@ export const SignUp = (): JSX.Element => {
       const res = await googleLogin(idToken);
 
       if (res.requirePassword && res.email) {
+        // Branch B: tài khoản email đã tồn tại → hiện modal nhập password
         setLinkModal({ visible: true, email: res.email, idToken });
         return;
       }
 
       if (res.token) {
+        // Branch A hoặc C: đăng nhập thành công
         saveAuthToken(res.token);
         navigate('/dashboard');
       }
     } catch (err: unknown) {
       const msg =
-        err instanceof Error ? err.message : 'Đăng ký Google thất bại.';
+        err instanceof Error ? err.message : 'Đăng nhập Google thất bại.';
       setGoogleError(msg);
     } finally {
       setGoogleLoading(false);
@@ -120,10 +164,10 @@ export const SignUp = (): JSX.Element => {
   };
 
   const handleGoogleError = () => {
-    setGoogleError('Đăng ký Google thất bại. Vui lòng thử lại.');
+    setGoogleError('Đăng nhập Google thất bại. Vui lòng thử lại.');
   };
 
-  // Confirm Link Account with Password
+  // ─── Link Account (Branch B confirm) ──────────────────────────────────
   const handleLinkConfirm = async (password: string) => {
     setLinkLoading(true);
     try {
@@ -133,10 +177,6 @@ export const SignUp = (): JSX.Element => {
         setLinkModal({ visible: false, email: '', idToken: '' });
         navigate('/dashboard');
       }
-    } catch (err: unknown) {
-      alert(
-        err instanceof Error ? err.message : 'Xác thực tài khoản thất bại.',
-      );
     } finally {
       setLinkLoading(false);
     }
@@ -146,8 +186,27 @@ export const SignUp = (): JSX.Element => {
     setLinkModal({ visible: false, email: '', idToken: '' });
   };
 
+  // ─── Tab click ─────────────────────────────────────────────────────────
+  const handleTabClick = (tab: 'signup' | 'signin') => {
+    if (activeTab === tab) {
+      // Nếu đang ở đúng tab → submit form
+      const formElement = document.getElementById(
+        formId,
+      ) as HTMLFormElement | null;
+      if (formElement) {
+        formElement.requestSubmit();
+      }
+    } else {
+      // Chuyển tab → reset lỗi
+      setActiveTab(tab);
+      setFormError('');
+      setGoogleError('');
+    }
+  };
+
   return (
     <>
+      {/* Branch B modal */}
       {linkModal.visible && (
         <LinkAccountModal
           email={linkModal.email}
@@ -158,22 +217,24 @@ export const SignUp = (): JSX.Element => {
       )}
 
       <main className="w-full min-h-screen flex flex-col items-center justify-center bg-[#0a1222] px-4 py-10 select-none">
+        {/* Title */}
         <header className="flex justify-center items-center">
           <h1 className="text-[#e0e0e0] text-6xl [font-family:'HYWenHei-85W',Helvetica] font-normal tracking-[0] leading-[normal] whitespace-nowrap">
-            Sign Up
+            {activeTab === 'signup' ? 'Sign Up' : 'Sign In'}
           </h1>
         </header>
 
+        {/* Form */}
         <form
           id={formId}
           onSubmit={handleSubmit}
-          className="flex w-full max-w-[710px] h-[404px] relative mt-[60px] flex-col items-center gap-[60px] transition-all duration-300"
+          className={`flex w-full max-w-[710px] relative mt-[60px] flex-col items-center gap-[60px] transition-all duration-300 ${
+            activeTab === 'signup' ? 'h-[404px]' : 'h-[172px]'
+          }`}
         >
-          <Button className="hidden" type="submit">
-            Submit
-          </Button>
+          <button type="submit" className="hidden" />
 
-          {signUpFields.map((field) => {
+          {fields.map((field) => {
             const inputId = `${formId}-${field.id}`;
 
             return (
@@ -186,8 +247,13 @@ export const SignUp = (): JSX.Element => {
                     autoComplete={field.autoComplete}
                     aria-label={field.label}
                     placeholder=" "
-                    value={formData[field.id]}
-                    onChange={handleChange}
+                    value={formData[field.id as keyof typeof formData]}
+                    onChange={(event) =>
+                      setFormData((current) => ({
+                        ...current,
+                        [field.id]: event.target.value,
+                      }))
+                    }
                     disabled={isLoading}
                     className="peer absolute inset-0 z-10 h-full w-full rounded-[10px] px-6 pt-[18px] pb-2 text-base [font-family:'HYWenHei-85W',Helvetica] font-normal text-neutral-neutral-a50 caret-secondary-secondary-a70 bg-transparent border-0 outline-none disabled:opacity-50"
                   />
@@ -198,11 +264,27 @@ export const SignUp = (): JSX.Element => {
                     {field.label}
                   </label>
                 </div>
+
+                {activeTab === 'signin' && field.id === 'password' && (
+                  <div className="absolute right-0 mt-2">
+                    <a
+                      href="#forgot-password"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        navigate('/forget-password');
+                      }}
+                      className="text-neutral-neutral-a50/60 hover:text-secondary-secondary-a70 transition-colors text-sm [font-family:'HYWenHei-85W',Helvetica] underline cursor-pointer"
+                    >
+                      Forget Password
+                    </a>
+                  </div>
+                )}
               </div>
             );
           })}
         </form>
 
+        {/* Form error */}
         {formError && (
           <p
             className="mt-4 text-sm text-red-400 text-center [font-family:'HYWenHei-85W',Helvetica]"
@@ -214,6 +296,7 @@ export const SignUp = (): JSX.Element => {
 
         {/* Divider + Google button */}
         <div className="flex flex-col items-center gap-4 mt-8 w-full max-w-[710px]">
+          {/* Divider */}
           <div className="flex items-center gap-4 w-full">
             <div className="flex-1 h-px bg-surface-tonal-tonal-a0" />
             <span className="text-neutral-neutral-a50/60 text-xs [font-family:'HYWenHei-85W',Helvetica] whitespace-nowrap">
@@ -222,6 +305,7 @@ export const SignUp = (): JSX.Element => {
             <div className="flex-1 h-px bg-surface-tonal-tonal-a0" />
           </div>
 
+          {/* Custom Google button container with hidden-overlay trigger */}
           <div
             className="relative overflow-hidden flex h-14 w-full max-w-[710px] items-center justify-center gap-2.5 rounded-[10px] border border-solid border-secondary-secondary-a70 bg-surface-tonal-tonal-a20 p-2.5 shadow-[0px_4px_12px_rgba(0,0,0,0.35),0px_2px_0px_#4ca3ff] transition-all hover:brightness-110 active:brightness-95"
             style={{
@@ -229,6 +313,7 @@ export const SignUp = (): JSX.Element => {
               pointerEvents: googleLoading ? 'none' : 'auto',
             }}
           >
+            {/* Google Icon */}
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
               <path
                 d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
@@ -248,10 +333,14 @@ export const SignUp = (): JSX.Element => {
               />
             </svg>
 
+            {/* Button Text */}
             <span className="relative w-fit [font-family:'HYWenHei-85W',Helvetica] text-2xl font-normal tracking-[0] text-secondary-secondary-a70 [text-shadow:0px_0px_8px_rgba(76,163,255,0.35)]">
-              Sign Up with Google
+              {activeTab === 'signup'
+                ? 'Sign Up with Google'
+                : 'Sign In with Google'}
             </span>
 
+            {/* Invisible GoogleLogin overlay (scaled up to cover the 710px width) */}
             <div className="absolute inset-0 z-20 cursor-pointer opacity-0 scale-[3] flex items-center justify-center">
               <GoogleLogin
                 onSuccess={handleGoogleSuccess}
@@ -261,6 +350,7 @@ export const SignUp = (): JSX.Element => {
             </div>
           </div>
 
+          {/* Google error */}
           {googleError && (
             <p
               className="text-sm text-red-400 text-center [font-family:'HYWenHei-85W',Helvetica]"
@@ -270,6 +360,7 @@ export const SignUp = (): JSX.Element => {
             </p>
           )}
 
+          {/* Loading indicator */}
           {googleLoading && (
             <p className="text-sm text-neutral-neutral-a50 [font-family:'HYWenHei-85W',Helvetica]">
               Đang xử lý...
@@ -277,17 +368,43 @@ export const SignUp = (): JSX.Element => {
           )}
         </div>
 
-        <Sign
-          activeTab="signup"
-          onActionClick={() => {
-            const formElement = document.getElementById(
-              formId,
-            ) as HTMLFormElement | null;
-            if (formElement) {
-              formElement.requestSubmit();
-            }
-          }}
-        />
+        {/* Tab bar */}
+        <nav
+          aria-label="Authentication pages"
+          className="inline-flex w-full max-w-[377px] h-16 relative mt-10 items-center justify-between p-1.5 rounded-full bg-surface-tonal-tonal-a10 border border-solid border-surface-tonal-tonal-a0"
+        >
+          <button
+            id="btn-signup"
+            type="button"
+            onClick={() => handleTabClick('signup')}
+            disabled={isLoading || googleLoading}
+            className={`flex-1 h-full inline-flex items-center justify-center relative rounded-full cursor-pointer transition-all duration-300 border-0 ${
+              activeTab === 'signup'
+                ? 'bg-secondary-secondary-a90 text-secondary-secondary-a30 shadow-md'
+                : 'bg-transparent text-neutral-neutral-a50 hover:text-white'
+            } disabled:opacity-50`}
+          >
+            <span className="relative w-fit [font-family:'HYWenHei-85W',Helvetica] font-normal text-2xl tracking-[0] leading-[normal] text-inherit">
+              Sign Up
+            </span>
+          </button>
+
+          <button
+            id="btn-signin"
+            type="button"
+            onClick={() => handleTabClick('signin')}
+            disabled={isLoading || googleLoading}
+            className={`flex-1 h-full inline-flex items-center justify-center relative rounded-full cursor-pointer transition-all duration-300 border-0 ${
+              activeTab === 'signin'
+                ? 'bg-secondary-secondary-a90 text-secondary-secondary-a30 shadow-md'
+                : 'bg-transparent text-neutral-neutral-a50 hover:text-white'
+            } disabled:opacity-50`}
+          >
+            <span className="relative w-fit text-neutral-neutral-a50 text-2xl [font-family:'HYWenHei-85W',Helvetica] font-normal tracking-[0] leading-[normal] text-inherit">
+              Sign In
+            </span>
+          </button>
+        </nav>
       </main>
     </>
   );
