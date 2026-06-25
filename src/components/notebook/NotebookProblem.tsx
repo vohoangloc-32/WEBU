@@ -1,3 +1,5 @@
+import { useNavigate } from 'react-router-dom';
+
 interface NotebookProblemProps {
   id: string;
   title: string;
@@ -17,10 +19,20 @@ export const NotebookProblem = ({
   isFavorite = false,
   onToggleFavorite,
 }: NotebookProblemProps) => {
+  const navigate = useNavigate();
+
   const getDifficultyBg = () => {
     if (difficulty === 'Easy') return 'bg-success-a0';
     if (difficulty === 'Medium') return 'bg-warning-a20';
     return 'bg-danger-a0';
+  };
+
+  const getProblemSlug = (name: string) => {
+    return name
+      .toLowerCase()
+      .trim()
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/^-+|-+$/g, '');
   };
 
   return (
@@ -62,7 +74,10 @@ export const NotebookProblem = ({
             <span className="p9 font-bold text-tonal-a0">{difficulty}</span>
           </div>
         </div>
-        <div className="flex items-center gap-1 p6 text-secondary-a10 cursor-pointer">
+        <div
+          onClick={() => navigate(`/problems/${getProblemSlug(title)}`)}
+          className="flex items-center gap-1 p6 text-secondary-a10 cursor-pointer hover:text-white transition-colors"
+        >
           ↗ Open
         </div>
       </div>

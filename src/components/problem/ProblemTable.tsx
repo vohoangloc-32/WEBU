@@ -1,3 +1,4 @@
+import { useNavigate } from 'react-router-dom';
 import { ProblemItem } from '@/components/problem/problemMockData';
 
 interface ProblemTableProps {
@@ -5,10 +6,21 @@ interface ProblemTableProps {
 }
 
 export const ProblemTable = ({ problems }: ProblemTableProps) => {
+  const navigate = useNavigate();
+
   const getDifficultyColor = (diff: string) => {
     if (diff === 'Hard') return 'bg-danger-a0 text-white';
     if (diff === 'Medium') return 'bg-warning-a20 text-tonal-a0';
     return 'bg-success-a0 text-tonal-a0';
+  };
+
+  const getProblemSlug = (name: string) => {
+    return name
+      .replace(/^#\d+\.\s*/, '') // Remove "#1. " prefix
+      .toLowerCase()
+      .trim()
+      .replace(/[^a-z0-9]+/g, '-') // Replace spaces and special chars with hyphens
+      .replace(/^-+|-+$/g, ''); // Trim hyphens from ends
   };
 
   return (
@@ -26,7 +38,8 @@ export const ProblemTable = ({ problems }: ProblemTableProps) => {
         problems.map((item, index) => (
           <div
             key={item.id}
-            className={`grid grid-cols-4 items-center py-4 ${index !== problems.length - 1 ? 'border-b border-tonal-a30' : ''}`}
+            onClick={() => navigate(`/problems/${getProblemSlug(item.name)}`)}
+            className={`grid grid-cols-4 items-center py-4 cursor-pointer hover:bg-tonal-a20/40 transition-colors ${index !== problems.length - 1 ? 'border-b border-tonal-a30' : ''}`}
           >
             <div className="text-center text-neutral-a50 p7 font-bold">
               {item.name}
