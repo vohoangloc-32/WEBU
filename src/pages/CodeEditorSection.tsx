@@ -1,412 +1,415 @@
-import { useState, useEffect, useRef } from 'react';
-import { useParams } from 'react-router-dom';
+import { useState, useEffect, useRef, useCallback } from 'react';
+import { ideApi } from '../api/ideService';
+import {
+  Language,
+  BoilerplateCode,
+  RunCodeResult,
+  SubmitResult,
+  TestCaseResult,
+} from '../types/ide';
 
-type Language = 'javascript' | 'python' | 'cpp' | 'java';
-
-interface CodeTemplates {
-  [problemId: string]: {
-    [lang in Language]: string;
-  };
+interface CodeEditorSectionProps {
+  cardId: string;
+  boilerplateCodes: BoilerplateCode;
 }
 
-const TEMPLATES: CodeTemplates = {
-  'two-sum': {
-    javascript: `/**
- * @param {number[]} nums
- * @param {number} target
- * @return {number[]}
- */
-function twoSum(nums, target) {
-  // Write your code here
-  const map = new Map();
-  for (let i = 0; i < nums.length; i++) {
-    const complement = target - nums[i];
-    if (map.has(complement)) {
-      return [map.get(complement), i];
-    }
-    map.set(nums[i], i);
-  }
-  return [];
-}`,
-    python: `class Solution:
-    def twoSum(self, nums: List[int], target: int) -> List[int]:
-        # Write your code here
-        seen = {}
-        for i, num in enumerate(nums):
-            complement = target - num
-            if complement in seen:
-                return [seen[complement], i]
-            seen[num] = i
-        return []`,
-    cpp: `#include <vector>
-#include <unordered_map>
-using namespace std;
-
-class Solution {
-public:
-    vector<int> twoSum(vector<int>& nums, int target) {
-        // Write your code here
-        unordered_map<int, int> seen;
-        for (int i = 0; i < nums.size(); ++i) {
-            int complement = target - nums[i];
-            if (seen.count(complement)) {
-                return {seen[complement], i};
-            }
-            seen[nums[i]] = i;
-        }
-        return {};
-    }
-};`,
-    java: `import java.util.HashMap;
-import java.util.Map;
-
-class Solution {
-    public int[] twoSum(int[] nums, int target) {
-        // Write your code here
-        Map<Integer, Integer> seen = new HashMap<>();
-        for (int i = 0; i < nums.length; i++) {
-            int complement = target - nums[i];
-            if (seen.containsKey(complement)) {
-                return new int[] { seen.get(complement), i };
-            }
-            seen.put(nums[i], i);
-        }
-        return new int[] {};
-    }
-}`,
-  },
-  'add-two-numbers': {
-    javascript: `/**
- * Definition for singly-linked list.
- * function ListNode(val, next) {
- *     this.val = (val===undefined ? 0 : val)
- *     this.next = (next===undefined ? null : next)
- *     this.next = (next===undefined ? null : next)
- * }
- */
-/**
- * @param {ListNode} l1
- * @param {ListNode} l2
- * @return {ListNode}
- */
-function addTwoNumbers(l1, l2) {
-  // Write your code here
-  let dummy = new ListNode(0);
-  let curr = dummy;
-  let carry = 0;
-  
-  while (l1 !== null || l2 !== null || carry !== 0) {
-    let sum = carry;
-    if (l1 !== null) {
-      sum += l1.val;
-      l1 = l1.next;
-    }
-    if (l2 !== null) {
-      sum += l2.val;
-      l2 = l2.next;
-    }
-    carry = Math.floor(sum / 10);
-    curr.next = new ListNode(sum % 10);
-    curr = curr.next;
-  }
-  return dummy.next;
-}`,
-    python: `# Definition for singly-linked list.
-# class ListNode:
-#     def __init__(self, val=0, next=None):
-#         self.val = val
-#         self.next = next
-class Solution:
-    def addTwoNumbers(self, l1: Optional[ListNode], l2: Optional[ListNode]) -> Optional[ListNode]:
-        # Write your code here
-        dummy = ListNode(0)
-        curr = dummy
-        carry = 0
-        while l1 or l2 or carry:
-            val1 = l1.val if l1 else 0
-            val2 = l2.val if l2 else 0
-            total = val1 + val2 + carry
-            carry = total // 10
-            curr.next = ListNode(total % 10)
-            curr = curr.next
-            l1 = l1.next if l1 else None
-            l2 = l2.next if l2 else None
-        return dummy.next`,
-    cpp: `class Solution {
-public:
-    ListNode* addTwoNumbers(ListNode* l1, ListNode* l2) {
-        // Write your code here
-        ListNode* dummy = new ListNode(0);
-        ListNode* curr = dummy;
-        int carry = 0;
-        while (l1 || l2 || carry) {
-            int val1 = l1 ? l1->val : 0;
-            int val2 = l2 ? l2->val : 0;
-            int sum = val1 + val2 + carry;
-            carry = sum / 10;
-            curr->next = new ListNode(sum % 10);
-            curr = curr->next;
-            l1 = l1 ? l1->next : nullptr;
-            l2 = l2 ? l2->next : nullptr;
-        }
-        return dummy->next;
-    }
-};`,
-    java: `class Solution {
-    public ListNode addTwoNumbers(ListNode l1, ListNode l2) {
-        // Write your code here
-        ListNode dummy = new ListNode(0);
-        ListNode curr = dummy;
-        int carry = 0;
-        while (l1 != null || l2 != null || carry != 0) {
-            int val1 = (l1 != null) ? l1.val : 0;
-            int val2 = (l2 != null) ? l2.val : 0;
-            int sum = val1 + val2 + carry;
-            carry = sum / 10;
-            curr.next = new ListNode(sum % 10);
-            curr = curr.next;
-            if (l1 != null) l1 = l1.next;
-            if (l2 != null) l2 = l2.next;
-        }
-        return dummy.next;
-    }
-}`,
-  },
-  'longest-palindromic-substring': {
-    javascript: `/**
- * @param {string} s
- * @return {string}
- */
-function longestPalindrome(s) {
-  // Write your code here
-  if (!s || s.length < 1) return "";
-  let start = 0, end = 0;
-  
-  function expandAroundCenter(left, right) {
-    while (left >= 0 && right < s.length && s[left] === s[right]) {
-      left--;
-      right++;
-    }
-    return right - left - 1;
-  }
-  
-  for (let i = 0; i < s.length; i++) {
-    let len1 = expandAroundCenter(i, i);
-    let len2 = expandAroundCenter(i, i + 1);
-    let len = Math.max(len1, len2);
-    if (len > end - start) {
-      start = i - Math.floor((len - 1) / 2);
-      end = i + Math.floor(len / 2);
-    }
-  }
-  return s.substring(start, end + 1);
-}`,
-    python: `class Solution:
-    def longestPalindrome(self, s: str) -> str:
-        # Write your code here
-        if not s:
-            return ""
-        start, end = 0, 0
-        def expand(left, right):
-            while left >= 0 and right < len(s) and s[left] == s[right]:
-                left -= 1
-                right += 1
-            return right - left - 1
-        for i in range(len(s)):
-            len1 = expand(i, i)
-            len2 = expand(i, i + 1)
-            length = max(len1, len2)
-            if length > end - start:
-                start = i - (length - 1) // 2
-                end = i + length // 2
-        return s[start:end + 1]`,
-    cpp: `class Solution {
-public:
-    string longestPalindrome(string s) {
-        // Write your code here
-        if (s.empty()) return "";
-        int start = 0, end = 0;
-        auto expand = [&](int left, int right) {
-            while (left >= 0 && right < s.length() && s[left] == s[right]) {
-                left--;
-                right++;
-            }
-            return right - left - 1;
-        };
-        for (int i = 0; i < s.length(); i++) {
-            int len1 = expand(i, i);
-            int len2 = expand(i, i + 1);
-            int len = max(len1, len2);
-            if (len > end - start) {
-                start = i - (len - 1) / 2;
-                end = i + len / 2;
-            }
-        }
-        return s.substr(start, end - start + 1);
-    }
-};`,
-    java: `class Solution {
-    public String longestPalindrome(String s) {
-        // Write your code here
-        if (s == null || s.length() < 1) return "";
-        int start = 0, end = 0;
-        for (int i = 0; i < s.length(); i++) {
-            int len1 = expandAroundCenter(s, i, i);
-            int len2 = expandAroundCenter(s, i, i + 1);
-            int len = Math.max(len1, len2);
-            if (len > end - start) {
-                start = i - (len - 1) / 2;
-                end = i + len / 2;
-            }
-        }
-        return s.substring(start, end + 1);
-    }
-    
-    private int expandAroundCenter(String s, int left, int right) {
-        while (left >= 0 && right < s.length() && s.charAt(left) == s.charAt(right)) {
-            left--;
-            right++;
-        }
-        return right - left - 1;
-    }
-}`,
-  },
+const LANGUAGE_LABELS: Record<Language, string> = {
+  javascript: 'JavaScript',
+  python: 'Python 3',
+  cpp: 'C++20',
+  java: 'Java 17',
+  typescript: 'TypeScript',
 };
 
-export const CodeEditorSection = (): JSX.Element => {
-  const { problemId = 'two-sum' } = useParams<{ problemId: string }>();
+type RunState = 'idle' | 'running' | 'success' | 'submitted' | 'error';
+
+// ── Console formatters ──────────────────────────────────────────────────────
+const formatRunResult = (result: RunCodeResult): string => {
+  if (result.results.length === 0) return '⚠️  No test cases to run.';
+  const lines: string[] = [];
+  result.results.forEach((tc: TestCaseResult, idx: number) => {
+    lines.push(`── Test Case ${idx + 1} ──────────────────`);
+    lines.push(`Input:    ${tc.input}`);
+    lines.push(`Expected: ${tc.expected_output}`);
+    lines.push(`Output:   ${tc.actual_output ?? 'N/A'}`);
+    if (tc.error) lines.push(`Error:    ${tc.error}`);
+    lines.push(
+      `${tc.passed ? '✅  Passed' : '❌  Failed'}${tc.execution_time ? `  ·  ${tc.execution_time}s` : ''}`,
+    );
+    lines.push('');
+  });
+  const passCount = result.results.filter((r) => r.passed).length;
+  lines.push(
+    result.all_passed
+      ? '🎉  All test cases passed!'
+      : `📊  ${passCount}/${result.results.length} test cases passed.`,
+  );
+  return lines.join('\n');
+};
+
+const formatSubmitResult = (result: SubmitResult): string => {
+  const lines: string[] = [];
+  lines.push(result.passed ? '🏆  Accepted!' : `❌  ${result.status}`);
+  lines.push(`📊  ${result.passed_tests}/${result.total_tests} tests passed`);
+  if (result.execution_time != null)
+    lines.push(`⏱   Runtime: ${result.execution_time} ms`);
+  if (result.memory_used != null)
+    lines.push(`💾  Memory: ${(result.memory_used / 1024).toFixed(1)} MB`);
+  if (result.error_details) {
+    lines.push('');
+    lines.push('🔴  Error:');
+    lines.push(result.error_details);
+  }
+  if (!result.passed && result.results.length > 0) {
+    lines.push('');
+    lines.push('── Failed Cases ─────────────────────');
+    result.results
+      .filter((tc) => !tc.passed)
+      .slice(0, 3)
+      .forEach((tc, i) => {
+        lines.push(`\nTest ${i + 1}:`);
+        lines.push(`  Input:    ${tc.input}`);
+        lines.push(`  Expected: ${tc.expected_output}`);
+        lines.push(`  Got:      ${tc.actual_output ?? 'N/A'}`);
+        if (tc.error) lines.push(`  Error: ${tc.error}`);
+      });
+  }
+  return lines.join('\n');
+};
+
+// ── Component ───────────────────────────────────────────────────────────────
+export const CodeEditorSection = ({
+  cardId,
+  boilerplateCodes,
+}: CodeEditorSectionProps): JSX.Element => {
   const [lang, setLang] = useState<Language>('javascript');
   const [code, setCode] = useState('');
-
-  // Console panel state
+  const [consolePct, setConsolePct] = useState(30); // % height of console panel
   const [isConsoleOpen, setIsConsoleOpen] = useState(false);
-  const [runState, setRunState] = useState<
-    'idle' | 'running' | 'success' | 'submitted' | 'wrong'
-  >('idle');
-  const [consoleLog, setConsoleLog] = useState<string>('');
+  const [runState, setRunState] = useState<RunState>('idle');
+  const [consoleLog, setConsoleLog] = useState('');
+  const [consoleTitle, setConsoleTitle] = useState('Console');
 
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const lineNumbersRef = useRef<HTMLDivElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const isDragging = useRef(false);
 
-  // Update code template based on problemId and selected language
+  // ── Boilerplate ──────────────────────────────────────────────────────────
+  const getTemplate = useCallback(
+    (l: Language) =>
+      (boilerplateCodes[l] as string | undefined) ??
+      boilerplateCodes.javascript ??
+      boilerplateCodes.python ??
+      '// Write your code here',
+    [boilerplateCodes],
+  );
+
   useEffect(() => {
-    const templates = TEMPLATES[problemId] || TEMPLATES['two-sum'];
-    setCode(templates[lang]);
+    setCode(getTemplate(lang));
     setRunState('idle');
     setConsoleLog('');
-  }, [problemId, lang]);
+  }, [lang, getTemplate]);
 
-  // Sync scroll between textarea and line numbers
-  const handleScroll = () => {
+  useEffect(() => {
+    setCode(getTemplate(lang));
+    setRunState('idle');
+    setConsoleLog('');
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [cardId]);
+
+  // ── Sync line numbers scroll ─────────────────────────────────────────────
+  const handleEditorScroll = () => {
     if (textareaRef.current && lineNumbersRef.current) {
       lineNumbersRef.current.scrollTop = textareaRef.current.scrollTop;
     }
   };
 
-  const getLanguageLabel = (l: Language) => {
-    switch (l) {
-      case 'javascript':
-        return 'JavaScript (ES6)';
-      case 'python':
-        return 'Python 3';
-      case 'cpp':
-        return 'C++20';
-      case 'java':
-        return 'Java 17';
-    }
+  // ── Vertical console resize ──────────────────────────────────────────────
+  const onConsoleDividerMouseDown = () => {
+    isDragging.current = true;
+    document.body.style.cursor = 'row-resize';
+    document.body.style.userSelect = 'none';
   };
+
+  const onMouseMove = useCallback((e: MouseEvent) => {
+    if (!isDragging.current || !containerRef.current) return;
+    const rect = containerRef.current.getBoundingClientRect();
+    const fromBottom = rect.bottom - e.clientY;
+    const newPct = (fromBottom / rect.height) * 100;
+    setConsolePct(Math.min(60, Math.max(15, newPct)));
+  }, []);
+
+  const onMouseUp = useCallback(() => {
+    if (!isDragging.current) return;
+    isDragging.current = false;
+    document.body.style.cursor = '';
+    document.body.style.userSelect = '';
+  }, []);
+
+  useEffect(() => {
+    window.addEventListener('mousemove', onMouseMove);
+    window.addEventListener('mouseup', onMouseUp);
+    return () => {
+      window.removeEventListener('mousemove', onMouseMove);
+      window.removeEventListener('mouseup', onMouseUp);
+    };
+  }, [onMouseMove, onMouseUp]);
 
   const lines = code.split('\n');
 
-  // Trigger Mock Code Execution
-  const handleRunCode = () => {
+  // ── Run / Submit ─────────────────────────────────────────────────────────
+  const handleRunCode = async () => {
     setIsConsoleOpen(true);
     setRunState('running');
-    setConsoleLog('Compiling and running code against sample tests...');
-
-    setTimeout(() => {
+    setConsoleTitle('Running...');
+    setConsoleLog('Compiling and running against sample test cases...');
+    try {
+      const result = await ideApi.runCode(cardId, code, lang);
       setRunState('success');
-      let resultText = '';
-      if (problemId === 'two-sum') {
-        resultText = `⚡ Test Case 1: nums = [2,7,11,15], target = 9
-✔ Output: [0,1]
-✔ Expected: [0,1]
-✔ Status: Passed (0.01ms)
-
-⚡ Test Case 2: nums = [3,2,4], target = 6
-✔ Output: [1,2]
-✔ Expected: [1,2]
-✔ Status: Passed (0.01ms)
-
-🎉 All sample tests passed successfully!`;
-      } else if (problemId === 'add-two-numbers') {
-        resultText = `⚡ Test Case 1: l1 = [2,4,3], l2 = [5,6,4]
-✔ Output: [7,0,8]
-✔ Expected: [7,0,8]
-✔ Status: Passed (0.02ms)
-
-🎉 Sample test passed successfully!`;
-      } else {
-        resultText = `⚡ Test Case 1: s = "babad"
-✔ Output: "bab"
-✔ Expected: "bab" or "aba"
-✔ Status: Passed (0.05ms)
-
-🎉 Sample test passed successfully!`;
-      }
-      setConsoleLog(resultText);
-    }, 1200);
+      setConsoleTitle('Run Result');
+      setConsoleLog(formatRunResult(result));
+    } catch (err) {
+      setRunState('error');
+      setConsoleTitle('Error');
+      setConsoleLog(
+        `❌  ${err instanceof Error ? err.message : 'Runtime error.'}`,
+      );
+    }
   };
 
-  // Trigger Mock Full Submission
-  const handleSubmitCode = () => {
+  const handleSubmitCode = async () => {
     setIsConsoleOpen(true);
     setRunState('running');
-    setConsoleLog('Running full suite of 52 hidden test cases...');
-
-    setTimeout(() => {
-      setRunState('submitted');
-      setConsoleLog(`🏆 Submission Accepted!
-🎉 Status: Solved
-✔ 52/52 test cases passed.
-🚀 Runtime: 64 ms (Beats 94.2% of submissions)
-💾 Memory: 42.4 MB (Beats 88.5% of submissions)
-
-Great job! You have earned +100 XP and saved notes to your personalized tutor profile.`);
-    }, 2000);
+    setConsoleTitle('Submitting...');
+    setConsoleLog('Running full suite of test cases...');
+    try {
+      const result = await ideApi.submitCode(cardId, code, lang);
+      setRunState(result.passed ? 'submitted' : 'error');
+      setConsoleTitle(result.passed ? '✅  Accepted' : `❌  ${result.status}`);
+      setConsoleLog(formatSubmitResult(result));
+    } catch (err) {
+      setRunState('error');
+      setConsoleTitle('Error');
+      setConsoleLog(
+        `❌  ${err instanceof Error ? err.message : 'Submission failed. Please log in and try again.'}`,
+      );
+    }
   };
+
+  const statusColor =
+    runState === 'submitted'
+      ? 'text-emerald-400'
+      : runState === 'error'
+        ? 'text-red-400'
+        : runState === 'success'
+          ? 'text-secondary-a30'
+          : 'text-neutral-400';
 
   return (
     <div
-      className="absolute top-0 left-0 w-[717px] h-[1319px] bg-[#0d131f] border-l border-tonal-a20 flex flex-col select-none"
-      data-id="code-editor-section"
+      ref={containerRef}
+      className="w-full h-full bg-[#0a0f1a] flex flex-col rounded-xl border border-white/[0.07] overflow-hidden"
     >
-      {/* Editor Header: Lang and Reset */}
-      <div className="h-[60px] border-b border-tonal-a20 bg-[#0d131f] flex items-center justify-between px-6">
-        <div className="relative">
-          <select
-            value={lang}
-            onChange={(e) => setLang(e.target.value as Language)}
-            className="bg-tonal-a20 text-white font-semibold py-1.5 px-3 rounded-lg border border-tonal-a30 text-sm focus:border-secondary-a70 outline-none cursor-pointer"
-          >
-            <option value="javascript">{getLanguageLabel('javascript')}</option>
-            <option value="python">{getLanguageLabel('python')}</option>
-            <option value="cpp">{getLanguageLabel('cpp')}</option>
-            <option value="java">{getLanguageLabel('java')}</option>
-          </select>
-        </div>
+      {/* ── Editor toolbar ── */}
+      <div className="flex-shrink-0 h-11 flex items-center justify-between px-4 border-b border-white/[0.07] bg-[#111827]">
+        {/* Language selector */}
+        <select
+          value={lang}
+          onChange={(e) => setLang(e.target.value as Language)}
+          className="text-white text-xs font-semibold py-1 px-2.5 rounded-md border border-white/10 focus:border-secondary-a70 outline-none cursor-pointer transition-colors"
+          style={{ backgroundColor: '#1e2535', color: '#ffffff' }}
+        >
+          {(Object.entries(LANGUAGE_LABELS) as [Language, string][])
+            .filter(([l]) => boilerplateCodes[l])
+            .map(([l, label]) => (
+              <option
+                key={l}
+                value={l}
+                style={{ backgroundColor: '#1e2535', color: '#ffffff' }}
+              >
+                {label}
+              </option>
+            ))}
+        </select>
 
+        {/* Reset button */}
         <button
           type="button"
-          onClick={() => {
-            const templates = TEMPLATES[problemId] || TEMPLATES['two-sum'];
-            setCode(templates[lang]);
-          }}
-          className="text-neutral-a400 hover:text-white flex items-center gap-1.5 text-xs font-bold transition-colors cursor-pointer"
-          title="Reset Code Boilerplate"
+          onClick={() => setCode(getTemplate(lang))}
+          className="text-neutral-500 hover:text-white flex items-center gap-1 text-xs font-medium transition-colors cursor-pointer"
+          title="Reset to boilerplate"
         >
           <svg
-            className="w-4 h-4"
+            className="w-3.5 h-3.5"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            strokeWidth={2}
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M4 4v5h.582m15.356 2A8.001 8.001 0 1121.21 7.89M9 11l3-3 3 3m-3-3v12"
+            />
+          </svg>
+          Reset
+        </button>
+      </div>
+
+      {/* ── Editor area (grows, shrinks if console open) ── */}
+      <div
+        className="flex-1 min-h-0 flex overflow-hidden"
+        style={isConsoleOpen ? { flex: `0 0 ${100 - consolePct}%` } : undefined}
+      >
+        {/* Line numbers */}
+        <div
+          ref={lineNumbersRef}
+          className="flex-shrink-0 w-12 overflow-hidden bg-[#0a0f1a] text-neutral-600 text-right pr-3 pt-4 select-none text-xs"
+          style={{
+            lineHeight: '1.6rem',
+            fontFamily: "'JetBrains Mono', 'Consolas', monospace",
+          }}
+        >
+          {lines.map((_, idx) => (
+            <div key={idx}>{idx + 1}</div>
+          ))}
+        </div>
+
+        {/* Textarea */}
+        <textarea
+          ref={textareaRef}
+          value={code}
+          onChange={(e) => setCode(e.target.value)}
+          onScroll={handleEditorScroll}
+          className="flex-1 min-w-0 bg-transparent text-[#e2e8f0] resize-none outline-none border-none overflow-auto pt-4 pl-1 pr-4 text-xs selection:bg-secondary-a90/30 select-text"
+          style={{
+            lineHeight: '1.6rem',
+            fontFamily: "'JetBrains Mono', 'Consolas', monospace",
+          }}
+          spellCheck={false}
+          placeholder="// Write your code here..."
+          tabIndex={0}
+          onKeyDown={(e) => {
+            if (e.key === 'Tab') {
+              e.preventDefault();
+              const { selectionStart, selectionEnd } = e.currentTarget;
+              const newCode =
+                code.substring(0, selectionStart) +
+                '  ' +
+                code.substring(selectionEnd);
+              setCode(newCode);
+              requestAnimationFrame(() => {
+                if (textareaRef.current) {
+                  textareaRef.current.selectionStart =
+                    textareaRef.current.selectionEnd = selectionStart + 2;
+                }
+              });
+            }
+          }}
+        />
+      </div>
+
+      {/* ── Console section ── */}
+      {isConsoleOpen && (
+        <>
+          {/* Resize handle */}
+          <div
+            onMouseDown={onConsoleDividerMouseDown}
+            className="flex-shrink-0 h-1.5 flex items-center justify-center cursor-row-resize group bg-transparent hover:bg-white/5 transition-colors"
+          >
+            <div className="w-12 h-0.5 rounded-full bg-white/10 group-hover:bg-secondary-a70 transition-colors" />
+          </div>
+
+          {/* Console panel */}
+          <div
+            className="flex-shrink-0 flex flex-col border-t border-white/[0.07] bg-[#070b12] overflow-hidden"
+            style={{ height: `${consolePct}%` }}
+          >
+            {/* Console header */}
+            <div className="flex-shrink-0 h-9 px-4 flex items-center justify-between border-b border-white/[0.05]">
+              <span
+                className={`text-xs font-semibold uppercase tracking-wider flex items-center gap-2 ${statusColor}`}
+              >
+                {consoleTitle}
+                {runState === 'running' && (
+                  <span className="w-1.5 h-1.5 rounded-full bg-secondary-a70 animate-ping" />
+                )}
+              </span>
+              <button
+                type="button"
+                onClick={() => setIsConsoleOpen(false)}
+                className="text-neutral-500 hover:text-white transition-colors cursor-pointer"
+                title="Close console"
+              >
+                <svg
+                  className="w-3.5 h-3.5"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  strokeWidth={2.5}
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M6 18L18 6M6 6l12 12"
+                  />
+                </svg>
+              </button>
+            </div>
+
+            {/* Console body */}
+            <div className="flex-1 min-h-0 overflow-y-auto px-4 py-3 font-mono text-xs leading-relaxed scrollbar-thin">
+              {runState === 'running' ? (
+                <div className="flex items-center gap-3 text-neutral-400">
+                  <svg
+                    className="animate-spin h-4 w-4 text-secondary-a70"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                  >
+                    <circle
+                      className="opacity-25"
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      strokeWidth="4"
+                    />
+                    <path
+                      className="opacity-75"
+                      fill="currentColor"
+                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                    />
+                  </svg>
+                  <span>{consoleLog}</span>
+                </div>
+              ) : runState !== 'idle' ? (
+                <pre
+                  className={`whitespace-pre-wrap ${runState === 'error' ? 'text-red-400' : 'text-neutral-200'}`}
+                >
+                  {consoleLog}
+                </pre>
+              ) : (
+                <p className="text-neutral-600 italic">
+                  Press "Run Code" to test with sample cases, or "Submit" to run
+                  hidden tests.
+                </p>
+              )}
+            </div>
+          </div>
+        </>
+      )}
+
+      {/* ── Bottom action bar ── */}
+      <div className="flex-shrink-0 h-14 bg-[#111827] border-t border-white/[0.07] px-4 flex items-center justify-between">
+        <button
+          type="button"
+          onClick={() => setIsConsoleOpen((v) => !v)}
+          className="text-neutral-400 hover:text-white text-xs font-semibold transition-colors cursor-pointer flex items-center gap-1.5"
+        >
+          <svg
+            className={`w-3.5 h-3.5 transition-transform duration-200 ${isConsoleOpen ? 'rotate-180' : ''}`}
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
@@ -415,144 +418,28 @@ Great job! You have earned +100 XP and saved notes to your personalized tutor pr
             <path
               strokeLinecap="round"
               strokeLinejoin="round"
-              d="M4 4v5h.582m15.356 2A8.001 8.001 0 1121.21 7.89M9 11l3-3 3 3m-3-3v12"
+              d="M5 15l7-7 7 7"
             />
           </svg>
-          Reset Code
-        </button>
-      </div>
-
-      {/* Editor Text Area and Line Numbers */}
-      <div className="flex-1 flex overflow-hidden relative font-mono text-sm leading-relaxed p-4 bg-[#0a0e17]">
-        {/* Line Numbers Column */}
-        <div
-          ref={lineNumbersRef}
-          className="w-12 text-neutral-a600 text-right pr-3 select-none overflow-hidden text-sm pt-2"
-          style={{ lineHeight: '24px' }}
-        >
-          {lines.map((_, idx) => (
-            <div key={idx}>{idx + 1}</div>
-          ))}
-        </div>
-
-        {/* Text Area */}
-        <textarea
-          ref={textareaRef}
-          value={code}
-          onChange={(e) => setCode(e.target.value)}
-          onScroll={handleScroll}
-          className="flex-1 bg-transparent text-[#e2e8f0] resize-none outline-none border-none overflow-y-auto font-mono text-sm leading-relaxed pt-2 pl-1 whitespace-pre pr-2 selection:bg-secondary-a90/30 select-text"
-          style={{
-            lineHeight: '24px',
-            fontFamily: "'JetBrains Mono', 'Consolas', monospace",
-          }}
-          spellCheck="false"
-          placeholder="// Type your code here..."
-        />
-      </div>
-
-      {/* Console Drawer Panel */}
-      <div
-        className={`bg-[#070b12] border-t border-tonal-a20 transition-all duration-300 flex flex-col z-10 ${
-          isConsoleOpen ? 'h-[400px]' : 'h-11'
-        }`}
-      >
-        {/* Console Drawer Header */}
-        <div
-          className="h-11 border-b border-tonal-a20/60 px-6 flex items-center justify-between cursor-pointer hover:bg-tonal-a10/40"
-          onClick={() => setIsConsoleOpen(!isConsoleOpen)}
-        >
-          <span className="text-neutral-a300 text-xs font-bold uppercase tracking-wider flex items-center gap-2">
-            Console Output
-            {runState === 'running' && (
-              <span className="w-2 h-2 rounded-full bg-secondary-a70 animate-ping" />
-            )}
-          </span>
-          <button
-            type="button"
-            className="text-neutral-a400 hover:text-white cursor-pointer"
-          >
-            <svg
-              className={`w-4 h-4 transform transition-transform duration-300 ${isConsoleOpen ? 'rotate-180' : ''}`}
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              strokeWidth={2.5}
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M19 9l-7 7-7-7"
-              />
-            </svg>
-          </button>
-        </div>
-
-        {/* Console content */}
-        {isConsoleOpen && (
-          <div className="flex-1 p-6 overflow-y-auto font-mono text-xs leading-relaxed text-neutral-a200 bg-[#070b12]">
-            {runState === 'running' ? (
-              <div className="flex items-center gap-3">
-                <svg
-                  className="animate-spin h-5 w-5 text-secondary-a70"
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                >
-                  <circle
-                    className="opacity-25"
-                    cx="12"
-                    cy="12"
-                    r="10"
-                    stroke="currentColor"
-                    strokeWidth="4"
-                  />
-                  <path
-                    className="opacity-75"
-                    fill="currentColor"
-                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                  />
-                </svg>
-                <span className="text-neutral-a300 font-bold">
-                  {consoleLog}
-                </span>
-              </div>
-            ) : runState === 'success' || runState === 'submitted' ? (
-              <pre className="whitespace-pre-wrap">{consoleLog}</pre>
-            ) : (
-              <div className="text-neutral-a500 italic">
-                Press "Run Code" to compile and run sample test cases, or
-                "Submit" to test hidden cases.
-              </div>
-            )}
-          </div>
-        )}
-      </div>
-
-      {/* Editor Actions Bottom Bar */}
-      <div className="h-[70px] bg-[#0d131f] border-t border-tonal-a20 px-6 flex items-center justify-between">
-        <button
-          type="button"
-          onClick={() => setIsConsoleOpen(!isConsoleOpen)}
-          className="text-neutral-a300 hover:text-white px-3 py-2 rounded-lg hover:bg-tonal-a20 text-sm font-bold transition-all cursor-pointer"
-        >
           Console
         </button>
 
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2.5">
           <button
             type="button"
+            id="btn-run-code"
             onClick={handleRunCode}
             disabled={runState === 'running'}
-            className="h-10 px-5 bg-tonal-a20 border border-tonal-a30 hover:border-secondary-a70 hover:bg-tonal-a30 text-white font-bold rounded-lg transition-all text-sm cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+            className="h-9 px-5 bg-white/[0.06] border border-white/10 hover:border-white/30 hover:bg-white/10 text-white font-semibold rounded-lg transition-all text-sm cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
           >
-            Run Code
+            Run
           </button>
           <button
             type="button"
+            id="btn-submit-code"
             onClick={handleSubmitCode}
             disabled={runState === 'running'}
-            className="h-10 px-6 bg-success-a0 text-tonal-a0 hover:bg-success-a10 font-bold rounded-lg transition-all text-sm cursor-pointer shadow-md disabled:opacity-50 disabled:cursor-not-allowed"
+            className="h-9 px-5 bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded-lg transition-all text-sm cursor-pointer shadow-md disabled:opacity-40 disabled:cursor-not-allowed"
           >
             Submit
           </button>
