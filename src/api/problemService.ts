@@ -6,7 +6,7 @@ export const problemApi = {
    * Gọi AI đọc đề bài từ prompt text và/hoặc ảnh upload.
    * Trả về thông tin đề bài AI đã trích xuất (title, description, difficulty, tags, group, boilerplate code).
    */
-  generateFromAi: async (prompt: string, imageFile: File | null) => {
+  generateFromAi: async (_prompt: string, imageFile: File | null) => {
     const formData = new FormData();
     // formData.append('prompt', prompt || '');
     if (imageFile) {
