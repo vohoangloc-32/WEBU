@@ -9,7 +9,7 @@ import ProblemTabsSection from './ProblemTabsSection';
 /** Lấy userId từ JWT token trong localStorage */
 const getUserIdFromToken = (): string | undefined => {
   try {
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem('auth_token');
     if (!token) return undefined;
     const payload = JSON.parse(atob(token.split('.')[1]));
     return (payload as { sub?: string }).sub;
