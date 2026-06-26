@@ -1,8 +1,12 @@
+import { Link } from 'react-router-dom';
+
 interface NotebookProblemProps {
   id: string;
+  dbId?: string;
   title: string;
   description: string;
   tags: string[];
+  group: string;
   difficulty: 'Easy' | 'Medium' | 'Hard';
   isFavorite?: boolean;
   onToggleFavorite?: () => void;
@@ -10,6 +14,7 @@ interface NotebookProblemProps {
 
 export const NotebookProblem = ({
   id,
+  dbId,
   title,
   description,
   tags,
@@ -62,9 +67,11 @@ export const NotebookProblem = ({
             <span className="p9 font-bold text-tonal-a0">{difficulty}</span>
           </div>
         </div>
-        <div className="flex items-center gap-1 p6 text-secondary-a10 cursor-pointer">
-          ↗ Open
-        </div>
+        <Link to={`/problems/${dbId}`}>
+          <button className="flex items-center gap-1 p6 text-secondary-a10 cursor-pointer">
+            ↗ Open
+          </button>
+        </Link>
       </div>
     </div>
   );

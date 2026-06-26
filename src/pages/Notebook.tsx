@@ -4,18 +4,55 @@ import { NotebookHeader } from '@/components/notebook/NotebookHeader';
 import { NotebookFilter } from '@/components/notebook/NotebookFilter';
 import { NotebookProblem } from '@/components/notebook/NotebookProblem';
 import { Pagination } from '@/components/notebook/Pagination';
-import {
-  mockProblems as initialProblems,
-  ProblemType,
-} from '@/components/notebook/MockData';
+import { ProblemType } from '@/components/notebook/MockData';
+
+interface BackendCard {
+  _id: string;
+  title: string;
+  content?: {
+    description?: string;
+  };
+  tags?: string[];
+  group?: string;
+  difficulty_level?: 'Easy' | 'Medium' | 'Hard';
+}
 
 export const Notebook = (): JSX.Element => {
-  const [problems, setProblems] = useState<ProblemType[]>(initialProblems);
+  const [problems, setProblems] = useState<ProblemType[]>([]);
+
   const [currentPage, setCurrentPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [selectedCourses, setSelectedCourses] = useState<string[]>([]);
   const itemsPerPage = 6;
+
+  useEffect(() => {
+    const fetchNotebooks = async () => {
+      try {
+        const response = await fetch('http://localhost:3000/cards');
+        const data = await response.json();
+
+        const formattedData = data.data.map(
+          (item: BackendCard, index: number) => ({
+            id: String(index + 1),
+            dbId: item._id,
+            title: item.title,
+            description: item.content?.description || '',
+            tags: item.tags || [],
+            group: item.group || '',
+            difficulty: item.difficulty_level || 'Medium',
+            isFavorite: false,
+          }),
+        );
+
+        setProblems(formattedData);
+      } catch (error) {
+        console.error('Error while fetching data from the database:', error);
+      }
+    };
+
+    fetchNotebooks();
+  }, []);
 
   useEffect(() => {
     setCurrentPage(1);
@@ -40,8 +77,7 @@ export const Notebook = (): JSX.Element => {
         selectedTags.length === 0 ||
         selectedTags.every((tag) => problem.tags.includes(tag));
       const matchCourses =
-        selectedCourses.length === 0 ||
-        selectedCourses.every((course) => problem.tags.includes(course));
+        selectedCourses.length === 0 || selectedCourses.includes(problem.group);
       return matchSearch && matchTags && matchCourses;
     });
     result.sort((a, b) => (b.isFavorite ? 1 : 0) - (a.isFavorite ? 1 : 0));
@@ -81,9 +117,11 @@ export const Notebook = (): JSX.Element => {
                 <NotebookProblem
                   key={problem.id}
                   id={problem.id}
+                  dbId={problem.dbId}
                   title={problem.title}
                   description={problem.description}
                   tags={problem.tags}
+                  group={problem.group}
                   difficulty={problem.difficulty}
                   isFavorite={problem.isFavorite}
                   onToggleFavorite={() => handleToggleFavorite(problem.id)}
