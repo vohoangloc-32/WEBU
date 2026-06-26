@@ -501,3 +501,38 @@ a:hover {
 button {
   font-family: inherit;
 }
+
+/* ── IDE / Code editor utilities ─────────────────────────────────────────── */
+
+/* Thin custom scrollbars for IDE panels */
+.scrollbar-thin {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255 255 255 / 0.12) transparent;
+}
+.scrollbar-thin::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+.scrollbar-thin::-webkit-scrollbar-track {
+  background: transparent;
+}
+.scrollbar-thin::-webkit-scrollbar-thumb {
+  background-color: rgba(255 255 255 / 0.12);
+  border-radius: 999px;
+}
+.scrollbar-thin::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(255 255 255 / 0.22);
+}
+
+/* Hide native scrollbar on textarea inside the editor */
+.code-textarea::-webkit-scrollbar {
+  display: none;
+}
+.code-textarea {
+  scrollbar-width: none;
+}
+
+/* Prevent body overflow when IDE is open */
+body:has(.ide-page) {
+  overflow: hidden;
+}

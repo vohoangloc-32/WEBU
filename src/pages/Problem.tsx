@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { MainNavigation } from '@/components/ui/MainNavigation';
 import { ProblemFilter } from '@/components/problem/ProblemFilter';
 import { ProblemTable } from '@/components/problem/ProblemTable';
@@ -44,7 +44,7 @@ export const Problem = (): JSX.Element => {
 
         setDbProblems(formattedData);
       } catch (error) {
-        console.error('Lỗi khi kéo data từ DB:', error);
+        console.error('Error while fetching data from the database:', error);
       }
     };
 

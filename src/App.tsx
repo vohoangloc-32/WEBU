@@ -4,7 +4,6 @@ import Dashboard from './pages/Dashboard';
 import Notebook from './pages/Notebook';
 import Problem from './pages/Problem';
 import SignUp from './pages/SignUp';
-import SignIn from './pages/SignIn';
 import ForgetPassword from './pages/ForgetPassword';
 import { Survey } from './pages/Survey';
 import Ide from './pages/Ide';
@@ -21,8 +20,9 @@ function App() {
       <Route path="/problem" element={<Problem />} />
       <Route path="/problems/:problemSlug" element={<Ide />} />
       <Route path="/create-problem" element={<CreateProblem />} />
+      {/* /signup và /signin đều dùng chung trang tích hợp SignUp (có 2 tab) */}
       <Route path="/signup" element={<SignUp />} />
-      <Route path="/signin" element={<SignIn />} />
+      <Route path="/signin" element={<SignUp />} />
       <Route path="/forget-password" element={<ForgetPassword />} />
       <Route path="/survey" element={<Survey />} />
     </Routes>

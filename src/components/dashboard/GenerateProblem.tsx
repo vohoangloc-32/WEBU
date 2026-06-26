@@ -25,6 +25,7 @@ export function GenerateProblem({
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
+      if (imagePreview) URL.revokeObjectURL(imagePreview);
       setSelectedImage(file);
       // Tạo URL xem trước ảnh tạm thời
       setImagePreview(URL.createObjectURL(file));
@@ -32,6 +33,7 @@ export function GenerateProblem({
   };
 
   const handleRemoveImage = () => {
+    if (imagePreview) URL.revokeObjectURL(imagePreview);
     setSelectedImage(null);
     setImagePreview(null);
     if (fileInputRef.current) fileInputRef.current.value = '';
