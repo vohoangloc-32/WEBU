@@ -13,7 +13,8 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "type-check": "tsc --noEmit",
-    "prepare": "husky"
+    "prepare": "husky",
+    "be:dev": "yarn --cwd ../../webu-backend start:dev"
   },
   "dependencies": {
     "@monaco-editor/react": "^4.7.0",
