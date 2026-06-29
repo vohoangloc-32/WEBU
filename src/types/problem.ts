@@ -6,5 +6,8 @@ export interface AiGeneratedProblem {
   group?: string;
   boilerplateCode?: {
     cpp?: string;
+    java?: string;
+    python?: string;
+    typescript?: string;
   };
 }

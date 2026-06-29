@@ -9,12 +9,29 @@ const TAG_OPTIONS = ['Array', 'Math', 'Linked List', 'Hash Table'];
 const GROUP_OPTIONS = ['KTLT', 'DSA'];
 const DIFFICULTY_OPTIONS = ['Easy', 'Medium', 'Hard'];
 
+const BOILERPLATE_TEMPLATES = {
+  cpp: `#include <iostream>\nusing namespace std;\n\nint main() {\n    // Your C++ code here\n    return 0;\n}`,
+  java: `public class Main {\n    public static void main(String[] args) {\n        // Your Java code here\n    }\n}`,
+  python: `def main():\n    # Your Python code here\n    pass\n\nif __name__ == '__main__':\n    main()`,
+  typescript: `function main() {\n    // Your TypeScript code here\n}\n\nmain();`,
+};
+
+type LanguageType = keyof typeof BOILERPLATE_TEMPLATES;
+
+const LANGUAGE_DISPLAY_NAMES: Record<LanguageType, string> = {
+  cpp: 'C++',
+  java: 'Java',
+  python: 'Python',
+  typescript: 'TypeScript',
+};
+
 export const CreateProblem = (): JSX.Element => {
   const [name, setName] = useState('');
   const [chips, setChips] = useState<string[]>([]);
-  const [code, setCode] = useState(
-    'int main() {\n  // Your code here\n  return 0;\n}',
-  );
+  const [description, setDescription] = useState('');
+  const [selectedLang, setSelectedLang] = useState<LanguageType>('cpp');
+  const [boilerplate, setBoilerplate] = useState(BOILERPLATE_TEMPLATES);
+  const [code, setCode] = useState(BOILERPLATE_TEMPLATES.cpp);
 
   const location = useLocation();
   const navigate = useNavigate();
@@ -29,14 +46,18 @@ export const CreateProblem = (): JSX.Element => {
     hasAppliedAiProblem.current = true;
 
     setName(aiProblem.title || '');
+    setDescription(aiProblem.description || '');
 
-    const parsedDescription = aiProblem.description
-      ? `/*\n${aiProblem.description}\n*/\n\n`
-      : '';
-    const boilerplate = aiProblem.boilerplateCode?.cpp || '';
-    if (parsedDescription || boilerplate) {
-      setCode(parsedDescription + boilerplate);
-    }
+    const initialBoilerplates = {
+      cpp: aiProblem.boilerplateCode?.cpp || BOILERPLATE_TEMPLATES.cpp,
+      java: aiProblem.boilerplateCode?.java || BOILERPLATE_TEMPLATES.java,
+      python: aiProblem.boilerplateCode?.python || BOILERPLATE_TEMPLATES.python,
+      typescript:
+        aiProblem.boilerplateCode?.typescript ||
+        BOILERPLATE_TEMPLATES.typescript,
+    };
+    setBoilerplate(initialBoilerplates);
+    setCode(initialBoilerplates[selectedLang]);
 
     if (aiProblem.difficulty) {
       const diffFormatted =
@@ -75,8 +96,22 @@ export const CreateProblem = (): JSX.Element => {
     setChips((prev) => prev.filter((c) => c !== chip));
   };
 
+  const handleLanguageChange = (lang: LanguageType) => {
+    setSelectedLang(lang);
+    setCode(boilerplate[lang]);
+  };
+
+  const handleLanguageSelect = (displayName: string) => {
+    const langKey = Object.keys(LANGUAGE_DISPLAY_NAMES).find(
+      (key) => LANGUAGE_DISPLAY_NAMES[key as LanguageType] === displayName,
+    ) as LanguageType;
+    if (langKey) {
+      handleLanguageChange(langKey);
+    }
+  };
+
   const handleCreate = () => {
-    console.log('Creating problem with:', { name, chips, code });
+    console.log('Creating problem with:', { name, chips, description, code });
     // TODO: gọi API tạo problem + generate test case ở đây (bước tiếp theo)
     navigate('/notebook');
   };
@@ -122,9 +157,33 @@ export const CreateProblem = (): JSX.Element => {
 
         <ChipBoard tags={chips} onRemove={removeChip} />
 
-        <div>
-          <p className="text-neutral-a50 h4 mb-10">Code Editor:</p>
+        <div className="flex flex-col gap-2">
+          <label htmlFor="problem-description" className="text-neutral-a50 h4">
+            Problem Description:
+          </label>
           <textarea
+            id="problem-description"
+            placeholder="Enter problem description"
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            className="px-4 py-2 bg-secondary-a10 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 text-black p4 whitespace-pre-wrap min-h-[150px]"
+            rows={8}
+          />
+        </div>
+
+        <div className="flex flex-col gap-2">
+          <div className="flex justify-between items-center">
+            <label htmlFor="code-editor" className="text-neutral-a50 h4">
+              Code Editor:
+            </label>
+            <SelectDropdown
+              label={LANGUAGE_DISPLAY_NAMES[selectedLang]}
+              options={Object.values(LANGUAGE_DISPLAY_NAMES)}
+              onSelect={handleLanguageSelect}
+            />
+          </div>
+          <textarea
+            id="code-editor"
             placeholder="Enter your code here"
             value={code}
             onChange={(e) => setCode(e.target.value)}

@@ -24,9 +24,9 @@ export const Dashboard = (): JSX.Element => {
         state: { aiProblem },
       });
     } catch (err) {
-      console.error('Lỗi gọi AI đọc đề bài:', err);
+      console.error('Error calling AI to extract problem:', err);
       setAiError(
-        'Không thể đọc đề bài từ ảnh hoặc prompt. Vui lòng thử lại hoặc nhập tay.',
+        'Failed to extract the problem from the image or prompt. Please try again or input manually.',
       );
     } finally {
       setIsProcessing(false);
