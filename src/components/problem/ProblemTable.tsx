@@ -1,6 +1,5 @@
 import { useNavigate } from 'react-router-dom';
 import { ProblemItem } from '@/components/problem/problemMockData';
-import { Link } from 'react-router-dom';
 
 interface ProblemTableProps {
   problems: ProblemItem[];
@@ -43,12 +42,7 @@ export const ProblemTable = ({ problems }: ProblemTableProps) => {
             className={`grid grid-cols-4 items-center py-4 cursor-pointer hover:bg-tonal-a20/40 transition-colors ${index !== problems.length - 1 ? 'border-b border-tonal-a30' : ''}`}
           >
             <div className="text-center text-neutral-a50 p7 font-bold">
-              <Link
-                to={`/problems/${item.dbId}`}
-                className="hover:text-primary-a50 hover:underline cursor-pointer transition-colors"
-              >
-                {item.name}
-              </Link>
+              {item.name}
             </div>
 
             <div className="flex justify-center flex-wrap gap-2 px-2">
