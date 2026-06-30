@@ -10,18 +10,18 @@ const GROUP_OPTIONS = ['KTLT', 'DSA'];
 const DIFFICULTY_OPTIONS = ['Easy', 'Medium', 'Hard'];
 
 const BOILERPLATE_TEMPLATES = {
-  cpp: `#include <iostream>\nusing namespace std;\n\nint main() {\n    // Your C++ code here\n    return 0;\n}`,
-  java: `public class Main {\n    public static void main(String[] args) {\n        // Your Java code here\n    }\n}`,
-  python: `def main():\n    # Your Python code here\n    pass\n\nif __name__ == '__main__':\n    main()`,
+  cpp: `#include <iostream>\nusing namespace std;\n\nint main() {\n    // Your C++20 code here\n    return 0;\n}`,
+  java: `public class Main {\n    public static void main(String[] args) {\n        // Your Java 17 code here\n    }\n}`,
+  python: `def main():\n    # Your Python 3 code here\n    pass\n\nif __name__ == '__main__':\n    main()`,
   typescript: `function main() {\n    // Your TypeScript code here\n}\n\nmain();`,
 };
 
 type LanguageType = keyof typeof BOILERPLATE_TEMPLATES;
 
 const LANGUAGE_DISPLAY_NAMES: Record<LanguageType, string> = {
-  cpp: 'C++',
-  java: 'Java',
-  python: 'Python',
+  cpp: 'C++20',
+  java: 'Java 17',
+  python: 'Python 3',
   typescript: 'TypeScript',
 };
 
