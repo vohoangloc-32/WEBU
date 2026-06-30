@@ -1,10 +1,27 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Suggest } from '@/components/dashboard/Suggest';
 import { MainNavigation } from '@/components/ui/MainNavigation';
 import { Review } from '@/components/ui/Review';
 import { GenerateProblem } from '@/components/dashboard/GenerateProblem';
 import { problemApi } from '@/api/problemService';
+import apiClient from '@/api/apiClient';
+
+interface DueProblem {
+  card_id: { _id: string } | string;
+  [key: string]: unknown;
+}
+
+const getUserIdFromToken = (): string | undefined => {
+  try {
+    const token = localStorage.getItem('auth_token');
+    if (!token) return undefined;
+    const payload = JSON.parse(atob(token.split('.')[1]));
+    return (payload as { sub?: string }).sub;
+  } catch {
+    return undefined;
+  }
+};
 
 export const Dashboard = (): JSX.Element => {
   const navigate = useNavigate();
@@ -32,6 +49,42 @@ export const Dashboard = (): JSX.Element => {
       setIsProcessing(false);
     }
   };
+  const [dueProblems, setDueProblems] = useState<DueProblem[]>([]);
+  const [isLoadingReview, setIsLoadingReview] = useState(true);
+
+  const userId = getUserIdFromToken();
+
+  useEffect(() => {
+    const fetchDueReviews = async () => {
+      if (!userId) {
+        setIsLoadingReview(false);
+        return;
+      }
+      try {
+        const response = await apiClient.get(
+          `/api/fsrs/due-reviews?userId=${userId}`,
+        );
+        setDueProblems(response.data);
+      } catch (error) {
+        console.error('FSRS data loading error:', error);
+      } finally {
+        setIsLoadingReview(false);
+      }
+    };
+    fetchDueReviews();
+  }, [userId]);
+
+  const handleStartReview = () => {
+    if (dueProblems.length > 0) {
+      const firstProblem = dueProblems[0];
+      const problemId =
+        typeof firstProblem.card_id === 'string'
+          ? firstProblem.card_id
+          : firstProblem.card_id._id;
+
+      navigate(`/problems/${problemId}`);
+    }
+  };
 
   return (
     <div>
@@ -40,7 +93,11 @@ export const Dashboard = (): JSX.Element => {
       </header>
       <div className="w-full min-h-screen bg-tonal-a10 px-20 py-5 flex flex-col justify-between items-stretch overflow-hidden select-none gap-10">
         <div className="w-full h-40 relative bg-tonal-a20 rounded-[20px] overflow-hidden px-20 py-5 flex flex-col justify-between items-stretch gap-10">
-          <Review />
+          <Review
+            reviewCount={dueProblems.length}
+            isLoading={isLoadingReview}
+            onStart={handleStartReview}
+          />
         </div>
         <div>
           <h1 className="h1 text-center">

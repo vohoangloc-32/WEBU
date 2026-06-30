@@ -13,6 +13,7 @@ import {
 interface CodeEditorSectionProps {
   cardId: string;
   boilerplateCodes: BoilerplateCode;
+  onSubmissionDone?: (isPassed: boolean) => void;
 }
 
 const LANGUAGE_LABELS: Record<Language, string> = {
@@ -83,6 +84,7 @@ const formatSubmitResult = (result: SubmitResult): string => {
 export const CodeEditorSection = ({
   cardId,
   boilerplateCodes,
+  onSubmissionDone,
 }: CodeEditorSectionProps): JSX.Element => {
   const [lang, setLang] = useState<Language>('javascript');
   const [code, setCode] = useState('');
@@ -264,6 +266,9 @@ export const CodeEditorSection = ({
       setConsoleTitle(result.passed ? '✅  Accepted' : `❌  ${result.status}`);
       setConsoleLog(formatSubmitResult(result));
       setTestResults(result.results);
+      if (onSubmissionDone) {
+        onSubmissionDone(result.passed);
+      }
     } catch (err) {
       setRunState('error');
       setConsoleTitle('Error');

@@ -1,38 +1,56 @@
 import { Button } from '@/components/ui/Button';
 
-export const Review = (): JSX.Element => {
+interface ReviewProps {
+  reviewCount: number;
+  isLoading: boolean;
+  onStart: () => void;
+}
+
+export const Review = ({
+  reviewCount,
+  isLoading,
+  onStart,
+}: ReviewProps): JSX.Element => {
+  if (isLoading) {
+    return (
+      <div className="w-full bg-tonal-a20 rounded-[20px] p-6 flex flex-col items-center justify-center">
+        <p className="text-white animate-pulse">Loading learning data...</p>
+      </div>
+    );
+  }
+
+  if (reviewCount === 0) {
+    return (
+      <div className="w-full bg-tonal-a20 rounded-[20px] p-6 flex flex-col items-center justify-center gap-3">
+        <h2 className="text-white h2">Great! 🎉</h2>
+        <p className="text-neutral-400 p4">
+          You have successfully completed today's review goal.
+        </p>
+      </div>
+    );
+  }
+
   return (
     <div className="w-full bg-tonal-a20 rounded-[20px] p-6 flex flex-col md:flex-row items-center justify-between overflow-hidden">
       <div className="flex flex-col gap-3 flex-1 min-w-0 w-full md:w-auto">
-        <h2 className="text-white h2 truncate">Two Sum</h2>
+        <h2 className="text-white h2 truncate">It's time to review! 🔥</h2>
 
-        <div className="flex flex-wrap gap-2">
-          <div className="px-3 py-1 bg-success-a0 rounded-sm inline-flex justify-center items-center">
-            <span className="text-success-a20 p8">Easy</span>
-          </div>
-          <div className="px-3 py-1 bg-info-a0 rounded-sm inline-flex justify-center items-center">
-            <span className="text-info-a20 p8">Array</span>
-          </div>
-          <div className="px-3 py-1 bg-info-a0 rounded-sm inline-flex justify-center items-center">
-            <span className="text-info-a20 p8">Hash Table</span>
-          </div>
+        <div className="flex flex-wrap gap-2 mt-1">
+          <p className="text-neutral-300 p4">
+            The FSRS system is ready.{' '}
+            <span className="text-secondary-a50 font-bold">
+              {reviewCount} exercise
+            </span>{' '}
+            needs to be reviewed to optimize your memory.
+          </p>
         </div>
       </div>
 
-      <div className="flex flex-col sm:flex-row items-center gap-20 w-full md:w-auto justify-between md:justify-end">
-        <div className="flex flex-col gap-1 text-left sm:text-right w-full sm:w-auto">
-          <p className="text-neutral-50 p4 whitespace-nowrap">
-            Last review: <span className="p4">3 days ago</span>
-          </p>
-          <p className="text-neutral-50 p4 whitespace-nowrap">
-            Done: <span className="font-medium">3 times</span>
-          </p>
-        </div>
-
+      <div className="flex flex-col sm:flex-row items-center gap-20 w-full md:w-auto justify-between md:justify-end mt-4 md:mt-0">
         <div className="">
           <Button
-            className="text-neutral-a50 h3 font-medium"
-            onClick={() => {}}
+            className="text-neutral-a50 h3 font-medium cursor-pointer"
+            onClick={onStart}
           >
             Review Now
           </Button>

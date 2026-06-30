@@ -5,6 +5,7 @@ import { ideApi } from '../api/ideService';
 import { CardDetail } from '../types/ide';
 import CodeEditorSection from './CodeEditorSection';
 import ProblemTabsSection from './ProblemTabsSection';
+import apiClient from '../api/apiClient';
 
 /** Lấy userId từ JWT token trong localStorage */
 const getUserIdFromToken = (): string | undefined => {
@@ -84,6 +85,22 @@ export const Ide = (): JSX.Element => {
       window.removeEventListener('mouseup', onMouseUp);
     };
   }, [onMouseMove, onMouseUp]);
+
+  const handleFSRSUpdate = async (isPassed: boolean) => {
+    if (!userId || !card) return;
+
+    try {
+      await apiClient.post('/api/fsrs/review', {
+        userId: userId,
+        cardId: card.id,
+        isPassed: isPassed,
+        problemDifficulty: card.difficulty_level,
+      });
+      console.log('FSRS score submitted successfully!');
+    } catch (error) {
+      console.error('Error submitting FSRS scores:', error);
+    }
+  };
 
   const onDividerMouseDown = () => {
     isDragging.current = true;
@@ -177,6 +194,7 @@ export const Ide = (): JSX.Element => {
               <CodeEditorSection
                 cardId={card.id}
                 boilerplateCodes={card.ide_data?.boilerplate_code ?? {}}
+                onSubmissionDone={handleFSRSUpdate}
               />
             </div>
           </div>
