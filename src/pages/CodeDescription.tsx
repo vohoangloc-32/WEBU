@@ -1,6 +1,35 @@
 import { CodeEditorSection } from './CodeEditorSection';
 import { ProblemTabsSection } from './ProblemTabsSection';
 import { TopNavigationSection } from './TopNavigationSection';
+import { CardDetail } from '../types/ide';
+
+const mockCard: CardDetail = {
+  id: 'mock',
+  title: 'Mock Problem',
+  difficulty_level: 'Easy',
+  tags: [],
+  group: '',
+  content: {
+    question_text: '',
+    description: '',
+  },
+  ide_data: {
+    boilerplate_code: {
+      cpp: '',
+      java: '',
+      python: '',
+      typescript: '',
+    },
+  },
+  public_test_cases: [],
+};
+
+const mockBoilerplates = {
+  cpp: '',
+  java: '',
+  python: '',
+  typescript: '',
+};
 
 export const CodeDescription = (): JSX.Element => {
   return (
@@ -15,14 +44,17 @@ export const CodeDescription = (): JSX.Element => {
           aria-label="Problem tabs"
           data-id="problem-tabs-section-container"
         >
-          <ProblemTabsSection />
+          <ProblemTabsSection card={mockCard} />
         </section>
         <section
           className="relative w-[717px] h-[1319px]"
           aria-label="Code editor"
           data-id="code-editor-section-container"
         >
-          <CodeEditorSection />
+          <CodeEditorSection
+            cardId="mock"
+            boilerplateCodes={mockBoilerplates}
+          />
         </section>
       </div>
     </main>

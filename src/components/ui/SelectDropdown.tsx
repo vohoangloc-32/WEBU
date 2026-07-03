@@ -19,7 +19,7 @@ const SelectDropdown = ({ label, options, onSelect }: SelectDropdownProps) => {
       </button>
 
       {isOpen && (
-        <div className="absolute mt-2 w-full bg-info-a0 border rounded shadow">
+        <div className="absolute mt-2 w-full bg-info-a0 border rounded shadow z-50">
           {options.map((option) => (
             <button
               key={option}

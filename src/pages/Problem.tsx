@@ -4,6 +4,8 @@ import { ProblemFilter } from '@/components/problem/ProblemFilter';
 import { ProblemTable } from '@/components/problem/ProblemTable';
 import { Pagination } from '@/components/notebook/Pagination';
 import { ProblemItem } from '@/components/problem/problemMockData';
+import apiClient from '@/api/apiClient';
+import { problemApi } from '@/api/problemService';
 
 interface BackendCard {
   _id: string;
@@ -12,12 +14,14 @@ interface BackendCard {
     description?: string;
   };
   tags?: string[];
-  group?: string;
+  course?: string;
   difficulty_level?: string;
 }
 
 export const Problem = (): JSX.Element => {
   const [dbProblems, setDbProblems] = useState<ProblemItem[]>([]);
+  const [metaTags, setMetaTags] = useState<string[]>([]);
+  const [metaGroups, setMetaGroups] = useState<string[]>([]);
 
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
@@ -27,17 +31,21 @@ export const Problem = (): JSX.Element => {
   const itemsPerPage = 6;
 
   useEffect(() => {
-    const fetchProblems = async () => {
+    const fetchMetaAndProblems = async () => {
       try {
-        const response = await fetch('http://localhost:3000/cards');
-        const data = await response.json();
+        const meta = await problemApi.getMetaOptions();
+        setMetaTags(meta.tags);
+        setMetaGroups(meta.courses);
+
+        const response = await apiClient.get('/cards');
+        const data = response.data;
         const formattedData = data.data.map(
           (item: BackendCard, index: number) => ({
             id: index + 1,
             dbId: item._id,
             name: item.title,
             tags: item.tags || [],
-            group: item.group || '',
+            group: item.course || '',
             difficulty: item.difficulty_level || 'Medium',
           }),
         );
@@ -48,7 +56,7 @@ export const Problem = (): JSX.Element => {
       }
     };
 
-    fetchProblems();
+    fetchMetaAndProblems();
   }, []);
 
   useEffect(() => {
@@ -93,6 +101,8 @@ export const Problem = (): JSX.Element => {
             setSelectedTags={setSelectedTags}
             selectedCourses={selectedCourses}
             setSelectedCourses={setSelectedCourses}
+            tagOptions={metaTags}
+            courseOptions={metaGroups}
           />
 
           <ProblemTable problems={currentProblems} />

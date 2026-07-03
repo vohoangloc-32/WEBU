@@ -8,3 +8,6 @@ package-lock.json
 pnpm-lock.yaml
 *.min.js
 *.min.css
+
+# Vite temporary timestamp files
+vite.config.ts.timestamp-*

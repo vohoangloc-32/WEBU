@@ -7,6 +7,8 @@ interface FilterProps {
   setSelectedTags: (tags: string[]) => void;
   selectedCourses: string[];
   setSelectedCourses: (courses: string[]) => void;
+  tagOptions?: string[];
+  courseOptions?: string[];
 }
 
 export const NotebookFilter = ({
@@ -16,12 +18,11 @@ export const NotebookFilter = ({
   setSelectedTags,
   selectedCourses,
   setSelectedCourses,
+  tagOptions = ['Array', 'Math', 'Linked List', 'Hash Table'],
+  courseOptions = ['KTLT', 'DSA'],
 }: FilterProps) => {
   const [isTagOpen, setIsTagOpen] = useState(false);
   const [isCourseOpen, setIsCourseOpen] = useState(false);
-
-  const tagOptions = ['Array', 'Math', 'Linked List', 'Hash Table'];
-  const courseOptions = ['KTLT', 'DSA'];
 
   const handleTagSelect = (value: string) => {
     if (!selectedTags.includes(value))

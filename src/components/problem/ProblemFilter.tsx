@@ -7,6 +7,8 @@ interface ProblemFilterProps {
   setSelectedTags: (tags: string[]) => void;
   selectedCourses: string[];
   setSelectedCourses: (courses: string[]) => void;
+  tagOptions?: string[];
+  courseOptions?: string[];
 }
 
 export const ProblemFilter = ({
@@ -16,11 +18,7 @@ export const ProblemFilter = ({
   setSelectedTags,
   selectedCourses,
   setSelectedCourses,
-}: ProblemFilterProps) => {
-  const [isTagOpen, setIsTagOpen] = useState(false);
-  const [isCourseOpen, setIsCourseOpen] = useState(false);
-
-  const tagOptions = [
+  tagOptions = [
     'Array',
     'Math',
     'String',
@@ -29,8 +27,11 @@ export const ProblemFilter = ({
     'Stack',
     'Linked List',
     'Hash',
-  ];
-  const courseOptions = ['KTLT', 'DSA'];
+  ],
+  courseOptions = ['KTLT', 'DSA'],
+}: ProblemFilterProps) => {
+  const [isTagOpen, setIsTagOpen] = useState(false);
+  const [isCourseOpen, setIsCourseOpen] = useState(false);
 
   const handleTagSelect = (value: string) => {
     if (!selectedTags.includes(value))

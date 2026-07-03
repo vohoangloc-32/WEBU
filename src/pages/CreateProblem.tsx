@@ -1,13 +1,11 @@
 import { useState, useEffect, useRef } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
+import Editor, { OnMount } from '@monaco-editor/react';
 import SelectDropdown from '@/components/ui/SelectDropdown';
 import ChipBoard from '@/components/ui/ChipBoard';
 import { Button } from '@/components/ui/Button';
 import type { AiGeneratedProblem } from '@/types/problem';
-
-const TAG_OPTIONS = ['Array', 'Math', 'Linked List', 'Hash Table'];
-const GROUP_OPTIONS = ['KTLT', 'DSA'];
-const DIFFICULTY_OPTIONS = ['Easy', 'Medium', 'Hard'];
+import { problemApi } from '@/api/problemService';
 
 const BOILERPLATE_TEMPLATES = {
   cpp: `#include <iostream>\nusing namespace std;\n\nint main() {\n    // Your C++20 code here\n    return 0;\n}`,
@@ -32,9 +30,58 @@ export const CreateProblem = (): JSX.Element => {
   const [selectedLang, setSelectedLang] = useState<LanguageType>('cpp');
   const [boilerplate, setBoilerplate] = useState(BOILERPLATE_TEMPLATES);
   const [code, setCode] = useState(BOILERPLATE_TEMPLATES.cpp);
+  const [isProcessing, setIsProcessing] = useState(false);
+
+  const [tagOptions, setTagOptions] = useState<string[]>([]);
+  const [courseOptions, setCourseOptions] = useState<string[]>([]);
+  const [difficultyOptions, setDifficultyOptions] = useState<string[]>([]);
 
   const location = useLocation();
   const navigate = useNavigate();
+
+  const handleEditorMount: OnMount = (_editor, monaco) => {
+    monaco.editor.defineTheme('webu-dark', {
+      base: 'vs-dark',
+      inherit: true,
+      rules: [
+        { token: 'comment', foreground: '6b7a99', fontStyle: 'italic' },
+        { token: 'keyword', foreground: '7c8dff' },
+        { token: 'string', foreground: '7dd3a8' },
+        { token: 'number', foreground: 'f0a070' },
+        { token: 'type', foreground: '65d9ef' },
+        { token: 'function', foreground: 'dcdcaa' },
+      ],
+      colors: {
+        'editor.background': '#0a0f1a',
+        'editor.foreground': '#e2e8f0',
+        'editorLineNumber.foreground': '#3a4560',
+        'editorLineNumber.activeForeground': '#6b7a99',
+        'editor.selectionBackground': '#3b4f7033',
+        'editor.lineHighlightBackground': '#131d2e',
+        'editorCursor.foreground': '#7c8dff',
+        'editor.inactiveSelectionBackground': '#2a3548',
+        'scrollbarSlider.background': '#1e2c44',
+        'scrollbarSlider.hoverBackground': '#2a3d5a',
+        'editorIndentGuide.background1': '#1e2840',
+        'editorBracketMatch.background': '#3b4f7066',
+        'editorBracketMatch.border': '#7c8dff',
+      },
+    });
+    monaco.editor.setTheme('webu-dark');
+  };
+
+  useEffect(() => {
+    problemApi
+      .getMetaOptions()
+      .then((data) => {
+        setTagOptions(data.tags);
+        setCourseOptions(data.courses);
+        setDifficultyOptions(data.difficulties);
+      })
+      .catch((err) => {
+        console.error('Failed to fetch metadata options:', err);
+      });
+  }, []);
 
   const { aiProblem } =
     (location.state as { aiProblem?: AiGeneratedProblem }) || {};
@@ -66,13 +113,14 @@ export const CreateProblem = (): JSX.Element => {
       addChip('Difficulty', diffFormatted);
     }
 
-    if (aiProblem.group) {
-      addChip('Group', aiProblem.group);
+    if (aiProblem.course) {
+      addChip('Course', aiProblem.course);
     }
 
     if (aiProblem.tags && aiProblem.tags.length > 0) {
       aiProblem.tags.forEach((tag) => addChip('Tag', tag));
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [aiProblem]);
 
   const addChip = (prefix: string, value: string) => {
@@ -106,14 +154,74 @@ export const CreateProblem = (): JSX.Element => {
       (key) => LANGUAGE_DISPLAY_NAMES[key as LanguageType] === displayName,
     ) as LanguageType;
     if (langKey) {
+      setBoilerplate((prev) => ({
+        ...prev,
+        [selectedLang]: code,
+      }));
       handleLanguageChange(langKey);
     }
   };
 
-  const handleCreate = () => {
-    console.log('Creating problem with:', { name, chips, description, code });
-    // TODO: gọi API tạo problem + generate test case ở đây (bước tiếp theo)
-    navigate('/notebook');
+  const handleCreate = async () => {
+    if (!name.trim()) {
+      alert('Vui lòng điền tên bài tập.');
+      return;
+    }
+    if (!description.trim()) {
+      alert('Vui lòng điền mô tả bài tập.');
+      return;
+    }
+
+    setIsProcessing(true);
+    try {
+      // 1. Gọi AI sinh testcases tự động
+      const testcases = await problemApi.generateTestCases(name, description);
+
+      // 2. Tách dữ liệu từ Chips
+      const tags: string[] = [];
+      let course = '';
+      let difficulty_level = 'Medium';
+
+      chips.forEach((chip) => {
+        const parts = chip.split(': ');
+        if (parts.length === 2) {
+          const prefix = parts[0];
+          const value = parts[1];
+          if (prefix === 'Tag') {
+            tags.push(value);
+          } else if (prefix === 'Course') {
+            course = value;
+          } else if (prefix === 'Difficulty') {
+            difficulty_level = value;
+          }
+        }
+      });
+
+      const finalBoilerplates = {
+        ...boilerplate,
+        [selectedLang]: code,
+      };
+
+      // 3. Tạo problem trong DB
+      const savedCard = await problemApi.createProblem({
+        title: name,
+        difficulty_level,
+        tags,
+        course,
+        description,
+        boilerplate_code: finalBoilerplates,
+        testcases,
+      });
+
+      // 4. Điều hướng tới IDE của bài tập mới tạo
+      const cardId = savedCard._id || savedCard.id;
+      navigate(`/problems/${cardId}`);
+    } catch (err) {
+      console.error('Lỗi khi tạo bài tập:', err);
+      alert('Không thể tạo testcase hoặc lưu bài tập. Vui lòng thử lại.');
+    } finally {
+      setIsProcessing(false);
+    }
   };
 
   return (
@@ -140,17 +248,17 @@ export const CreateProblem = (): JSX.Element => {
         <div className="flex gap-10">
           <SelectDropdown
             label="Select Tag"
-            options={TAG_OPTIONS}
+            options={tagOptions}
             onSelect={(value) => addChip('Tag', value)}
           />
           <SelectDropdown
-            label="Select Group"
-            options={GROUP_OPTIONS}
-            onSelect={(value) => addChip('Group', value)}
+            label="Select Course"
+            options={courseOptions}
+            onSelect={(value) => addChip('Course', value)}
           />
           <SelectDropdown
             label="Select Difficulty"
-            options={DIFFICULTY_OPTIONS}
+            options={difficultyOptions}
             onSelect={(value) => addChip('Difficulty', value)}
           />
         </div>
@@ -182,14 +290,26 @@ export const CreateProblem = (): JSX.Element => {
               onSelect={handleLanguageSelect}
             />
           </div>
-          <textarea
-            id="code-editor"
-            placeholder="Enter your code here"
-            value={code}
-            onChange={(e) => setCode(e.target.value)}
-            className="px-4 py-2 bg-black ide4 w-full rounded focus:outline-none focus:ring-2 focus:ring-blue-500 text-green-400 font-mono"
-            rows={12}
-          />
+          <div className="border border-white/10 rounded-lg overflow-hidden bg-[#0a0f1a] p-2">
+            <Editor
+              height="350px"
+              language={selectedLang}
+              theme="webu-dark"
+              value={code}
+              onChange={(val) => setCode(val ?? '')}
+              onMount={handleEditorMount}
+              options={{
+                fontSize: 14,
+                minimap: { enabled: false },
+                scrollBeyondLastLine: false,
+                wordWrap: 'on',
+                automaticLayout: true,
+                tabSize: 4,
+                padding: { top: 12, bottom: 12 },
+                lineNumbersMinChars: 3,
+              }}
+            />
+          </div>
         </div>
 
         <div className="flex justify-between items-center w-full mt-6">
@@ -202,6 +322,8 @@ export const CreateProblem = (): JSX.Element => {
             Cancel
           </Button>
           <Button
+            isProcessing={isProcessing}
+            type="button"
             className="w-fit flex items-center justify-center rounded-lg border-2 border-secondary-a70 px-6 py-2 h2 text-center"
             onClick={() => {
               handleCreate();

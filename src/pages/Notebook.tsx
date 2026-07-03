@@ -5,6 +5,8 @@ import { NotebookFilter } from '@/components/notebook/NotebookFilter';
 import { NotebookProblem } from '@/components/notebook/NotebookProblem';
 import { Pagination } from '@/components/notebook/Pagination';
 import { ProblemType } from '@/components/notebook/MockData';
+import apiClient from '@/api/apiClient';
+import { problemApi } from '@/api/problemService';
 
 interface BackendCard {
   _id: string;
@@ -13,12 +15,14 @@ interface BackendCard {
     description?: string;
   };
   tags?: string[];
-  group?: string;
+  course?: string;
   difficulty_level?: 'Easy' | 'Medium' | 'Hard';
 }
 
 export const Notebook = (): JSX.Element => {
   const [problems, setProblems] = useState<ProblemType[]>([]);
+  const [metaTags, setMetaTags] = useState<string[]>([]);
+  const [metaGroups, setMetaGroups] = useState<string[]>([]);
 
   const [currentPage, setCurrentPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState('');
@@ -27,10 +31,14 @@ export const Notebook = (): JSX.Element => {
   const itemsPerPage = 6;
 
   useEffect(() => {
-    const fetchNotebooks = async () => {
+    const fetchMetaAndNotebooks = async () => {
       try {
-        const response = await fetch('http://localhost:3000/cards');
-        const data = await response.json();
+        const meta = await problemApi.getMetaOptions();
+        setMetaTags(meta.tags);
+        setMetaGroups(meta.courses);
+
+        const response = await apiClient.get('/cards');
+        const data = response.data;
 
         const formattedData = data.data.map(
           (item: BackendCard, index: number) => ({
@@ -39,7 +47,7 @@ export const Notebook = (): JSX.Element => {
             title: item.title,
             description: item.content?.description || '',
             tags: item.tags || [],
-            group: item.group || '',
+            group: item.course || '',
             difficulty: item.difficulty_level || 'Medium',
             isFavorite: false,
           }),
@@ -51,7 +59,7 @@ export const Notebook = (): JSX.Element => {
       }
     };
 
-    fetchNotebooks();
+    fetchMetaAndNotebooks();
   }, []);
 
   useEffect(() => {
@@ -109,6 +117,8 @@ export const Notebook = (): JSX.Element => {
             setSelectedTags={setSelectedTags}
             selectedCourses={selectedCourses}
             setSelectedCourses={setSelectedCourses}
+            tagOptions={metaTags}
+            courseOptions={metaGroups}
           />
 
           {currentProblems.length > 0 ? (
