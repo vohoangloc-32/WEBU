@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
+import Editor, { OnMount } from '@monaco-editor/react';
 import SelectDropdown from '@/components/ui/SelectDropdown';
 import ChipBoard from '@/components/ui/ChipBoard';
 import { Button } from '@/components/ui/Button';
@@ -36,6 +37,37 @@ export const CreateProblem = (): JSX.Element => {
 
   const location = useLocation();
   const navigate = useNavigate();
+
+  const handleEditorMount: OnMount = (_editor, monaco) => {
+    monaco.editor.defineTheme('webu-dark', {
+      base: 'vs-dark',
+      inherit: true,
+      rules: [
+        { token: 'comment', foreground: '6b7a99', fontStyle: 'italic' },
+        { token: 'keyword', foreground: '7c8dff' },
+        { token: 'string', foreground: '7dd3a8' },
+        { token: 'number', foreground: 'f0a070' },
+        { token: 'type', foreground: '65d9ef' },
+        { token: 'function', foreground: 'dcdcaa' },
+      ],
+      colors: {
+        'editor.background': '#0a0f1a',
+        'editor.foreground': '#e2e8f0',
+        'editorLineNumber.foreground': '#3a4560',
+        'editorLineNumber.activeForeground': '#6b7a99',
+        'editor.selectionBackground': '#3b4f7033',
+        'editor.lineHighlightBackground': '#131d2e',
+        'editorCursor.foreground': '#7c8dff',
+        'editor.inactiveSelectionBackground': '#2a3548',
+        'scrollbarSlider.background': '#1e2c44',
+        'scrollbarSlider.hoverBackground': '#2a3d5a',
+        'editorIndentGuide.background1': '#1e2840',
+        'editorBracketMatch.background': '#3b4f7066',
+        'editorBracketMatch.border': '#7c8dff',
+      },
+    });
+    monaco.editor.setTheme('webu-dark');
+  };
 
   useEffect(() => {
     problemApi
@@ -196,14 +228,26 @@ export const CreateProblem = (): JSX.Element => {
               onSelect={handleLanguageSelect}
             />
           </div>
-          <textarea
-            id="code-editor"
-            placeholder="Enter your code here"
-            value={code}
-            onChange={(e) => setCode(e.target.value)}
-            className="px-4 py-2 bg-black ide4 w-full rounded focus:outline-none focus:ring-2 focus:ring-blue-500 text-green-400 font-mono"
-            rows={12}
-          />
+          <div className="border border-white/10 rounded-lg overflow-hidden bg-[#0a0f1a] p-2">
+            <Editor
+              height="350px"
+              language={selectedLang}
+              theme="webu-dark"
+              value={code}
+              onChange={(val) => setCode(val ?? '')}
+              onMount={handleEditorMount}
+              options={{
+                fontSize: 14,
+                minimap: { enabled: false },
+                scrollBeyondLastLine: false,
+                wordWrap: 'on',
+                automaticLayout: true,
+                tabSize: 4,
+                padding: { top: 12, bottom: 12 },
+                lineNumbersMinChars: 3,
+              }}
+            />
+          </div>
         </div>
 
         <div className="flex justify-between items-center w-full mt-6">
