@@ -4,10 +4,7 @@ import SelectDropdown from '@/components/ui/SelectDropdown';
 import ChipBoard from '@/components/ui/ChipBoard';
 import { Button } from '@/components/ui/Button';
 import type { AiGeneratedProblem } from '@/types/problem';
-
-const TAG_OPTIONS = ['Array', 'Math', 'Linked List', 'Hash Table'];
-const GROUP_OPTIONS = ['KTLT', 'DSA'];
-const DIFFICULTY_OPTIONS = ['Easy', 'Medium', 'Hard'];
+import { problemApi } from '@/api/problemService';
 
 const BOILERPLATE_TEMPLATES = {
   cpp: `#include <iostream>\nusing namespace std;\n\nint main() {\n    // Your C++20 code here\n    return 0;\n}`,
@@ -33,8 +30,25 @@ export const CreateProblem = (): JSX.Element => {
   const [boilerplate, setBoilerplate] = useState(BOILERPLATE_TEMPLATES);
   const [code, setCode] = useState(BOILERPLATE_TEMPLATES.cpp);
 
+  const [tagOptions, setTagOptions] = useState<string[]>([]);
+  const [courseOptions, setCourseOptions] = useState<string[]>([]);
+  const [difficultyOptions, setDifficultyOptions] = useState<string[]>([]);
+
   const location = useLocation();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    problemApi
+      .getMetaOptions()
+      .then((data) => {
+        setTagOptions(data.tags);
+        setCourseOptions(data.courses);
+        setDifficultyOptions(data.difficulties);
+      })
+      .catch((err) => {
+        console.error('Failed to fetch metadata options:', err);
+      });
+  }, []);
 
   const { aiProblem } =
     (location.state as { aiProblem?: AiGeneratedProblem }) || {};
@@ -66,8 +80,8 @@ export const CreateProblem = (): JSX.Element => {
       addChip('Difficulty', diffFormatted);
     }
 
-    if (aiProblem.group) {
-      addChip('Group', aiProblem.group);
+    if (aiProblem.course) {
+      addChip('Course', aiProblem.course);
     }
 
     if (aiProblem.tags && aiProblem.tags.length > 0) {
@@ -140,17 +154,17 @@ export const CreateProblem = (): JSX.Element => {
         <div className="flex gap-10">
           <SelectDropdown
             label="Select Tag"
-            options={TAG_OPTIONS}
+            options={tagOptions}
             onSelect={(value) => addChip('Tag', value)}
           />
           <SelectDropdown
-            label="Select Group"
-            options={GROUP_OPTIONS}
-            onSelect={(value) => addChip('Group', value)}
+            label="Select Course"
+            options={courseOptions}
+            onSelect={(value) => addChip('Course', value)}
           />
           <SelectDropdown
             label="Select Difficulty"
-            options={DIFFICULTY_OPTIONS}
+            options={difficultyOptions}
             onSelect={(value) => addChip('Difficulty', value)}
           />
         </div>

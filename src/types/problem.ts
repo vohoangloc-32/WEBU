@@ -3,7 +3,7 @@ export interface AiGeneratedProblem {
   description?: string;
   difficulty?: string;
   tags?: string[];
-  group?: string;
+  course?: string;
   boilerplateCode?: {
     cpp?: string;
     java?: string;
