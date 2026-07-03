@@ -30,6 +30,7 @@ export const CreateProblem = (): JSX.Element => {
   const [selectedLang, setSelectedLang] = useState<LanguageType>('cpp');
   const [boilerplate, setBoilerplate] = useState(BOILERPLATE_TEMPLATES);
   const [code, setCode] = useState(BOILERPLATE_TEMPLATES.cpp);
+  const [isProcessing, setIsProcessing] = useState(false);
 
   const [tagOptions, setTagOptions] = useState<string[]>([]);
   const [courseOptions, setCourseOptions] = useState<string[]>([]);
@@ -119,6 +120,7 @@ export const CreateProblem = (): JSX.Element => {
     if (aiProblem.tags && aiProblem.tags.length > 0) {
       aiProblem.tags.forEach((tag) => addChip('Tag', tag));
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [aiProblem]);
 
   const addChip = (prefix: string, value: string) => {
@@ -152,14 +154,74 @@ export const CreateProblem = (): JSX.Element => {
       (key) => LANGUAGE_DISPLAY_NAMES[key as LanguageType] === displayName,
     ) as LanguageType;
     if (langKey) {
+      setBoilerplate((prev) => ({
+        ...prev,
+        [selectedLang]: code,
+      }));
       handleLanguageChange(langKey);
     }
   };
 
-  const handleCreate = () => {
-    console.log('Creating problem with:', { name, chips, description, code });
-    // TODO: gọi API tạo problem + generate test case ở đây (bước tiếp theo)
-    navigate('/notebook');
+  const handleCreate = async () => {
+    if (!name.trim()) {
+      alert('Vui lòng điền tên bài tập.');
+      return;
+    }
+    if (!description.trim()) {
+      alert('Vui lòng điền mô tả bài tập.');
+      return;
+    }
+
+    setIsProcessing(true);
+    try {
+      // 1. Gọi AI sinh testcases tự động
+      const testcases = await problemApi.generateTestCases(name, description);
+
+      // 2. Tách dữ liệu từ Chips
+      const tags: string[] = [];
+      let course = '';
+      let difficulty_level = 'Medium';
+
+      chips.forEach((chip) => {
+        const parts = chip.split(': ');
+        if (parts.length === 2) {
+          const prefix = parts[0];
+          const value = parts[1];
+          if (prefix === 'Tag') {
+            tags.push(value);
+          } else if (prefix === 'Course') {
+            course = value;
+          } else if (prefix === 'Difficulty') {
+            difficulty_level = value;
+          }
+        }
+      });
+
+      const finalBoilerplates = {
+        ...boilerplate,
+        [selectedLang]: code,
+      };
+
+      // 3. Tạo problem trong DB
+      const savedCard = await problemApi.createProblem({
+        title: name,
+        difficulty_level,
+        tags,
+        course,
+        description,
+        boilerplate_code: finalBoilerplates,
+        testcases,
+      });
+
+      // 4. Điều hướng tới IDE của bài tập mới tạo
+      const cardId = savedCard._id || savedCard.id;
+      navigate(`/problems/${cardId}`);
+    } catch (err) {
+      console.error('Lỗi khi tạo bài tập:', err);
+      alert('Không thể tạo testcase hoặc lưu bài tập. Vui lòng thử lại.');
+    } finally {
+      setIsProcessing(false);
+    }
   };
 
   return (
@@ -260,6 +322,8 @@ export const CreateProblem = (): JSX.Element => {
             Cancel
           </Button>
           <Button
+            isProcessing={isProcessing}
+            type="button"
             className="w-fit flex items-center justify-center rounded-lg border-2 border-secondary-a70 px-6 py-2 h2 text-center"
             onClick={() => {
               handleCreate();

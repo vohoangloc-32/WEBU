@@ -1,5 +1,6 @@
 import apiClient from '../api/apiClient';
 import React, { useState, useEffect, useRef } from 'react';
+import { renderFormattedDescription } from '../components/utils/descriptionFormatter';
 import { ideApi } from '../api/ideService';
 import { CardDetail, SubmissionHistory } from '../types/ide';
 
@@ -208,9 +209,9 @@ export const ProblemTabsSection = ({
             </div>
 
             {/* Description text */}
-            <p className="text-neutral-300 whitespace-pre-wrap leading-7">
-              {card.content?.description ?? card.content?.question_text ?? ''}
-            </p>
+            {renderFormattedDescription(
+              card.content?.description ?? card.content?.question_text ?? '',
+            )}
 
             {/* Examples */}
             {card.public_test_cases?.length > 0 && (

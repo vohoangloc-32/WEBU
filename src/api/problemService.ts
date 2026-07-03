@@ -40,4 +40,19 @@ export const problemApi = {
     }>('/cards/meta-options');
     return response.data;
   },
+
+  generateTestCases: async (title: string, description: string) => {
+    const response = await apiClient.post<
+      { input: string; expected_output: string; is_hidden: boolean }[]
+    >('/api/ai/generate-testcases', { title, description });
+    return response.data;
+  },
+
+  createProblem: async (problemData: Record<string, unknown>) => {
+    const response = await apiClient.post<Record<string, unknown>>(
+      '/cards',
+      problemData,
+    );
+    return response.data;
+  },
 };
