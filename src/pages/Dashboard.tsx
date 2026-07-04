@@ -76,13 +76,23 @@ export const Dashboard = (): JSX.Element => {
 
   const handleStartReview = () => {
     if (dueProblems.length > 0) {
-      const firstProblem = dueProblems[0];
-      const problemId =
-        typeof firstProblem.card_id === 'string'
-          ? firstProblem.card_id
-          : firstProblem.card_id._id;
+      const firstProblem = dueProblems[0] as {
+        card_id?: string | { id?: string; _id?: string };
+      };
 
-      navigate(`/problems/${problemId}`);
+      const rawCardId = firstProblem?.card_id;
+
+      const problemId =
+        typeof rawCardId === 'object' && rawCardId !== null
+          ? rawCardId.id || rawCardId._id
+          : rawCardId;
+
+      if (problemId) {
+        navigate(`/problems/${problemId}`);
+      } else {
+        alert('Detecting junk data in the database');
+        console.error('Error data:', firstProblem);
+      }
     }
   };
 
