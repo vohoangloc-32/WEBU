@@ -18,7 +18,13 @@ export const ProblemFilter = ({
   setSelectedTags,
   selectedCourses,
   setSelectedCourses,
-  tagOptions = [
+  tagOptions: propTagOptions,
+  courseOptions: propCourseOptions,
+}: ProblemFilterProps) => {
+  const [isTagOpen, setIsTagOpen] = useState(false);
+  const [isCourseOpen, setIsCourseOpen] = useState(false);
+
+  const defaultTags = [
     'Array',
     'Hash Table',
     'String',
@@ -41,8 +47,9 @@ export const ProblemFilter = ({
     'Heap',
     'Deque',
     'Prefix Sum',
-  ],
-  courseOptions = [
+  ];
+
+  const defaultCourses = [
     'Arrays & Hashing',
     'Two Pointers',
     'Sliding Window',
@@ -55,10 +62,14 @@ export const ProblemFilter = ({
     'Intervals',
     'Greedy',
     'Bit Manipulation',
-  ],
-}: ProblemFilterProps) => {
-  const [isTagOpen, setIsTagOpen] = useState(false);
-  const [isCourseOpen, setIsCourseOpen] = useState(false);
+  ];
+
+  const tagOptions =
+    propTagOptions && propTagOptions.length > 0 ? propTagOptions : defaultTags;
+  const courseOptions =
+    propCourseOptions && propCourseOptions.length > 0
+      ? propCourseOptions
+      : defaultCourses;
 
   const handleTagSelect = (value: string) => {
     if (!selectedTags.includes(value))
