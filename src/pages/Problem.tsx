@@ -15,6 +15,7 @@ interface BackendCard {
   };
   tags?: string[];
   course?: string;
+  group?: string;
   difficulty_level?: string;
 }
 
@@ -62,7 +63,7 @@ export const Problem = (): JSX.Element => {
           dbId: item._id,
           name: item.title,
           tags: item.tags || [],
-          group: item.course || '',
+          group: item.group || item.course || '',
           difficulty: item.difficulty_level || 'Medium',
         }),
       );

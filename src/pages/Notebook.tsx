@@ -16,6 +16,7 @@ interface BackendCard {
   };
   tags?: string[];
   course?: string;
+  group?: string;
   difficulty_level?: 'Easy' | 'Medium' | 'Hard';
 }
 
@@ -51,7 +52,7 @@ export const Notebook = (): JSX.Element => {
             title: item.title,
             description: item.content?.description || '',
             tags: item.tags || [],
-            group: item.course || '',
+            group: item.group || item.course || '',
             difficulty: item.difficulty_level || 'Medium',
             isFavorite: false,
           }),
