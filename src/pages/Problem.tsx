@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { MainNavigation } from '@/components/ui/MainNavigation';
 import { ProblemFilter } from '@/components/problem/ProblemFilter';
 import { ProblemTable } from '@/components/problem/ProblemTable';
@@ -15,74 +15,89 @@ interface BackendCard {
   };
   tags?: string[];
   course?: string;
+  group?: string;
   difficulty_level?: string;
 }
 
+interface BackendMeta {
+  total_items: number;
+  current_page: number;
+  total_pages: number;
+}
+
+const ITEMS_PER_PAGE = 10;
+
 export const Problem = (): JSX.Element => {
-  const [dbProblems, setDbProblems] = useState<ProblemItem[]>([]);
+  const [problems, setProblems] = useState<ProblemItem[]>([]);
+  const [meta, setMeta] = useState<BackendMeta>({
+    total_items: 0,
+    current_page: 1,
+    total_pages: 1,
+  });
+  const [isLoading, setIsLoading] = useState(false);
   const [metaTags, setMetaTags] = useState<string[]>([]);
   const [metaGroups, setMetaGroups] = useState<string[]>([]);
 
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [selectedCourses, setSelectedCourses] = useState<string[]>([]);
-
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 6;
+
+  const fetchProblems = useCallback(async () => {
+    setIsLoading(true);
+    try {
+      const params: Record<string, string> = {
+        page: String(currentPage),
+        limit: String(ITEMS_PER_PAGE),
+      };
+      if (searchQuery.trim()) params.search = searchQuery.trim();
+      if (selectedTags.length > 0) params.tags = selectedTags.join(',');
+      if (selectedCourses.length > 0) params.group = selectedCourses[0];
+
+      const response = await apiClient.get('/cards', { params });
+      const data = response.data;
+
+      const formattedData: ProblemItem[] = data.data.map(
+        (item: BackendCard, index: number) => ({
+          id: (currentPage - 1) * ITEMS_PER_PAGE + index + 1,
+          dbId: item._id,
+          name: item.title,
+          tags: item.tags || [],
+          group: item.group || item.course || '',
+          difficulty: item.difficulty_level || 'Medium',
+        }),
+      );
+
+      setProblems(formattedData);
+      setMeta(data.meta || { total_items: 0, current_page: 1, total_pages: 1 });
+    } catch (error) {
+      console.error('Error while fetching data from the database:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  }, [currentPage, searchQuery, selectedTags, selectedCourses]);
 
   useEffect(() => {
-    const fetchMetaAndProblems = async () => {
+    const fetchMeta = async () => {
       try {
-        const meta = await problemApi.getMetaOptions();
-        setMetaTags(meta.tags);
-        setMetaGroups(meta.courses);
-
-        const response = await apiClient.get('/cards');
-        const data = response.data;
-        const formattedData = data.data.map(
-          (item: BackendCard, index: number) => ({
-            id: index + 1,
-            dbId: item._id,
-            name: item.title,
-            tags: item.tags || [],
-            group: item.course || '',
-            difficulty: item.difficulty_level || 'Medium',
-          }),
-        );
-
-        setDbProblems(formattedData);
+        const metaOptions = await problemApi.getMetaOptions();
+        setMetaTags(metaOptions.tags);
+        setMetaGroups(metaOptions.courses);
       } catch (error) {
-        console.error('Error while fetching data from the database:', error);
+        console.error('Error while fetching meta options:', error);
       }
     };
-
-    fetchMetaAndProblems();
+    void fetchMeta();
   }, []);
 
   useEffect(() => {
+    void fetchProblems();
+  }, [fetchProblems]);
+
+  // Reset to page 1 whenever filters change
+  useEffect(() => {
     setCurrentPage(1);
   }, [searchQuery, selectedTags, selectedCourses]);
-
-  const filteredProblems = dbProblems.filter((problem) => {
-    const matchSearch = problem.name
-      .toLowerCase()
-      .includes(searchQuery.toLowerCase());
-    const matchTags =
-      selectedTags.length === 0 ||
-      selectedTags.every((tag) => problem.tags.includes(tag));
-    const matchCourses =
-      selectedCourses.length === 0 || selectedCourses.includes(problem.group);
-
-    return matchSearch && matchTags && matchCourses;
-  });
-
-  const totalPages = Math.ceil(filteredProblems.length / itemsPerPage);
-  const indexOfLastItem = currentPage * itemsPerPage;
-  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentProblems = filteredProblems.slice(
-    indexOfFirstItem,
-    indexOfLastItem,
-  );
 
   return (
     <div>
@@ -92,7 +107,14 @@ export const Problem = (): JSX.Element => {
 
       <div className="w-full min-h-screen bg-tonal-a10 px-20 py-10 flex flex-col items-center overflow-hidden select-none">
         <div className="w-full max-w-[1200px] flex flex-col gap-8">
-          <h1 className="h1 text-neutral-a50 leading-normal">Problem</h1>
+          <div className="flex items-baseline gap-4">
+            <h1 className="h1 text-neutral-a50 leading-normal">Problem</h1>
+            {!isLoading && (
+              <span className="text-neutral-a50 p7 opacity-60">
+                {meta.total_items} bài tập
+              </span>
+            )}
+          </div>
 
           <ProblemFilter
             searchQuery={searchQuery}
@@ -105,12 +127,21 @@ export const Problem = (): JSX.Element => {
             courseOptions={metaGroups}
           />
 
-          <ProblemTable problems={currentProblems} />
+          {isLoading ? (
+            <div className="w-full flex justify-center items-center py-20">
+              <div className="flex flex-col items-center gap-4">
+                <div className="w-10 h-10 border-4 border-secondary-a70 border-t-transparent rounded-full animate-spin" />
+                <span className="text-neutral-a50 p7">Đang tải...</span>
+              </div>
+            </div>
+          ) : (
+            <ProblemTable problems={problems} />
+          )}
 
-          {totalPages > 1 && (
+          {meta.total_pages > 1 && (
             <Pagination
               currentPage={currentPage}
-              totalPages={totalPages}
+              totalPages={meta.total_pages}
               onPageChange={(page) => setCurrentPage(page)}
             />
           )}

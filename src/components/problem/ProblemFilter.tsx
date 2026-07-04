@@ -18,20 +18,58 @@ export const ProblemFilter = ({
   setSelectedTags,
   selectedCourses,
   setSelectedCourses,
-  tagOptions = [
-    'Array',
-    'Math',
-    'String',
-    'DP',
-    'Graph',
-    'Stack',
-    'Linked List',
-    'Hash',
-  ],
-  courseOptions = ['KTLT', 'DSA'],
+  tagOptions: propTagOptions,
+  courseOptions: propCourseOptions,
 }: ProblemFilterProps) => {
   const [isTagOpen, setIsTagOpen] = useState(false);
   const [isCourseOpen, setIsCourseOpen] = useState(false);
+
+  const defaultTags = [
+    'Array',
+    'Hash Table',
+    'String',
+    'Two Pointers',
+    'Sliding Window',
+    'Stack',
+    'Binary Search',
+    'Sorting',
+    'Dynamic Programming',
+    'DP',
+    'Math',
+    'Linked List',
+    'Backtracking',
+    'Greedy',
+    'Graph',
+    'BFS',
+    'DFS',
+    'Matrix',
+    'Bit Manipulation',
+    'Heap',
+    'Deque',
+    'Prefix Sum',
+  ];
+
+  const defaultCourses = [
+    'Arrays & Hashing',
+    'Two Pointers',
+    'Sliding Window',
+    'Stack',
+    'Binary Search',
+    'Linked List',
+    'Dynamic Programming',
+    'Grids & Graphs',
+    'Backtracking',
+    'Intervals',
+    'Greedy',
+    'Bit Manipulation',
+  ];
+
+  const tagOptions =
+    propTagOptions && propTagOptions.length > 0 ? propTagOptions : defaultTags;
+  const courseOptions =
+    propCourseOptions && propCourseOptions.length > 0
+      ? propCourseOptions
+      : defaultCourses;
 
   const handleTagSelect = (value: string) => {
     if (!selectedTags.includes(value))

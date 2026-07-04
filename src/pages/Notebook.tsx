@@ -16,6 +16,7 @@ interface BackendCard {
   };
   tags?: string[];
   course?: string;
+  group?: string;
   difficulty_level?: 'Easy' | 'Medium' | 'Hard';
 }
 
@@ -37,7 +38,11 @@ export const Notebook = (): JSX.Element => {
         setMetaTags(meta.tags);
         setMetaGroups(meta.courses);
 
-        const response = await apiClient.get('/cards');
+        // Pass limit=200 to fetch all problems at once for client-side filtering/pagination
+        // The default limit=10 was causing only 10 of 113 problems to be shown
+        const response = await apiClient.get('/cards', {
+          params: { limit: 200, page: 1 },
+        });
         const data = response.data;
 
         const formattedData = data.data.map(
@@ -47,7 +52,7 @@ export const Notebook = (): JSX.Element => {
             title: item.title,
             description: item.content?.description || '',
             tags: item.tags || [],
-            group: item.course || '',
+            group: item.group || item.course || '',
             difficulty: item.difficulty_level || 'Medium',
             isFavorite: false,
           }),
