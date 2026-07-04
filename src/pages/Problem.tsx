@@ -4,6 +4,8 @@ import { ProblemFilter } from '@/components/problem/ProblemFilter';
 import { ProblemTable } from '@/components/problem/ProblemTable';
 import { Pagination } from '@/components/notebook/Pagination';
 import { ProblemItem } from '@/components/problem/problemMockData';
+import apiClient from '@/api/apiClient';
+import { problemApi } from '@/api/problemService';
 
 interface BackendCard {
   _id: string;
@@ -12,7 +14,7 @@ interface BackendCard {
     description?: string;
   };
   tags?: string[];
-  group?: string;
+  course?: string;
   difficulty_level?: string;
 }
 
@@ -32,6 +34,8 @@ export const Problem = (): JSX.Element => {
     total_pages: 1,
   });
   const [isLoading, setIsLoading] = useState(false);
+  const [metaTags, setMetaTags] = useState<string[]>([]);
+  const [metaGroups, setMetaGroups] = useState<string[]>([]);
 
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
@@ -41,17 +45,16 @@ export const Problem = (): JSX.Element => {
   const fetchProblems = useCallback(async () => {
     setIsLoading(true);
     try {
-      const params = new URLSearchParams();
-      params.set('page', String(currentPage));
-      params.set('limit', String(ITEMS_PER_PAGE));
-      if (searchQuery.trim()) params.set('search', searchQuery.trim());
-      if (selectedTags.length > 0) params.set('tags', selectedTags.join(','));
-      if (selectedCourses.length > 0) params.set('group', selectedCourses[0]);
+      const params: Record<string, string> = {
+        page: String(currentPage),
+        limit: String(ITEMS_PER_PAGE),
+      };
+      if (searchQuery.trim()) params.search = searchQuery.trim();
+      if (selectedTags.length > 0) params.tags = selectedTags.join(',');
+      if (selectedCourses.length > 0) params.group = selectedCourses[0];
 
-      const response = await fetch(
-        `http://localhost:3000/cards?${params.toString()}`,
-      );
-      const data = await response.json();
+      const response = await apiClient.get('/cards', { params });
+      const data = response.data;
 
       const formattedData: ProblemItem[] = data.data.map(
         (item: BackendCard, index: number) => ({
@@ -59,19 +62,32 @@ export const Problem = (): JSX.Element => {
           dbId: item._id,
           name: item.title,
           tags: item.tags || [],
-          group: item.group || '',
+          group: item.course || '',
           difficulty: item.difficulty_level || 'Medium',
         }),
       );
 
       setProblems(formattedData);
-      setMeta(data.meta);
+      setMeta(data.meta || { total_items: 0, current_page: 1, total_pages: 1 });
     } catch (error) {
       console.error('Error while fetching data from the database:', error);
     } finally {
       setIsLoading(false);
     }
   }, [currentPage, searchQuery, selectedTags, selectedCourses]);
+
+  useEffect(() => {
+    const fetchMeta = async () => {
+      try {
+        const metaOptions = await problemApi.getMetaOptions();
+        setMetaTags(metaOptions.tags);
+        setMetaGroups(metaOptions.courses);
+      } catch (error) {
+        console.error('Error while fetching meta options:', error);
+      }
+    };
+    void fetchMeta();
+  }, []);
 
   useEffect(() => {
     void fetchProblems();
@@ -106,6 +122,8 @@ export const Problem = (): JSX.Element => {
             setSelectedTags={setSelectedTags}
             selectedCourses={selectedCourses}
             setSelectedCourses={setSelectedCourses}
+            tagOptions={metaTags}
+            courseOptions={metaGroups}
           />
 
           {isLoading ? (

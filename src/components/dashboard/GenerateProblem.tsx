@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import { Button } from '@/components/ui/Button';
 
 interface GenerateProblemProps {
@@ -19,6 +19,16 @@ export function GenerateProblem({
 
   // Dùng ref để kích hoạt thẻ input file ẩn khi click vào icon ảnh
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
+
+  // Tự động điều chỉnh chiều cao của ô nhập liệu
+  useEffect(() => {
+    const textarea = textareaRef.current;
+    if (textarea) {
+      textarea.style.height = 'auto';
+      textarea.style.height = `${textarea.scrollHeight}px`;
+    }
+  }, [prompt]);
 
   const handleImageIconClick = () => {
     fileInputRef.current?.click();
@@ -104,26 +114,87 @@ export function GenerateProblem({
         onDragOver={handleDragOver}
         onDragLeave={handleDragLeave}
         onDrop={handleDrop}
-        className={`w-full bg-tonal-a20 rounded-full pl-5 pr-2 py-1.5 flex items-center justify-between gap-3 border-2 transition-all duration-200 ${
+        className={`w-full bg-[#111827] rounded-[16px] p-4 flex flex-col gap-3 border transition-all duration-200 ${
           isDragOver
-            ? 'border-dashed border-secondary-a70 bg-secondary-a70/10 scale-[1.01] shadow-lg'
-            : 'border-transparent'
+            ? 'border-secondary-a70 bg-secondary-a70/10 scale-[1.01] shadow-lg'
+            : 'border-white/5 hover:border-white/10'
         }`}
       >
-        <div className="flex items-center gap-4 flex-1">
+        {/* Preview image INSIDE the box at the top if selected */}
+        {imagePreview && (
+          <div className="relative w-12 h-12 rounded-lg border border-white/10 bg-neutral-a900 shadow-sm flex-shrink-0 group">
+            <div
+              onClick={() => setIsModalOpen(true)}
+              className="w-full h-full rounded-lg overflow-hidden cursor-pointer relative"
+              title="Click to view full image"
+            >
+              <img
+                src={imagePreview}
+                alt="Preview"
+                className="w-full h-full object-cover"
+              />
+              <div className="absolute inset-0 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity bg-black/40">
+                <svg
+                  width="12"
+                  height="12"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="white"
+                  strokeWidth="2.5"
+                >
+                  <circle cx="11" cy="11" r="8" />
+                  <line x1="21" y1="21" x2="16.65" y2="16.65" />
+                </svg>
+              </div>
+            </div>
+            <button
+              type="button"
+              onClick={handleRemoveImage}
+              className="absolute -top-1.5 -right-1.5 bg-[#ef4444] text-white rounded-full w-4 h-4 flex items-center justify-center hover:bg-red-600 transition-colors shadow-md cursor-pointer text-[10px] font-bold"
+              title="Remove image"
+            >
+              &times;
+            </button>
+          </div>
+        )}
+
+        {/* Text area for prompt */}
+        <textarea
+          ref={textareaRef}
+          value={prompt}
+          onChange={(e) => setPrompt(e.target.value)}
+          onPaste={handlePaste}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter' && !e.shiftKey) {
+              e.preventDefault();
+              handleCreate();
+            }
+          }}
+          placeholder="Describe your programming problem or drag/paste an image here..."
+          className="w-full bg-transparent text-white placeholder-neutral-a400 focus:outline-none resize-none min-h-[48px] max-h-[200px] overflow-y-auto font-sans p7 leading-relaxed"
+          rows={2}
+          style={{ height: 'auto' }}
+        />
+
+        {/* Bottom bar inside the box */}
+        <div className="flex items-center justify-between mt-1">
           <button
             type="button"
             onClick={handleImageIconClick}
-            className={`transition-colors cursor-pointer p-1 rounded ${selectedImage ? 'text-secondary-a70' : 'text-neutral-a400 hover:text-neutral-a200'}`}
-            title="Upload hình ảnh đề bài"
+            className={`transition-colors cursor-pointer p-1.5 rounded-lg hover:bg-white/5 ${
+              selectedImage
+                ? 'text-secondary-a70'
+                : 'text-neutral-a400 hover:text-neutral-a200'
+            }`}
+            title="Upload image"
           >
             <svg
-              width="24"
-              height="24"
+              width="20"
+              height="20"
               viewBox="0 0 24 24"
               fill="none"
               stroke="currentColor"
-              strokeWidth="2.5"
+              strokeWidth="2"
               strokeLinecap="round"
               strokeLinejoin="round"
             >
@@ -133,95 +204,25 @@ export function GenerateProblem({
             </svg>
           </button>
 
-          <input
-            type="text"
-            value={prompt}
-            onChange={(e) => setPrompt(e.target.value)}
-            onPaste={handlePaste}
-            placeholder="Ask AI to generate a problem or drag/paste an image here..."
-            className="w-full bg-transparent p7 text-white placeholder-neutral-a400 placeholder:p7 focus:outline-none"
-            onKeyDown={(e) => e.key === 'Enter' && handleCreate()}
-          />
+          <Button
+            type="button"
+            isProcessing={isProcessing}
+            className="w-auto px-6 py-2 rounded-full h7 text-sm font-semibold"
+            onClick={handleCreate}
+          >
+            Create
+          </Button>
         </div>
-
-        <Button
-          type="button"
-          isProcessing={isProcessing}
-          className="w-auto px-6 py-2 rounded-full h7"
-          onClick={handleCreate}
-        >
-          Create
-        </Button>
       </div>
 
-      {imagePreview && (
-        <div className="w-full flex justify-start pl-2">
-          <div className="mt-2 flex items-center gap-4 bg-tonal-a20 border border-neutral-a700/50 rounded-xl p-3 shadow-md max-w-md">
-            <div
-              onClick={() => setIsModalOpen(true)}
-              className="group relative w-16 h-16 rounded-lg overflow-hidden border border-neutral-a700 bg-neutral-a900 shadow-sm transition-all duration-200 hover:scale-105 cursor-pointer flex-shrink-0"
-              title="Click to view full image"
-            >
-              <img
-                src={imagePreview}
-                alt="Preview"
-                className="w-full h-full object-cover transition-opacity duration-200 group-hover:opacity-80"
-              />
-              <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity bg-black/40">
-                <svg
-                  width="16"
-                  height="16"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="white"
-                  strokeWidth="2.5"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
-                  <circle cx="11" cy="11" r="8" />
-                  <line x1="21" y1="21" x2="16.65" y2="16.65" />
-                  <line x1="11" y1="8" x2="11" y2="14" />
-                  <line x1="8" y1="11" x2="14" y2="11" />
-                </svg>
-              </div>
-            </div>
-            <div className="flex flex-col gap-0.5 overflow-hidden">
-              <span className="text-xs font-semibold text-neutral-a100 truncate max-w-[220px]">
-                {selectedImage?.name}
-              </span>
-              <span className="text-[10px] text-neutral-a400">
-                {selectedImage ? (selectedImage.size / 1024).toFixed(1) : 0} KB
-              </span>
-              <button
-                type="button"
-                onClick={handleRemoveImage}
-                className="text-xs text-danger-a10 hover:text-danger-a0 cursor-pointer font-medium mt-1.5 flex items-center gap-1 transition-colors self-start"
-              >
-                <svg
-                  width="12"
-                  height="12"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                >
-                  <polyline points="3 6 5 6 21 6" />
-                  <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
-                </svg>
-                Remove
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
+      {/* Lightbox Modal */}
       {isModalOpen && imagePreview && (
         <div
           className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4 transition-all duration-300"
           onClick={() => setIsModalOpen(false)}
         >
           <div
-            className="relative max-w-4xl max-h-[85vh] overflow-hidden rounded-lg bg-neutral-a900 p-2 shadow-2xl border border-neutral-a800 animate-in fade-in zoom-in-95 duration-200"
+            className="relative max-w-4xl max-h-[85vh] overflow-hidden rounded-lg bg-[#0d131f] p-2 shadow-2xl border border-white/10 animate-in fade-in zoom-in-95 duration-200"
             onClick={(e) => e.stopPropagation()}
           >
             <button
@@ -236,7 +237,7 @@ export function GenerateProblem({
               alt="Full Preview"
               className="max-w-full max-h-[80vh] object-contain rounded"
             />
-            <div className="p-3 text-center text-sm text-neutral-a300 bg-neutral-a900/90 border-t border-neutral-a800">
+            <div className="p-3 text-center text-sm text-neutral-a300 bg-[#0d131f]/90 border-t border-white/5">
               {selectedImage?.name} (
               {selectedImage ? (selectedImage.size / 1024).toFixed(1) : 0} KB)
             </div>

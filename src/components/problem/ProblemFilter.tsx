@@ -7,6 +7,8 @@ interface ProblemFilterProps {
   setSelectedTags: (tags: string[]) => void;
   selectedCourses: string[];
   setSelectedCourses: (courses: string[]) => void;
+  tagOptions?: string[];
+  courseOptions?: string[];
 }
 
 export const ProblemFilter = ({
@@ -16,11 +18,7 @@ export const ProblemFilter = ({
   setSelectedTags,
   selectedCourses,
   setSelectedCourses,
-}: ProblemFilterProps) => {
-  const [isTagOpen, setIsTagOpen] = useState(false);
-  const [isCourseOpen, setIsCourseOpen] = useState(false);
-
-  const tagOptions = [
+  tagOptions = [
     'Array',
     'Hash Table',
     'String',
@@ -43,8 +41,8 @@ export const ProblemFilter = ({
     'Heap',
     'Deque',
     'Prefix Sum',
-  ];
-  const courseOptions = [
+  ],
+  courseOptions = [
     'Arrays & Hashing',
     'Two Pointers',
     'Sliding Window',
@@ -57,7 +55,10 @@ export const ProblemFilter = ({
     'Intervals',
     'Greedy',
     'Bit Manipulation',
-  ];
+  ],
+}: ProblemFilterProps) => {
+  const [isTagOpen, setIsTagOpen] = useState(false);
+  const [isCourseOpen, setIsCourseOpen] = useState(false);
 
   const handleTagSelect = (value: string) => {
     if (!selectedTags.includes(value))

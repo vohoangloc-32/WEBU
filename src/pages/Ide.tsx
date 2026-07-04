@@ -90,9 +90,11 @@ export const Ide = (): JSX.Element => {
     if (!userId || !card) return;
 
     try {
+      const safeCardId = (card as CardDetail & { _id?: string })._id || card.id;
+
       await apiClient.post('/api/fsrs/review', {
         userId: userId,
-        cardId: card.id,
+        cardId: safeCardId,
         isPassed: isPassed,
         problemDifficulty: card.difficulty_level,
       });
@@ -192,7 +194,7 @@ export const Ide = (): JSX.Element => {
             {/* Right — Code editor */}
             <div className="flex-1 min-h-0 min-w-0 rounded-xl overflow-hidden">
               <CodeEditorSection
-                cardId={card.id}
+                cardId={(card as CardDetail & { _id?: string })._id || card.id}
                 boilerplateCodes={card.ide_data?.boilerplate_code ?? {}}
                 onSubmissionDone={handleFSRSUpdate}
               />

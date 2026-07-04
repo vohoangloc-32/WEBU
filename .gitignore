@@ -36,3 +36,6 @@ build
 
 # Coverage
 coverage
+
+# Vite temporary timestamp files
+vite.config.ts.timestamp-*
