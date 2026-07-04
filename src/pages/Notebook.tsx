@@ -29,7 +29,11 @@ export const Notebook = (): JSX.Element => {
   useEffect(() => {
     const fetchNotebooks = async () => {
       try {
-        const response = await fetch('http://localhost:3000/cards');
+        // Pass limit=200 to fetch all problems at once for client-side filtering/pagination
+        // The default limit=10 was causing only 10 of 113 problems to be shown
+        const response = await fetch(
+          'http://localhost:3000/cards?limit=200&page=1',
+        );
         const data = await response.json();
 
         const formattedData = data.data.map(

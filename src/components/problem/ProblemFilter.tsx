@@ -22,15 +22,42 @@ export const ProblemFilter = ({
 
   const tagOptions = [
     'Array',
-    'Math',
+    'Hash Table',
     'String',
-    'DP',
-    'Graph',
+    'Two Pointers',
+    'Sliding Window',
     'Stack',
+    'Binary Search',
+    'Sorting',
+    'Dynamic Programming',
+    'DP',
+    'Math',
     'Linked List',
-    'Hash',
+    'Backtracking',
+    'Greedy',
+    'Graph',
+    'BFS',
+    'DFS',
+    'Matrix',
+    'Bit Manipulation',
+    'Heap',
+    'Deque',
+    'Prefix Sum',
   ];
-  const courseOptions = ['KTLT', 'DSA'];
+  const courseOptions = [
+    'Arrays & Hashing',
+    'Two Pointers',
+    'Sliding Window',
+    'Stack',
+    'Binary Search',
+    'Linked List',
+    'Dynamic Programming',
+    'Grids & Graphs',
+    'Backtracking',
+    'Intervals',
+    'Greedy',
+    'Bit Manipulation',
+  ];
 
   const handleTagSelect = (value: string) => {
     if (!selectedTags.includes(value))
