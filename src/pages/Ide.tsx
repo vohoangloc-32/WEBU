@@ -52,7 +52,17 @@ export const Ide = (): JSX.Element => {
     setError(null);
     ideApi
       .getCard(problemSlug)
-      .then((data) => setCard(data))
+      .then((data) => {
+        if (data && data.difficulty_level) {
+          data.difficulty_level = (data.difficulty_level
+            .charAt(0)
+            .toUpperCase() + data.difficulty_level.slice(1).toLowerCase()) as
+            | 'Easy'
+            | 'Medium'
+            | 'Hard';
+        }
+        setCard(data);
+      })
       .catch((err: unknown) => {
         const msg =
           err instanceof Error

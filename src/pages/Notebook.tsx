@@ -41,7 +41,7 @@ export const Notebook = (): JSX.Element => {
         // Pass limit=200 to fetch all problems at once for client-side filtering/pagination
         // The default limit=10 was causing only 10 of 113 problems to be shown
         const response = await apiClient.get('/cards', {
-          params: { limit: 200, page: 1 },
+          params: { limit: 200, page: 1, scope: 'user' },
         });
         const data = response.data;
 
@@ -53,7 +53,10 @@ export const Notebook = (): JSX.Element => {
             description: item.content?.description || '',
             tags: item.tags || [],
             group: item.group || item.course || '',
-            difficulty: item.difficulty_level || 'Medium',
+            difficulty: item.difficulty_level
+              ? item.difficulty_level.charAt(0).toUpperCase() +
+                item.difficulty_level.slice(1).toLowerCase()
+              : 'Medium',
             isFavorite: false,
           }),
         );

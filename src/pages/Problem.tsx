@@ -49,6 +49,7 @@ export const Problem = (): JSX.Element => {
       const params: Record<string, string> = {
         page: String(currentPage),
         limit: String(ITEMS_PER_PAGE),
+        scope: 'system',
       };
       if (searchQuery.trim()) params.search = searchQuery.trim();
       if (selectedTags.length > 0) params.tags = selectedTags.join(',');
@@ -64,7 +65,10 @@ export const Problem = (): JSX.Element => {
           name: item.title,
           tags: item.tags || [],
           group: item.group || item.course || '',
-          difficulty: item.difficulty_level || 'Medium',
+          difficulty: item.difficulty_level
+            ? item.difficulty_level.charAt(0).toUpperCase() +
+              item.difficulty_level.slice(1).toLowerCase()
+            : 'Medium',
         }),
       );
 
