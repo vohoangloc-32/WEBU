@@ -205,7 +205,7 @@ export const CreateProblem = (): JSX.Element => {
       // 3. Tạo problem trong DB
       const savedCard = await problemApi.createProblem({
         title: name,
-        difficulty_level,
+        difficulty_level: difficulty_level.toLowerCase(),
         tags,
         course,
         description,
