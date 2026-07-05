@@ -72,10 +72,29 @@ export const QuizModal: React.FC<QuizModalProps> = ({
 
   const getScoreMessage = () => {
     const ratio = correctCount / questions.length;
-    if (ratio === 1) return { emoji: '🏆', text: 'Hoàn hảo! Bạn đã nắm vững bài này.', color: 'text-emerald-400' };
-    if (ratio >= 0.75) return { emoji: '🎉', text: 'Rất tốt! Kiến thức vững chắc.', color: 'text-blue-400' };
-    if (ratio >= 0.5) return { emoji: '📚', text: 'Ổn định. Nên ôn lại một lần nữa.', color: 'text-yellow-400' };
-    return { emoji: '💪', text: 'Cần ôn thêm. Đừng bỏ cuộc!', color: 'text-red-400' };
+    if (ratio === 1)
+      return {
+        emoji: '🏆',
+        text: 'Hoàn hảo! Bạn đã nắm vững bài này.',
+        color: 'text-emerald-400',
+      };
+    if (ratio >= 0.75)
+      return {
+        emoji: '🎉',
+        text: 'Rất tốt! Kiến thức vững chắc.',
+        color: 'text-blue-400',
+      };
+    if (ratio >= 0.5)
+      return {
+        emoji: '📚',
+        text: 'Ổn định. Nên ôn lại một lần nữa.',
+        color: 'text-yellow-400',
+      };
+    return {
+      emoji: '💪',
+      text: 'Cần ôn thêm. Đừng bỏ cuộc!',
+      color: 'text-red-400',
+    };
   };
 
   if (!isOpen) return null;
@@ -100,8 +119,12 @@ export const QuizModal: React.FC<QuizModalProps> = ({
               🧠
             </div>
             <div>
-              <p className="text-white text-sm font-semibold">Knowledge Check</p>
-              <p className="text-neutral-500 text-xs truncate max-w-[220px]">{cardTitle}</p>
+              <p className="text-white text-sm font-semibold">
+                Knowledge Check
+              </p>
+              <p className="text-neutral-500 text-xs truncate max-w-[220px]">
+                {cardTitle}
+              </p>
             </div>
           </div>
           <button
@@ -118,13 +141,32 @@ export const QuizModal: React.FC<QuizModalProps> = ({
           {state === 'loading' && (
             <div className="flex flex-col items-center justify-center py-12 gap-4">
               <div className="relative">
-                <svg className="animate-spin h-10 w-10 text-violet-500/30" fill="none" viewBox="0 0 24 24">
-                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                <svg
+                  className="animate-spin h-10 w-10 text-violet-500/30"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                >
+                  <circle
+                    className="opacity-25"
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
+                    strokeWidth="4"
+                  />
+                  <path
+                    className="opacity-75"
+                    fill="currentColor"
+                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
+                  />
                 </svg>
               </div>
-              <p className="text-neutral-400 text-sm">AI đang tạo câu hỏi ôn tập...</p>
-              <p className="text-neutral-600 text-xs">Lần đầu có thể mất 5–10 giây</p>
+              <p className="text-neutral-400 text-sm">
+                AI đang tạo câu hỏi ôn tập...
+              </p>
+              <p className="text-neutral-600 text-xs">
+                Lần đầu có thể mất 5–10 giây
+              </p>
             </div>
           )}
 
@@ -171,13 +213,20 @@ export const QuizModal: React.FC<QuizModalProps> = ({
                   const isCorrect = i === current.correct_index;
                   const answered = selectedOption !== null;
 
-                  let cls = 'border border-white/10 bg-white/[0.04] text-neutral-300';
+                  let cls =
+                    'border border-white/10 bg-white/[0.04] text-neutral-300';
                   if (answered) {
-                    if (isCorrect) cls = 'border-emerald-500/60 bg-emerald-500/10 text-emerald-300';
-                    else if (isSelected) cls = 'border-red-500/60 bg-red-500/10 text-red-300';
-                    else cls = 'border-white/[0.05] bg-white/[0.02] text-neutral-600';
+                    if (isCorrect)
+                      cls =
+                        'border-emerald-500/60 bg-emerald-500/10 text-emerald-300';
+                    else if (isSelected)
+                      cls = 'border-red-500/60 bg-red-500/10 text-red-300';
+                    else
+                      cls =
+                        'border-white/[0.05] bg-white/[0.02] text-neutral-600';
                   } else {
-                    cls = 'border-white/10 bg-white/[0.04] text-neutral-300 hover:border-blue-500/50 hover:bg-blue-500/5 cursor-pointer';
+                    cls =
+                      'border-white/10 bg-white/[0.04] text-neutral-300 hover:border-blue-500/50 hover:bg-blue-500/5 cursor-pointer';
                   }
 
                   return (
@@ -193,10 +242,14 @@ export const QuizModal: React.FC<QuizModalProps> = ({
                       </span>
                       <span>{opt.text}</span>
                       {answered && isCorrect && (
-                        <span className="ml-auto flex-shrink-0 text-emerald-400">✓</span>
+                        <span className="ml-auto flex-shrink-0 text-emerald-400">
+                          ✓
+                        </span>
                       )}
                       {answered && isSelected && !isCorrect && (
-                        <span className="ml-auto flex-shrink-0 text-red-400">✗</span>
+                        <span className="ml-auto flex-shrink-0 text-red-400">
+                          ✗
+                        </span>
                       )}
                     </button>
                   );
@@ -206,7 +259,9 @@ export const QuizModal: React.FC<QuizModalProps> = ({
               {/* Explanation */}
               {showExplanation && (
                 <div className="p-3 rounded-xl bg-blue-500/10 border border-blue-500/20 text-xs text-blue-300 leading-relaxed mb-4">
-                  <span className="font-semibold text-blue-400">💡 Giải thích: </span>
+                  <span className="font-semibold text-blue-400">
+                    💡 Giải thích:{' '}
+                  </span>
                   {current.explanation}
                 </div>
               )}
@@ -218,7 +273,9 @@ export const QuizModal: React.FC<QuizModalProps> = ({
                   onClick={handleNext}
                   className="w-full py-2.5 bg-gradient-to-r from-violet-600 to-blue-600 hover:from-violet-500 hover:to-blue-500 text-white text-sm font-semibold rounded-xl transition-all duration-150 cursor-pointer"
                 >
-                  {currentIdx < questions.length - 1 ? 'Câu tiếp theo →' : 'Xem kết quả'}
+                  {currentIdx < questions.length - 1
+                    ? 'Câu tiếp theo →'
+                    : 'Xem kết quả'}
                 </button>
               )}
             </>
@@ -235,7 +292,9 @@ export const QuizModal: React.FC<QuizModalProps> = ({
                       <p className={`text-2xl font-bold ${msg.color}`}>
                         {correctCount}/{questions.length}
                       </p>
-                      <p className="text-neutral-400 text-sm mt-1">{msg.text}</p>
+                      <p className="text-neutral-400 text-sm mt-1">
+                        {msg.text}
+                      </p>
                     </div>
 
                     {/* Per-question result */}
@@ -249,10 +308,18 @@ export const QuizModal: React.FC<QuizModalProps> = ({
                               : 'bg-red-500/10 border border-red-500/20'
                           }`}
                         >
-                          <span className={answers[i] === q.correct_index ? 'text-emerald-400' : 'text-red-400'}>
+                          <span
+                            className={
+                              answers[i] === q.correct_index
+                                ? 'text-emerald-400'
+                                : 'text-red-400'
+                            }
+                          >
                             {answers[i] === q.correct_index ? '✓' : '✗'}
                           </span>
-                          <span className="text-neutral-300 truncate flex-1">{q.question}</span>
+                          <span className="text-neutral-300 truncate flex-1">
+                            {q.question}
+                          </span>
                         </div>
                       ))}
                     </div>

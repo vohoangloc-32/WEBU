@@ -16,9 +16,24 @@ import {
 const LoadingSection = () => (
   <div className="h-48 rounded-2xl bg-white/[0.04] border border-white/[0.08] flex items-center justify-center">
     <div className="flex flex-col items-center gap-3">
-      <svg className="animate-spin h-7 w-7 text-blue-500/50" fill="none" viewBox="0 0 24 24">
-        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+      <svg
+        className="animate-spin h-7 w-7 text-blue-500/50"
+        fill="none"
+        viewBox="0 0 24 24"
+      >
+        <circle
+          className="opacity-25"
+          cx="12"
+          cy="12"
+          r="10"
+          stroke="currentColor"
+          strokeWidth="4"
+        />
+        <path
+          className="opacity-75"
+          fill="currentColor"
+          d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+        />
       </svg>
       <span className="text-neutral-600 text-xs">Đang tải dữ liệu...</span>
     </div>
@@ -74,14 +89,25 @@ export const Stats: React.FC = () => {
         <div className="mb-8">
           <div className="flex items-center gap-3 mb-2">
             <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-blue-500 to-purple-500 flex items-center justify-center">
-              <svg className="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+              <svg
+                className="w-4 h-4 text-white"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                strokeWidth={2}
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
+                />
               </svg>
             </div>
             <h1 className="text-white text-2xl font-bold">Statistics</h1>
           </div>
           <p className="text-neutral-500 text-sm">
-            Tổng quan về hành trình học lập trình của bạn — từ FSRS đến kỹ năng thuật toán.
+            Tổng quan về hành trình học lập trình của bạn — từ FSRS đến kỹ năng
+            thuật toán.
           </p>
         </div>
 
@@ -126,11 +152,7 @@ export const Stats: React.FC = () => {
           </div>
 
           {/* Section 4: FSRS Table */}
-          {loading ? (
-            <LoadingSection />
-          ) : (
-            <FsrsProgressTable data={fsrsData} />
-          )}
+          {loading ? <LoadingSection /> : <FsrsProgressTable data={fsrsData} />}
         </div>
       </main>
     </div>

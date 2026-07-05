@@ -44,7 +44,9 @@ const CustomTooltip = ({
   );
 };
 
-export const DifficultyBarChart: React.FC<DifficultyBarChartProps> = ({ stats }) => {
+export const DifficultyBarChart: React.FC<DifficultyBarChartProps> = ({
+  stats,
+}) => {
   const { solved_by_difficulty } = stats;
 
   const chartData = [
@@ -54,20 +56,33 @@ export const DifficultyBarChart: React.FC<DifficultyBarChartProps> = ({ stats })
   ];
 
   const total =
-    solved_by_difficulty.Easy + solved_by_difficulty.Medium + solved_by_difficulty.Hard;
+    solved_by_difficulty.Easy +
+    solved_by_difficulty.Medium +
+    solved_by_difficulty.Hard;
 
   return (
     <div className="p-5 rounded-2xl bg-white/[0.04] border border-white/[0.08]">
       <div className="mb-4">
-        <h3 className="text-white font-semibold text-sm">Phân phối theo độ khó</h3>
-        <p className="text-neutral-500 text-xs mt-0.5">Số bài đã giải (Passed) theo mức độ</p>
+        <h3 className="text-white font-semibold text-sm">
+          Phân phối theo độ khó
+        </h3>
+        <p className="text-neutral-500 text-xs mt-0.5">
+          Số bài đã giải (Passed) theo mức độ
+        </p>
       </div>
 
       {/* Summary pills */}
       <div className="flex gap-3 mb-4">
         {chartData.map((d) => (
-          <div key={d.name} className="flex-1 rounded-xl p-3 text-center" style={{ background: DIFFICULTY_COLORS[d.name].fill }}>
-            <p style={{ color: DIFFICULTY_COLORS[d.name].solved }} className="text-2xl font-bold">
+          <div
+            key={d.name}
+            className="flex-1 rounded-xl p-3 text-center"
+            style={{ background: DIFFICULTY_COLORS[d.name].fill }}
+          >
+            <p
+              style={{ color: DIFFICULTY_COLORS[d.name].solved }}
+              className="text-2xl font-bold"
+            >
               {d.solved}
             </p>
             <p className="text-neutral-400 text-[10px] mt-0.5">{d.name}</p>
@@ -76,8 +91,15 @@ export const DifficultyBarChart: React.FC<DifficultyBarChartProps> = ({ stats })
       </div>
 
       <ResponsiveContainer width="100%" height={160}>
-        <BarChart data={chartData} margin={{ top: 0, right: 10, left: -20, bottom: 0 }}>
-          <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" vertical={false} />
+        <BarChart
+          data={chartData}
+          margin={{ top: 0, right: 10, left: -20, bottom: 0 }}
+        >
+          <CartesianGrid
+            strokeDasharray="3 3"
+            stroke="rgba(255,255,255,0.05)"
+            vertical={false}
+          />
           <XAxis
             dataKey="name"
             tick={{ fill: '#6b7280', fontSize: 11 }}
@@ -89,7 +111,10 @@ export const DifficultyBarChart: React.FC<DifficultyBarChartProps> = ({ stats })
             axisLine={false}
             tickLine={false}
           />
-          <Tooltip content={<CustomTooltip />} cursor={{ fill: 'rgba(255,255,255,0.04)' }} />
+          <Tooltip
+            content={<CustomTooltip />}
+            cursor={{ fill: 'rgba(255,255,255,0.04)' }}
+          />
           <Bar dataKey="solved" name="Đã solved" radius={[6, 6, 0, 0]}>
             {chartData.map((d) => (
               <Cell key={d.name} fill={DIFFICULTY_COLORS[d.name].solved} />
@@ -98,7 +123,9 @@ export const DifficultyBarChart: React.FC<DifficultyBarChartProps> = ({ stats })
         </BarChart>
       </ResponsiveContainer>
 
-      <p className="text-center text-neutral-600 text-xs mt-2">{total} bài đã giải tổng cộng</p>
+      <p className="text-center text-neutral-600 text-xs mt-2">
+        {total} bài đã giải tổng cộng
+      </p>
     </div>
   );
 };

@@ -5,7 +5,20 @@ interface SubmissionHeatmapProps {
   data: SubmissionHistoryRecord[];
 }
 
-const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+const MONTHS = [
+  'Jan',
+  'Feb',
+  'Mar',
+  'Apr',
+  'May',
+  'Jun',
+  'Jul',
+  'Aug',
+  'Sep',
+  'Oct',
+  'Nov',
+  'Dec',
+];
 const DAYS = ['', 'Mon', '', 'Wed', '', 'Fri', ''];
 
 const getIntensity = (count: number): string => {
@@ -16,7 +29,9 @@ const getIntensity = (count: number): string => {
   return 'bg-emerald-400';
 };
 
-export const SubmissionHeatmap: React.FC<SubmissionHeatmapProps> = ({ data }) => {
+export const SubmissionHeatmap: React.FC<SubmissionHeatmapProps> = ({
+  data,
+}) => {
   const { weeks, monthLabels } = useMemo(() => {
     const countMap = new Map(data.map((d) => [d.date, d.count]));
 
@@ -59,12 +74,19 @@ export const SubmissionHeatmap: React.FC<SubmissionHeatmapProps> = ({ data }) =>
         <div>
           <h3 className="text-white font-semibold text-sm">Lịch sử Submit</h3>
           <p className="text-neutral-500 text-xs mt-0.5">
-            {totalSubmissions} lần submit · {activeDays} ngày hoạt động trong 6 tháng
+            {totalSubmissions} lần submit · {activeDays} ngày hoạt động trong 6
+            tháng
           </p>
         </div>
         <div className="flex items-center gap-1.5 text-xs text-neutral-500">
           <span>Ít</span>
-          {['bg-white/[0.04]', 'bg-emerald-900/70', 'bg-emerald-700/80', 'bg-emerald-500/80', 'bg-emerald-400'].map((c, i) => (
+          {[
+            'bg-white/[0.04]',
+            'bg-emerald-900/70',
+            'bg-emerald-700/80',
+            'bg-emerald-500/80',
+            'bg-emerald-400',
+          ].map((c, i) => (
             <div key={i} className={`w-3 h-3 rounded-sm ${c}`} />
           ))}
           <span>Nhiều</span>
@@ -75,7 +97,10 @@ export const SubmissionHeatmap: React.FC<SubmissionHeatmapProps> = ({ data }) =>
         {/* Day labels */}
         <div className="flex flex-col gap-[3px] pt-5 flex-shrink-0">
           {DAYS.map((day, i) => (
-            <div key={i} className="h-3 w-7 text-[9px] text-neutral-600 flex items-center">
+            <div
+              key={i}
+              className="h-3 w-7 text-[9px] text-neutral-600 flex items-center"
+            >
               {day}
             </div>
           ))}
@@ -88,7 +113,10 @@ export const SubmissionHeatmap: React.FC<SubmissionHeatmapProps> = ({ data }) =>
             {weeks.map((_, wi) => {
               const label = monthLabels.find((m) => m.col === wi);
               return (
-                <div key={wi} className="w-3 flex-shrink-0 text-[9px] text-neutral-500">
+                <div
+                  key={wi}
+                  className="w-3 flex-shrink-0 text-[9px] text-neutral-500"
+                >
                   {label?.month ?? ''}
                 </div>
               );
