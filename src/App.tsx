@@ -8,6 +8,7 @@ import ForgetPassword from './pages/ForgetPassword';
 import { Survey } from './pages/Survey';
 import Ide from './pages/Ide';
 import { CreateProblem } from './pages/CreateProblem';
+import Stats from './pages/Stats';
 // import CodeDescription from './pages/CodeDescription';
 
 function App() {
@@ -20,6 +21,7 @@ function App() {
       <Route path="/problem" element={<Problem />} />
       <Route path="/problems/:problemSlug" element={<Ide />} />
       <Route path="/create-problem" element={<CreateProblem />} />
+      <Route path="/stats" element={<Stats />} />
       {/* /signup và /signin đều dùng chung trang tích hợp SignUp (có 2 tab) */}
       <Route path="/signup" element={<SignUp />} />
       <Route path="/signin" element={<SignUp />} />

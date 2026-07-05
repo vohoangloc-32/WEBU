@@ -197,6 +197,7 @@ export const Ide = (): JSX.Element => {
                 cardId={(card as CardDetail & { _id?: string })._id || card.id}
                 boilerplateCodes={card.ide_data?.boilerplate_code ?? {}}
                 onSubmissionDone={handleFSRSUpdate}
+                cardTitle={card.title}
               />
             </div>
           </div>

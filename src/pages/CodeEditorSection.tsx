@@ -9,11 +9,13 @@ import {
   SubmitResult,
   TestCaseResult,
 } from '../types/ide';
+import { QuizModal } from '../components/quiz/QuizModal';
 
 interface CodeEditorSectionProps {
   cardId: string;
   boilerplateCodes: BoilerplateCode;
   onSubmissionDone?: (isPassed: boolean) => void;
+  cardTitle?: string;
 }
 
 const LANGUAGE_LABELS: Record<Language, string> = {
@@ -85,6 +87,7 @@ export const CodeEditorSection = ({
   cardId,
   boilerplateCodes,
   onSubmissionDone,
+  cardTitle = 'Bài tập',
 }: CodeEditorSectionProps): JSX.Element => {
   const [lang, setLang] = useState<Language>('javascript');
   const [code, setCode] = useState('');
@@ -102,6 +105,7 @@ export const CodeEditorSection = ({
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [copied, setCopied] = useState(false);
   const [elapsedSec, setElapsedSec] = useState(0);
+  const [showQuiz, setShowQuiz] = useState(false);
 
   const editorRef = useRef<MonacoEditorNS.IStandaloneCodeEditor | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -268,6 +272,12 @@ export const CodeEditorSection = ({
       setTestResults(result.results);
       if (onSubmissionDone) {
         onSubmissionDone(result.passed);
+      }
+      // Hiển thị quiz khi submit passed
+      if (result.passed) {
+        setTimeout(() => {
+          setShowQuiz(true);
+        }, 1200); // delay nhỏ để user thấy kết quả trước
       }
     } catch (err) {
       setRunState('error');
@@ -861,6 +871,14 @@ export const CodeEditorSection = ({
           </button>
         </div>
       </div>
+
+      {/* ── Flashcard Quiz Modal ─────────────────────────────────────────── */}
+      <QuizModal
+        cardId={cardId}
+        cardTitle={cardTitle}
+        isOpen={showQuiz}
+        onClose={() => setShowQuiz(false)}
+      />
     </div>
   );
 };

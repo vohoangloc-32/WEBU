@@ -10,9 +10,9 @@ export const MainNavigation = (): JSX.Element => {
   // Determine active tab from current URL pathname
   const getActiveTab = () => {
     const path = location.pathname;
-    if (path.startsWith('/problem') || path.startsWith('/problem'))
-      return 'PROBLEM';
+    if (path.startsWith('/problem')) return 'PROBLEM';
     if (path.startsWith('/notebook')) return 'NOTEBOOK';
+    if (path.startsWith('/stats')) return 'STATS';
     return 'DASHBOARD';
   };
 
@@ -48,6 +48,13 @@ export const MainNavigation = (): JSX.Element => {
             onClick={() => navigate('/notebook')}
           >
             NOTEBOOK
+          </Tab>
+
+          <Tab
+            isActive={activeTab === 'STATS'}
+            onClick={() => navigate('/stats')}
+          >
+            STATS
           </Tab>
         </div>
 

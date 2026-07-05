@@ -54,6 +54,7 @@ export const CodeDescription = (): JSX.Element => {
           <CodeEditorSection
             cardId="mock"
             boilerplateCodes={mockBoilerplates}
+            cardTitle={mockCard.title}
           />
         </section>
       </div>
