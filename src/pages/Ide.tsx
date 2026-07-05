@@ -24,6 +24,7 @@ export const Ide = (): JSX.Element => {
   const [card, setCard] = useState<CardDetail | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [submissionTrigger, setSubmissionTrigger] = useState(0);
 
   // Draggable split panel state (% width of left panel)
   const [splitPct, setSplitPct] = useState(45);
@@ -89,9 +90,9 @@ export const Ide = (): JSX.Element => {
   const handleFSRSUpdate = async (isPassed: boolean) => {
     if (!userId || !card) return;
 
-    try {
-      const safeCardId = (card as CardDetail & { _id?: string })._id || card.id;
+    const safeCardId = (card as CardDetail & { _id?: string })._id || card.id;
 
+    try {
       await apiClient.post('/api/fsrs/review', {
         userId: userId,
         cardId: safeCardId,
@@ -101,6 +102,8 @@ export const Ide = (): JSX.Element => {
       console.log('FSRS score submitted successfully!');
     } catch (error) {
       console.error('Error submitting FSRS scores:', error);
+    } finally {
+      setSubmissionTrigger((prev) => prev + 1);
     }
   };
 
@@ -179,7 +182,11 @@ export const Ide = (): JSX.Element => {
               className="flex-shrink-0 min-h-0 rounded-xl overflow-hidden"
               style={{ width: `${splitPct}%` }}
             >
-              <ProblemTabsSection card={card} userId={userId} />
+              <ProblemTabsSection
+                card={card}
+                userId={userId}
+                submissionTrigger={submissionTrigger}
+              />
             </div>
 
             {/* Divider */}

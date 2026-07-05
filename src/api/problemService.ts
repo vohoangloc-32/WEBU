@@ -17,6 +17,7 @@ export const problemApi = {
         formData,
         {
           headers: { 'Content-Type': 'multipart/form-data' },
+          timeout: 120000,
         },
       );
       return response.data;
@@ -24,6 +25,9 @@ export const problemApi = {
       const response = await apiClient.post<AiGeneratedProblem>(
         '/api/ai/generate-problem',
         { prompt },
+        {
+          timeout: 120000,
+        },
       );
       return response.data;
     }
@@ -44,7 +48,13 @@ export const problemApi = {
   generateTestCases: async (title: string, description: string) => {
     const response = await apiClient.post<
       { input: string; expected_output: string; is_hidden: boolean }[]
-    >('/api/ai/generate-testcases', { title, description });
+    >(
+      '/api/ai/generate-testcases',
+      { title, description },
+      {
+        timeout: 120000,
+      },
+    );
     return response.data;
   },
 

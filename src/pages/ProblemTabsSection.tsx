@@ -13,6 +13,7 @@ interface Message {
 interface ProblemTabsSectionProps {
   card: CardDetail;
   userId?: string;
+  submissionTrigger?: number;
 }
 
 const DIFFICULTY_COLORS: Record<string, string> = {
@@ -27,6 +28,7 @@ const now = () =>
 export const ProblemTabsSection = ({
   card,
   userId,
+  submissionTrigger,
 }: ProblemTabsSectionProps): JSX.Element => {
   const [activeTab, setActiveTab] = useState<'desc' | 'ai' | 'subs'>('desc');
 
@@ -57,15 +59,17 @@ export const ProblemTabsSection = ({
   const [subsLoading, setSubsLoading] = useState(false);
 
   useEffect(() => {
-    if (activeTab === 'subs' && userId) {
+    const safeCardId = (card as CardDetail & { _id?: string })._id || card.id;
+
+    if (activeTab === 'subs' && userId && safeCardId) {
       setSubsLoading(true);
       ideApi
-        .getSubmissions(card.id, userId)
+        .getSubmissions(safeCardId, userId)
         .then((data) => setSubmissions(data))
         .catch(() => setSubmissions([]))
         .finally(() => setSubsLoading(false));
     }
-  }, [activeTab, card.id, userId]);
+  }, [activeTab, card, userId, submissionTrigger]);
 
   useEffect(() => {
     chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
