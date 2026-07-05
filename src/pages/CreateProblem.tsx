@@ -174,14 +174,17 @@ export const CreateProblem = (): JSX.Element => {
 
     setIsProcessing(true);
     try {
-      // 1. Gọi AI sinh testcases tự động
-      let testcases: any[] = [];
+      let testcases: {
+        input: string;
+        expected_output: string;
+        is_hidden: boolean;
+      }[] = [];
       try {
         testcases = await problemApi.generateTestCases(name, description);
       } catch (aiErr) {
         console.warn('Lỗi AI generateTestCases:', aiErr);
         const proceed = window.confirm(
-          'Quá trình tạo testcase tự động bằng AI bị lỗi (có thể do API key Gemini hết lượt sử dụng). Bạn có muốn tiếp tục lưu bài tập này (không kèm testcase) không?'
+          'Quá trình tạo testcase tự động bằng AI bị lỗi (có thể do API key Gemini hết lượt sử dụng). Bạn có muốn tiếp tục lưu bài tập này (không kèm testcase) không?',
         );
         if (!proceed) {
           setIsProcessing(false);
