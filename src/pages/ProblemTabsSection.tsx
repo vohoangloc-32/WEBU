@@ -30,7 +30,9 @@ export const ProblemTabsSection = ({
   userId,
   submissionTrigger,
 }: ProblemTabsSectionProps): JSX.Element => {
-  const [activeTab, setActiveTab] = useState<'desc' | 'ai' | 'subs'>('desc');
+  const [activeTab, setActiveTab] = useState<'desc' | 'ai' | 'subs' | 'note'>(
+    'desc',
+  );
 
   // ── AI Tutor state ──────────────────────────────────────────────────────
   const [messages, setMessages] = useState<Message[]>([
@@ -137,6 +139,40 @@ export const ProblemTabsSection = ({
     }
   };
 
+  // ── Note ─────────────────────────────────────────────────────────────
+  const [noteContent, setNoteContent] = useState('');
+  const [isSavingNote, setIsSavingNote] = useState(false);
+  const [noteMessage, setNoteMessage] = useState('');
+
+  useEffect(() => {
+    if (activeTab === 'note' && userId) {
+      apiClient
+        .get(`/api/notes?userId=${userId}&cardId=${card.id}`)
+        .then((res) => {
+          setNoteContent(res.data.content || '');
+        })
+        .catch(() => setNoteContent(''));
+    }
+  }, [activeTab, userId, card.id]);
+
+  const handleSaveNote = async () => {
+    if (!userId) return;
+    setIsSavingNote(true);
+    try {
+      await apiClient.post('/notes', {
+        user_id: userId,
+        card_id: card.id,
+        content: noteContent,
+      });
+      setNoteMessage('Đã lưu ghi chú thành công! ✅');
+    } catch {
+      setNoteMessage('Lưu thất bại! ❌');
+    } finally {
+      setIsSavingNote(false);
+      setTimeout(() => setNoteMessage(''), 3000);
+    }
+  };
+
   const STATUS_LABEL: Record<string, string> = {
     Accepted: 'Accepted',
     'Wrong Answer': 'Wrong Answer',
@@ -157,6 +193,7 @@ export const ProblemTabsSection = ({
       ),
     },
     { id: 'subs' as const, label: 'Submissions' },
+    { id: 'note' as const, label: 'Notes' },
   ];
 
   const diffClass =
@@ -441,6 +478,48 @@ export const ProblemTabsSection = ({
                   </details>
                 </div>
               ))}
+          </div>
+        )}
+        {/* Notes Tab */}
+        {activeTab === 'note' && (
+          <div className="h-full flex flex-col px-4 py-5 space-y-4">
+            <div className="flex justify-between items-center flex-shrink-0">
+              <h2 className="text-white font-semibold text-sm">
+                Personal Notes
+              </h2>
+              {noteMessage && (
+                <span className="text-emerald-400 text-xs font-medium animate-pulse">
+                  {noteMessage}
+                </span>
+              )}
+            </div>
+
+            {!userId ? (
+              <div className="flex-1 flex items-center justify-center text-neutral-500 text-sm">
+                Vui lòng{' '}
+                <span className="text-secondary-a50 mx-1">đăng nhập</span> để
+                tạo ghi chú.
+              </div>
+            ) : (
+              <>
+                <textarea
+                  value={noteContent}
+                  onChange={(e) => setNoteContent(e.target.value)}
+                  placeholder={`Ghi chú lại cách giải, mẹo hay, hoặc nhắc nhở bản thân cho bài ${card.title} tại đây...`}
+                  className="flex-1 w-full bg-[#1a2235] text-neutral-200 text-sm p-4 rounded-xl border border-white/[0.08] focus:border-secondary-a50 focus:outline-none resize-none scrollbar-thin transition-colors"
+                />
+
+                <div className="flex justify-end flex-shrink-0">
+                  <button
+                    onClick={handleSaveNote}
+                    disabled={isSavingNote}
+                    className="px-6 py-2 bg-emerald-600 hover:bg-emerald-500 disabled:opacity-50 text-white font-semibold rounded-lg transition-colors text-xs flex items-center gap-2 shadow-md cursor-pointer"
+                  >
+                    {isSavingNote ? 'Đang lưu...' : 'Lưu ghi chú'}
+                  </button>
+                </div>
+              </>
+            )}
           </div>
         )}
       </div>

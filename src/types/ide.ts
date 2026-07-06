@@ -75,4 +75,5 @@ export interface SubmissionHistory {
   submitted_at: string;
   submitted_code: string;
   passed: boolean;
+  note?: string;
 }
