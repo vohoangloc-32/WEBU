@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import SelectDropdown from '../ui/SelectDropdown';
 
 interface FilterProps {
   searchQuery: string;
@@ -21,19 +21,14 @@ export const NotebookFilter = ({
   tagOptions = ['Array', 'Math', 'Linked List', 'Hash Table'],
   courseOptions = ['KTLT', 'DSA'],
 }: FilterProps) => {
-  const [isTagOpen, setIsTagOpen] = useState(false);
-  const [isCourseOpen, setIsCourseOpen] = useState(false);
-
   const handleTagSelect = (value: string) => {
     if (!selectedTags.includes(value))
       setSelectedTags([...selectedTags, value]);
-    setIsTagOpen(false);
   };
 
   const handleCourseSelect = (value: string) => {
     if (!selectedCourses.includes(value))
       setSelectedCourses([...selectedCourses, value]);
-    setIsCourseOpen(false);
   };
 
   const removeTag = (tag: string) =>
@@ -56,51 +51,27 @@ export const NotebookFilter = ({
         </div>
 
         <div className="relative w-[120px] h-[42px]">
-          <div
-            onClick={() => setIsTagOpen(!isTagOpen)}
-            className="w-full h-full bg-info-a0 rounded-[6px] px-3 flex justify-between items-center cursor-pointer border border-transparent hover:border-secondary-a70 transition-colors select-none"
-          >
-            <span className="text-white h7 font-bold">Tags</span>
-            <span className="text-white p9 opacity-70">▼</span>
-          </div>
-
-          {isTagOpen && (
-            <div className="absolute top-full left-0 mt-1 w-full bg-tonal-a20 rounded-[6px] border border-tonal-a30 overflow-hidden z-50 shadow-lg">
-              {tagOptions.map((tag) => (
-                <div
-                  key={tag}
-                  onClick={() => handleTagSelect(tag)}
-                  className="px-3 py-2 text-white p8 cursor-pointer hover:bg-primary-a20 transition-colors"
-                >
-                  {tag}
-                </div>
-              ))}
-            </div>
-          )}
+          <SelectDropdown
+            label="Tags"
+            options={tagOptions}
+            onSelect={handleTagSelect}
+            buttonClassName="w-full h-full bg-info-a0 rounded-[6px] px-3 flex justify-between items-center cursor-pointer border border-transparent hover:border-secondary-a70 transition-colors select-none text-white h7 font-bold"
+            dropdownClassName="absolute top-full left-0 mt-1 w-full bg-tonal-a20 rounded-[6px] border border-tonal-a30 overflow-hidden z-50 shadow-lg"
+            itemClassName="block w-full text-left px-3 py-2 text-white p8 cursor-pointer hover:bg-primary-a20 transition-colors"
+            containerClassName="w-full h-full"
+          />
         </div>
 
         <div className="relative w-[120px] h-[42px]">
-          <div
-            onClick={() => setIsCourseOpen(!isCourseOpen)}
-            className="w-full h-full bg-info-a0 rounded-[6px] px-3 flex justify-between items-center cursor-pointer border border-transparent hover:border-secondary-a70 transition-colors select-none"
-          >
-            <span className="text-white h7 font-bold">Course</span>
-            <span className="text-white p9 opacity-70">▼</span>
-          </div>
-
-          {isCourseOpen && (
-            <div className="absolute top-full left-0 mt-1 w-full bg-tonal-a20 rounded-[6px] border border-tonal-a30 overflow-hidden z-50 shadow-lg">
-              {courseOptions.map((course) => (
-                <div
-                  key={course}
-                  onClick={() => handleCourseSelect(course)}
-                  className="px-3 py-2 text-white p8 cursor-pointer hover:bg-primary-a20 transition-colors"
-                >
-                  {course}
-                </div>
-              ))}
-            </div>
-          )}
+          <SelectDropdown
+            label="Course"
+            options={courseOptions}
+            onSelect={handleCourseSelect}
+            buttonClassName="w-full h-full bg-info-a0 rounded-[6px] px-3 flex justify-between items-center cursor-pointer border border-transparent hover:border-secondary-a70 transition-colors select-none text-white h7 font-bold"
+            dropdownClassName="absolute top-full left-0 mt-1 w-full bg-tonal-a20 rounded-[6px] border border-tonal-a30 overflow-hidden z-50 shadow-lg"
+            itemClassName="block w-full text-left px-3 py-2 text-white p8 cursor-pointer hover:bg-primary-a20 transition-colors"
+            containerClassName="w-full h-full"
+          />
         </div>
       </div>
 

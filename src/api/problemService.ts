@@ -65,4 +65,11 @@ export const problemApi = {
     );
     return response.data;
   },
+
+  deleteProblem: async (cardId: string) => {
+    const response = await apiClient.delete<{ success: boolean }>(
+      `/cards/${cardId}`,
+    );
+    return response.data;
+  },
 };

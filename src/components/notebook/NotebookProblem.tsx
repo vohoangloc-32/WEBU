@@ -13,6 +13,7 @@ interface NotebookProblemProps {
   isCustom?: boolean;
   isSuggested?: boolean;
   isInteracted?: boolean;
+  onDelete?: () => void;
 }
 
 export const NotebookProblem = ({
@@ -26,6 +27,7 @@ export const NotebookProblem = ({
   isCustom = false,
   isSuggested = false,
   isInteracted = false,
+  onDelete,
 }: NotebookProblemProps) => {
   const navigate = useNavigate();
 
@@ -80,11 +82,27 @@ export const NotebookProblem = ({
           )}
         </div>
 
-        <div
-          onClick={onToggleFavorite}
-          className="flex items-center gap-1 p8 text-neutral-a50 cursor-pointer hover:text-white transition-colors select-none"
-        >
-          <span>{isFavorite ? '★ Favorited' : '☆ Favorite'}</span>
+        <div className="flex items-center gap-4">
+          <div
+            onClick={onToggleFavorite}
+            className="flex items-center gap-1 p8 text-neutral-a50 cursor-pointer hover:text-white transition-colors select-none"
+          >
+            <span>{isFavorite ? '★ Favorited' : '☆ Favorite'}</span>
+          </div>
+
+          {onDelete && (
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                onDelete();
+              }}
+              className="flex items-center gap-1 p8 text-red-400 hover:text-red-300 transition-colors select-none cursor-pointer border-none bg-transparent"
+              title="Xóa bài tập này"
+            >
+              🗑️ Delete
+            </button>
+          )}
         </div>
       </div>
 

@@ -9,6 +9,7 @@ import { problemApi } from '@/api/problemService';
 
 interface BackendCard {
   _id: string;
+  id?: string;
   title: string;
   content?: {
     description?: string;
@@ -61,7 +62,7 @@ export const Problem = (): JSX.Element => {
       const formattedData: ProblemItem[] = data.data.map(
         (item: BackendCard, index: number) => ({
           id: (currentPage - 1) * ITEMS_PER_PAGE + index + 1,
-          dbId: item._id,
+          dbId: item._id || item.id,
           name: item.title,
           tags: item.tags || [],
           group: item.group || item.course || '',

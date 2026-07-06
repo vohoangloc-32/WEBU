@@ -10,4 +10,5 @@ export interface ProblemType {
   isCustom?: boolean;
   isSuggested?: boolean;
   isInteracted?: boolean;
+  createdBy?: string;
 }

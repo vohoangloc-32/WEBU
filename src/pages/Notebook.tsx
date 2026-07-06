@@ -120,6 +120,18 @@ export const Notebook = (): JSX.Element => {
     setCurrentPage(1);
   }, [searchQuery, selectedTags, selectedCourses]);
 
+  const handleDeleteProblem = async (dbId: string) => {
+    if (!window.confirm('Are you sure you want to delete this custom problem?'))
+      return;
+    try {
+      await problemApi.deleteProblem(dbId);
+      setProblems((prev) => prev.filter((p) => p.dbId !== dbId));
+    } catch (error) {
+      console.error('Error deleting problem:', error);
+      alert('Failed to delete the problem. Please try again.');
+    }
+  };
+
   const handleToggleFavorite = (id: string) => {
     setProblems((prevProblems) =>
       prevProblems.map((problem) =>
@@ -192,6 +204,11 @@ export const Notebook = (): JSX.Element => {
                   isCustom={problem.isCustom}
                   isSuggested={problem.isSuggested}
                   isInteracted={problem.isInteracted}
+                  onDelete={
+                    problem.isCustom
+                      ? () => handleDeleteProblem(problem.dbId!)
+                      : undefined
+                  }
                 />
               ))}
             </div>
