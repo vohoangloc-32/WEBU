@@ -85,4 +85,9 @@ export const statsApi = {
     );
     return res.data;
   },
+
+  getInteractedCards: async (): Promise<string[]> => {
+    const res = await apiClient.get<string[]>('/users/me/interacted-cards');
+    return res.data;
+  },
 };

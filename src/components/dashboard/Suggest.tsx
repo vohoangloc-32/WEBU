@@ -6,11 +6,18 @@ interface SuggestProps {
   onExpandClick?: () => void;
   onReviewClick?: () => void;
   title?: string;
+  problems?: {
+    id: string;
+    title: string;
+    difficulty: string;
+    tags: string[];
+  }[];
 }
 
 export const Suggest = ({
   onExpandClick,
   title = '',
+  problems = [],
 }: SuggestProps): JSX.Element => {
   const navigate = useNavigate();
 
@@ -27,26 +34,23 @@ export const Suggest = ({
       </div>
 
       <div className="flex flex-col gap-8 w-full">
-        <Problem
-          difficulty="Easy"
-          tags={['Array', 'Hash Table']}
-          title="Two Sum"
-          onReviewClick={() => navigate('/problems/two-sum')}
-        />
-        <Problem
-          difficulty="Medium"
-          tags={['Linked List', 'Two Pointers']}
-          title="Add Two Numbers"
-          onReviewClick={() => navigate('/problems/add-two-numbers')}
-        />
-        <Problem
-          difficulty="Hard"
-          tags={['Dynamic Programming', 'Graph']}
-          title="Longest Palindromic Substring"
-          onReviewClick={() =>
-            navigate('/problems/longest-palindromic-substring')
-          }
-        />
+        {problems.length > 0 ? (
+          problems
+            .slice(0, 3)
+            .map((p) => (
+              <Problem
+                key={p.id}
+                difficulty={p.difficulty as 'Easy' | 'Medium' | 'Hard'}
+                tags={p.tags.slice(0, 3)}
+                title={p.title}
+                onReviewClick={() => navigate(`/problems/${p.id}`)}
+              />
+            ))
+        ) : (
+          <p className="text-neutral-a400 p8 text-center mt-4">
+            Không có bài tập nào.
+          </p>
+        )}
       </div>
     </div>
   );

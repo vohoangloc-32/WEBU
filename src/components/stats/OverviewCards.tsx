@@ -18,7 +18,7 @@ const KpiCard = ({
   sub?: string;
   color: string;
 }) => (
-  <div className="relative flex flex-col gap-3 p-5 rounded-2xl bg-white/[0.04] border border-white/[0.08] overflow-hidden group hover:border-white/20 transition-all duration-300">
+  <div className="relative flex flex-col gap-3 p-5 rounded-2xl bg-tonal-a20 border border-tonal-a30 overflow-hidden group hover:border-white/20 transition-all duration-300">
     <div
       className={`absolute -top-6 -right-6 w-24 h-24 rounded-full opacity-10 blur-2xl ${color}`}
     />
@@ -28,11 +28,11 @@ const KpiCard = ({
       {icon}
     </div>
     <div>
-      <p className="text-neutral-400 text-xs font-medium tracking-wider uppercase">
+      <p className="text-neutral-a300 p8 font-medium tracking-wider uppercase">
         {label}
       </p>
-      <p className="text-white text-3xl font-bold mt-1 tabular-nums">{value}</p>
-      {sub && <p className="text-neutral-500 text-xs mt-1">{sub}</p>}
+      <p className="text-neutral-a50 h3 mt-1 tabular-nums">{value}</p>
+      {sub && <p className="text-neutral-a400 p8 mt-1">{sub}</p>}
     </div>
   </div>
 );
@@ -46,10 +46,10 @@ export const OverviewCards: React.FC<OverviewCardsProps> = ({ stats }) => {
   return (
     <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
       <KpiCard
-        color="bg-emerald-400"
+        color="bg-success-a10"
         icon={
           <svg
-            className="w-5 h-5 text-emerald-400"
+            className="w-5 h-5 text-success-a10"
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
@@ -67,10 +67,10 @@ export const OverviewCards: React.FC<OverviewCardsProps> = ({ stats }) => {
         sub={`${stats.total_passed} lần passed tổng cộng`}
       />
       <KpiCard
-        color="bg-orange-400"
+        color="bg-warning-a10"
         icon={
           <svg
-            className="w-5 h-5 text-orange-400"
+            className="w-5 h-5 text-warning-a10"
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
@@ -93,10 +93,10 @@ export const OverviewCards: React.FC<OverviewCardsProps> = ({ stats }) => {
         sub={`Kỷ lục: ${stats.longest_streak} ngày`}
       />
       <KpiCard
-        color="bg-blue-400"
+        color="bg-primary-a30"
         icon={
           <svg
-            className="w-5 h-5 text-blue-400"
+            className="w-5 h-5 text-primary-a30"
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
@@ -114,10 +114,10 @@ export const OverviewCards: React.FC<OverviewCardsProps> = ({ stats }) => {
         sub={`Tỷ lệ passed: ${passRate}%`}
       />
       <KpiCard
-        color="bg-purple-400"
+        color="bg-discovery-a50"
         icon={
           <svg
-            className="w-5 h-5 text-purple-400"
+            className="w-5 h-5 text-discovery-a50"
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"

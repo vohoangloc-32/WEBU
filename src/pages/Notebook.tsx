@@ -7,9 +7,11 @@ import { Pagination } from '@/components/notebook/Pagination';
 import { ProblemType } from '@/components/notebook/MockData';
 import apiClient from '@/api/apiClient';
 import { problemApi } from '@/api/problemService';
+import { statsApi } from '@/api/statsService';
 
 interface BackendCard {
-  _id: string;
+  _id?: string;
+  id?: string;
   title: string;
   content?: {
     description?: string;
@@ -18,6 +20,7 @@ interface BackendCard {
   course?: string;
   group?: string;
   difficulty_level?: 'Easy' | 'Medium' | 'Hard';
+  created_by?: string | null;
 }
 
 export const Notebook = (): JSX.Element => {
@@ -39,26 +42,69 @@ export const Notebook = (): JSX.Element => {
         setMetaGroups(meta.courses);
 
         // Pass limit=200 to fetch all problems at once for client-side filtering/pagination
-        // The default limit=10 was causing only 10 of 113 problems to be shown
-        const response = await apiClient.get('/cards', {
-          params: { limit: 200, page: 1, scope: 'user' },
-        });
-        const data = response.data;
-
-        const formattedData = data.data.map(
-          (item: BackendCard, index: number) => ({
-            id: String(index + 1),
-            dbId: item._id,
-            title: item.title,
-            description: item.content?.description || '',
-            tags: item.tags || [],
-            group: item.group || item.course || '',
-            difficulty: item.difficulty_level
-              ? item.difficulty_level.charAt(0).toUpperCase() +
-                item.difficulty_level.slice(1).toLowerCase()
-              : 'Medium',
-            isFavorite: false,
+        const [response, fsrsProgress, interacted] = await Promise.all([
+          apiClient.get('/cards', {
+            params: { limit: 200, page: 1, scope: 'user' },
           }),
+          statsApi.getFsrsProgress().catch(() => []),
+          statsApi.getInteractedCards().catch(() => []),
+        ]);
+
+        const data = response.data;
+        const now = new Date();
+
+        const interactedCardIds = new Set([
+          ...fsrsProgress.map((item: { card_id: string }) => item.card_id),
+          ...interacted,
+        ]);
+
+        const suggestedCardIds = new Set(
+          fsrsProgress
+            .filter(
+              (item: { next_review_date: string | null }) =>
+                item.next_review_date && new Date(item.next_review_date) <= now,
+            )
+            .map((item: { card_id: string }) => item.card_id),
+        );
+
+        const token = localStorage.getItem('auth_token');
+        let currentUserId = '';
+        if (token) {
+          try {
+            const payload = JSON.parse(atob(token.split('.')[1]));
+            currentUserId = payload.sub || '';
+          } catch {
+            // ignore
+          }
+        }
+
+        const filteredData = data.data.filter((item: BackendCard) => {
+          const cardId = item.id || item._id;
+          if (!cardId) return false;
+          const isMyCustom = item.created_by === currentUserId;
+          return interactedCardIds.has(cardId) || isMyCustom;
+        });
+
+        const formattedData = filteredData.map(
+          (item: BackendCard, index: number) => {
+            const cardId = (item.id || item._id) as string;
+            return {
+              id: String(index + 1),
+              dbId: cardId,
+              title: item.title,
+              description: item.content?.description || '',
+              tags: item.tags || [],
+              group: item.group || item.course || '',
+              difficulty: item.difficulty_level
+                ? item.difficulty_level.charAt(0).toUpperCase() +
+                  item.difficulty_level.slice(1).toLowerCase()
+                : 'Medium',
+              isFavorite: false,
+              isCustom: item.created_by === currentUserId,
+              isSuggested: suggestedCardIds.has(cardId),
+              isInteracted: interactedCardIds.has(cardId),
+            };
+          },
         );
 
         setProblems(formattedData);
@@ -143,6 +189,9 @@ export const Notebook = (): JSX.Element => {
                   difficulty={problem.difficulty}
                   isFavorite={problem.isFavorite}
                   onToggleFavorite={() => handleToggleFavorite(problem.id)}
+                  isCustom={problem.isCustom}
+                  isSuggested={problem.isSuggested}
+                  isInteracted={problem.isInteracted}
                 />
               ))}
             </div>

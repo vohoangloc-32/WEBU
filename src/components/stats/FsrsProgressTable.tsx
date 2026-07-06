@@ -9,35 +9,35 @@ const STATE_CONFIG: Record<
   string,
   { label: string; color: string; bg: string }
 > = {
-  new: { label: 'New', color: 'text-neutral-400', bg: 'bg-neutral-800' },
+  new: { label: 'New', color: 'text-neutral-a300', bg: 'bg-surface-a30' },
   learning: {
     label: 'Learning',
-    color: 'text-yellow-400',
-    bg: 'bg-yellow-900/30',
+    color: 'text-warning-a10',
+    bg: 'bg-warning-a10/20',
   },
   review: {
     label: 'Review',
-    color: 'text-emerald-400',
-    bg: 'bg-emerald-900/30',
+    color: 'text-success-a10',
+    bg: 'bg-success-a10/20',
   },
   relearning: {
     label: 'Relearning',
-    color: 'text-red-400',
-    bg: 'bg-red-900/30',
+    color: 'text-danger-a10',
+    bg: 'bg-danger-a10/20',
   },
 };
 
 const RATING_CONFIG: Record<string, { label: string; color: string }> = {
-  easy: { label: '😊 Easy', color: 'text-emerald-400' },
-  good: { label: '👍 Good', color: 'text-blue-400' },
-  hard: { label: '😰 Hard', color: 'text-yellow-400' },
-  again: { label: '🔁 Again', color: 'text-red-400' },
+  easy: { label: '😊 Easy', color: 'text-success-a10' },
+  good: { label: '👍 Good', color: 'text-primary-a30' },
+  hard: { label: '😰 Hard', color: 'text-warning-a10' },
+  again: { label: '🔁 Again', color: 'text-danger-a10' },
 };
 
 const DIFF_COLORS: Record<string, string> = {
-  Easy: 'text-emerald-400',
-  Medium: 'text-yellow-400',
-  Hard: 'text-red-400',
+  Easy: 'text-success-a10',
+  Medium: 'text-warning-a10',
+  Hard: 'text-danger-a10',
 };
 
 const formatDate = (dateStr: string | null): string => {
@@ -106,13 +106,13 @@ export const FsrsProgressTable: React.FC<FsrsProgressTableProps> = ({
   );
 
   return (
-    <div className="p-5 rounded-2xl bg-white/[0.04] border border-white/[0.08]">
+    <div className="p-5 rounded-2xl bg-tonal-a20 border border-tonal-a30">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
         <div>
-          <h3 className="text-white font-semibold text-sm">
+          <h3 className="text-neutral-a50 font-semibold p7">
             FSRS Progress Table
           </h3>
-          <p className="text-neutral-500 text-xs mt-0.5">
+          <p className="text-neutral-a300 p8 mt-0.5">
             {data.length} bài đang theo dõi
           </p>
         </div>
@@ -122,29 +122,18 @@ export const FsrsProgressTable: React.FC<FsrsProgressTableProps> = ({
             placeholder="Tìm bài..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="bg-white/[0.05] border border-white/10 rounded-lg px-3 py-1.5 text-xs text-white placeholder-neutral-500 outline-none focus:border-blue-500/60 w-36"
+            className="bg-tonal-a30 border border-tonal-a40 rounded-lg px-3 py-1.5 p8 text-neutral-a50 placeholder-neutral-a400 outline-none focus:border-primary-a30 w-36"
           />
           <select
             value={stateFilter}
             onChange={(e) => setStateFilter(e.target.value)}
-            className="bg-white/[0.05] border border-white/10 rounded-lg px-2 py-1.5 text-xs text-white outline-none focus:border-blue-500/60 cursor-pointer"
-            style={{ backgroundColor: '#1e2535' }}
+            className="bg-tonal-a30 border border-tonal-a40 rounded-lg px-2 py-1.5 p8 text-neutral-a50 outline-none focus:border-primary-a30 cursor-pointer"
           >
-            <option value="all" style={{ backgroundColor: '#1e2535' }}>
-              Tất cả
-            </option>
-            <option value="new" style={{ backgroundColor: '#1e2535' }}>
-              New
-            </option>
-            <option value="learning" style={{ backgroundColor: '#1e2535' }}>
-              Learning
-            </option>
-            <option value="review" style={{ backgroundColor: '#1e2535' }}>
-              Review
-            </option>
-            <option value="relearning" style={{ backgroundColor: '#1e2535' }}>
-              Relearning
-            </option>
+            <option value="all">Tất cả</option>
+            <option value="new">New</option>
+            <option value="learning">Learning</option>
+            <option value="review">Review</option>
+            <option value="relearning">Relearning</option>
           </select>
         </div>
       </div>
@@ -152,7 +141,7 @@ export const FsrsProgressTable: React.FC<FsrsProgressTableProps> = ({
       <div className="overflow-x-auto">
         <table className="w-full text-xs">
           <thead>
-            <tr className="border-b border-white/[0.06]">
+            <tr className="border-b border-tonal-a30">
               {(
                 [
                   ['title', 'Bài tập'],
@@ -165,16 +154,16 @@ export const FsrsProgressTable: React.FC<FsrsProgressTableProps> = ({
                 <th
                   key={k}
                   onClick={() => handleSort(k)}
-                  className="text-left py-2 px-3 text-neutral-500 font-medium cursor-pointer hover:text-neutral-300 transition-colors select-none"
+                  className="text-left py-2 px-3 text-neutral-a300 font-medium cursor-pointer hover:text-neutral-a100 transition-colors select-none"
                 >
                   {label}
                   <SortIcon k={k} />
                 </th>
               ))}
-              <th className="text-left py-2 px-3 text-neutral-500 font-medium">
+              <th className="text-left py-2 px-3 text-neutral-a300 font-medium">
                 Rating
               </th>
-              <th className="text-left py-2 px-3 text-neutral-500 font-medium">
+              <th className="text-left py-2 px-3 text-neutral-a300 font-medium">
                 Tags
               </th>
             </tr>
@@ -182,7 +171,7 @@ export const FsrsProgressTable: React.FC<FsrsProgressTableProps> = ({
           <tbody>
             {sorted.length === 0 ? (
               <tr>
-                <td colSpan={7} className="py-10 text-center text-neutral-500">
+                <td colSpan={7} className="py-10 text-center text-neutral-a400">
                   Không có dữ liệu phù hợp
                 </td>
               </tr>
@@ -199,15 +188,15 @@ export const FsrsProgressTable: React.FC<FsrsProgressTableProps> = ({
                 return (
                   <tr
                     key={item.card_id}
-                    className="border-b border-white/[0.04] hover:bg-white/[0.02] transition-colors"
+                    className="border-b border-tonal-a30 hover:bg-tonal-a30/50 transition-colors"
                   >
                     <td className="py-2.5 px-3">
                       <div className="flex flex-col">
-                        <span className="text-white font-medium truncate max-w-[180px]">
+                        <span className="text-neutral-a50 font-medium truncate max-w-[180px]">
                           {item.title}
                         </span>
                         <span
-                          className={`text-[10px] ${DIFF_COLORS[item.difficulty_level] ?? 'text-neutral-500'}`}
+                          className={`text-[10px] ${DIFF_COLORS[item.difficulty_level] ?? 'text-neutral-a400'}`}
                         >
                           {item.difficulty_level}
                         </span>
@@ -220,10 +209,10 @@ export const FsrsProgressTable: React.FC<FsrsProgressTableProps> = ({
                         {stateConf.label}
                       </span>
                     </td>
-                    <td className="py-2.5 px-3 text-neutral-300 tabular-nums">
+                    <td className="py-2.5 px-3 text-neutral-a100 tabular-nums">
                       {item.reps}
                     </td>
-                    <td className="py-2.5 px-3 text-neutral-300 tabular-nums">
+                    <td className="py-2.5 px-3 text-neutral-a100 tabular-nums">
                       {item.stability !== null
                         ? item.stability.toFixed(1)
                         : '—'}
@@ -232,8 +221,8 @@ export const FsrsProgressTable: React.FC<FsrsProgressTableProps> = ({
                       <span
                         className={
                           isOverdue
-                            ? 'text-red-400 font-medium'
-                            : 'text-neutral-300'
+                            ? 'text-danger-a10 font-medium'
+                            : 'text-neutral-a100'
                         }
                       >
                         {formatDate(item.next_review_date)}
@@ -245,7 +234,7 @@ export const FsrsProgressTable: React.FC<FsrsProgressTableProps> = ({
                           {ratingConf.label}
                         </span>
                       ) : (
-                        <span className="text-neutral-600">—</span>
+                        <span className="text-neutral-a400">—</span>
                       )}
                     </td>
                     <td className="py-2.5 px-3">
@@ -253,13 +242,13 @@ export const FsrsProgressTable: React.FC<FsrsProgressTableProps> = ({
                         {item.tags.slice(0, 2).map((t) => (
                           <span
                             key={t}
-                            className="px-1.5 py-0.5 rounded text-[9px] bg-blue-500/10 text-blue-400 border border-blue-500/20"
+                            className="px-1.5 py-0.5 rounded text-[9px] bg-primary-a10/10 text-primary-a30 border border-primary-a10/30"
                           >
                             {t}
                           </span>
                         ))}
                         {item.tags.length > 2 && (
-                          <span className="text-neutral-600 text-[9px]">
+                          <span className="text-neutral-a400 text-[9px]">
                             +{item.tags.length - 2}
                           </span>
                         )}

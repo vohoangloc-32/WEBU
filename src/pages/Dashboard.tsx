@@ -8,8 +8,25 @@ import { problemApi } from '@/api/problemService';
 import apiClient from '@/api/apiClient';
 
 interface DueProblem {
-  card_id: { _id: string } | string;
+  card_id:
+    | {
+        _id: string;
+        title?: string;
+        difficulty_level?: string;
+        tags?: string[];
+        id?: string;
+      }
+    | string;
   [key: string]: unknown;
+}
+
+interface DashboardCard {
+  _id?: string;
+  id?: string;
+  title?: string;
+  difficulty_level?: string;
+  tags?: string[];
+  created_by?: string;
 }
 
 const getUserIdFromToken = (): string | undefined => {
@@ -50,28 +67,48 @@ export const Dashboard = (): JSX.Element => {
     }
   };
   const [dueProblems, setDueProblems] = useState<DueProblem[]>([]);
+  const [notebookProblems, setNotebookProblems] = useState<DashboardCard[]>([]);
   const [isLoadingReview, setIsLoadingReview] = useState(true);
 
   const userId = getUserIdFromToken();
 
   useEffect(() => {
-    const fetchDueReviews = async () => {
+    const fetchData = async () => {
       if (!userId) {
         setIsLoadingReview(false);
         return;
       }
       try {
-        const response = await apiClient.get(
+        // Fetch due reviews
+        const fsrsResponse = await apiClient.get(
           `/api/fsrs/due-reviews?userId=${userId}`,
         );
-        setDueProblems(response.data);
+        setDueProblems(fsrsResponse.data);
+
+        // Fetch notebook problems
+        const [cardsRes, interactedRes] = await Promise.all([
+          apiClient.get('/cards', { params: { limit: 200, page: 1 } }),
+          apiClient.get('/users/me/interacted-cards'),
+        ]);
+
+        const allCards: DashboardCard[] = cardsRes.data?.data || [];
+        const interactedSet = new Set(interactedRes.data || []);
+
+        const myNotebookCards = allCards.filter((c) => {
+          const id = c.id || c._id;
+          return id && (interactedSet.has(id) || c.created_by === userId);
+        });
+
+        // Pick 4 random cards for the notebook suggest
+        const shuffled = [...myNotebookCards].sort(() => 0.5 - Math.random());
+        setNotebookProblems(shuffled.slice(0, 4));
       } catch (error) {
-        console.error('FSRS data loading error:', error);
+        console.error('Dashboard data loading error:', error);
       } finally {
         setIsLoadingReview(false);
       }
     };
-    fetchDueReviews();
+    fetchData();
   }, [userId]);
 
   const handleStartReview = () => {
@@ -132,11 +169,28 @@ export const Dashboard = (): JSX.Element => {
               onExpandClick={() => {
                 navigate('/problem');
               }}
-              onReviewClick={() => {
-                const cardId = '0';
-                navigate(cardId ? '' : '/ide');
-              }}
               title={'Suggested Problems'}
+              problems={dueProblems
+                .map((p) => {
+                  const card = (
+                    typeof p.card_id === 'object' && p.card_id !== null
+                      ? p.card_id
+                      : {}
+                  ) as {
+                    _id?: string;
+                    title?: string;
+                    difficulty_level?: string;
+                    tags?: string[];
+                    id?: string;
+                  };
+                  return {
+                    id: card.id || card._id || '',
+                    title: card.title || 'Unknown',
+                    difficulty: card.difficulty_level || 'Medium',
+                    tags: card.tags || [],
+                  };
+                })
+                .filter((p) => p.id)}
             />
           </div>
           <div>
@@ -144,8 +198,13 @@ export const Dashboard = (): JSX.Element => {
               onExpandClick={() => {
                 navigate('/notebook');
               }}
-              onReviewClick={() => {}}
               title="Your Notebook"
+              problems={notebookProblems.map((card) => ({
+                id: card.id || card._id || '',
+                title: card.title || 'Unknown',
+                difficulty: card.difficulty_level || 'Medium',
+                tags: card.tags || [],
+              }))}
             />
           </div>
         </div>

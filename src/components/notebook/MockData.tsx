@@ -7,4 +7,7 @@ export interface ProblemType {
   group: string;
   difficulty: 'Easy' | 'Medium' | 'Hard';
   isFavorite: boolean;
+  isCustom?: boolean;
+  isSuggested?: boolean;
+  isInteracted?: boolean;
 }

@@ -14,10 +14,10 @@ import {
 } from '@/api/statsService';
 
 const LoadingSection = () => (
-  <div className="h-48 rounded-2xl bg-white/[0.04] border border-white/[0.08] flex items-center justify-center">
+  <div className="h-48 rounded-2xl bg-tonal-a20 border border-tonal-a30 flex items-center justify-center">
     <div className="flex flex-col items-center gap-3">
       <svg
-        className="animate-spin h-7 w-7 text-blue-500/50"
+        className="animate-spin h-7 w-7 text-primary-a30"
         fill="none"
         viewBox="0 0 24 24"
       >
@@ -35,13 +35,13 @@ const LoadingSection = () => (
           d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
         />
       </svg>
-      <span className="text-neutral-600 text-xs">Đang tải dữ liệu...</span>
+      <span className="text-neutral-a300 p7">Đang tải dữ liệu...</span>
     </div>
   </div>
 );
 
 const ErrorBanner = ({ message }: { message: string }) => (
-  <div className="p-4 rounded-2xl bg-red-500/10 border border-red-500/20 text-red-400 text-sm">
+  <div className="p-4 rounded-2xl bg-danger-a10/10 border border-danger-a10/20 text-danger-a10 p7">
     ⚠️ {message}
   </div>
 );
@@ -79,8 +79,8 @@ export const Stats: React.FC = () => {
   }, []);
 
   return (
-    <div className="min-h-screen bg-[#080d14]">
-      <header className="sticky top-0 z-10 bg-[#080d14]/80 backdrop-blur-xl border-b border-white/[0.06]">
+    <div className="min-h-screen bg-tonal-a10">
+      <header className="sticky top-0 z-10 bg-tonal-a10/80 backdrop-blur-xl border-b border-tonal-a20">
         <MainNavigation />
       </header>
 
@@ -88,7 +88,7 @@ export const Stats: React.FC = () => {
         {/* Page header */}
         <div className="mb-8">
           <div className="flex items-center gap-3 mb-2">
-            <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-blue-500 to-purple-500 flex items-center justify-center">
+            <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-primary-a10 to-discovery-a50 flex items-center justify-center">
               <svg
                 className="w-4 h-4 text-white"
                 fill="none"
@@ -103,9 +103,9 @@ export const Stats: React.FC = () => {
                 />
               </svg>
             </div>
-            <h1 className="text-white text-2xl font-bold">Statistics</h1>
+            <h1 className="text-neutral-a50 h5">Statistics</h1>
           </div>
-          <p className="text-neutral-500 text-sm">
+          <p className="text-neutral-a300 p7">
             Tổng quan về hành trình học lập trình của bạn — từ FSRS đến kỹ năng
             thuật toán.
           </p>

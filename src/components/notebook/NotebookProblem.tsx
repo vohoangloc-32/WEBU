@@ -10,6 +10,9 @@ interface NotebookProblemProps {
   difficulty: 'Easy' | 'Medium' | 'Hard';
   isFavorite?: boolean;
   onToggleFavorite?: () => void;
+  isCustom?: boolean;
+  isSuggested?: boolean;
+  isInteracted?: boolean;
 }
 
 export const NotebookProblem = ({
@@ -20,6 +23,9 @@ export const NotebookProblem = ({
   difficulty,
   isFavorite = false,
   onToggleFavorite,
+  isCustom = false,
+  isSuggested = false,
+  isInteracted = false,
 }: NotebookProblemProps) => {
   const navigate = useNavigate();
 
@@ -37,10 +43,42 @@ export const NotebookProblem = ({
       .replace(/^-+|-+$/g, '');
   };
 
+  let cardBg = 'bg-tonal-a20 border-tonal-a30';
+  let descBg = 'bg-tonal-a30';
+  if (isCustom) {
+    cardBg = 'bg-primary-a0 border-primary-a10/30';
+    descBg = 'bg-primary-a20';
+  } else if (isSuggested) {
+    cardBg = 'bg-warning-a10/10 border-warning-a10/30';
+    descBg = 'bg-warning-a10/20';
+  } else if (isInteracted) {
+    cardBg = 'bg-success-a10/10 border-success-a10/30';
+    descBg = 'bg-success-a10/20';
+  }
+
   return (
-    <div className="flex flex-col bg-primary-a0 rounded-[20px] p-5 gap-4 h-full">
+    <div
+      className={`flex flex-col rounded-[20px] p-5 gap-4 h-full border ${cardBg}`}
+    >
       <div className="flex justify-between items-start">
-        <span className="h4 text-secondary-a10">{id}.</span>
+        <div className="flex items-center gap-2">
+          <span className="h4 text-secondary-a10">{id}.</span>
+          {isCustom && (
+            <span className="px-2 py-0.5 rounded-md bg-secondary-a10 text-tonal-a0 p9 font-bold">
+              Của Bạn
+            </span>
+          )}
+          {isSuggested && !isCustom && (
+            <span className="px-2 py-0.5 rounded-md bg-warning-a10 text-tonal-a0 p9 font-bold">
+              Suggested
+            </span>
+          )}
+          {isInteracted && !isSuggested && !isCustom && (
+            <span className="px-2 py-0.5 rounded-md bg-success-a10 text-tonal-a0 p9 font-bold">
+              Đã Làm
+            </span>
+          )}
+        </div>
 
         <div
           onClick={onToggleFavorite}
@@ -52,7 +90,7 @@ export const NotebookProblem = ({
 
       <h3 className="h4 text-neutral-a50 m-0">{title}</h3>
 
-      <div className="bg-primary-a20 rounded-[10px] p-3 flex-1">
+      <div className={`rounded-[10px] p-3 flex-1 ${descBg}`}>
         <p className="p8 text-neutral-a50 line-clamp-10 m-0">{description}</p>
       </div>
 

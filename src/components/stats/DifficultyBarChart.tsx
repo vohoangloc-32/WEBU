@@ -16,9 +16,9 @@ interface DifficultyBarChartProps {
 }
 
 const DIFFICULTY_COLORS: Record<string, { solved: string; fill: string }> = {
-  Easy: { solved: '#34d399', fill: 'rgba(52,211,153,0.15)' },
-  Medium: { solved: '#fbbf24', fill: 'rgba(251,191,36,0.15)' },
-  Hard: { solved: '#f87171', fill: 'rgba(248,113,113,0.15)' },
+  Easy: { solved: 'var(--color-success-a10)', fill: 'rgba(51,224,168,0.15)' },
+  Medium: { solved: 'var(--color-warning-a10)', fill: 'rgba(230,184,51,0.15)' },
+  Hard: { solved: 'var(--color-danger-a10)', fill: 'rgba(224,108,108,0.15)' },
 };
 
 const CustomTooltip = ({
@@ -32,12 +32,12 @@ const CustomTooltip = ({
 }) => {
   if (!active || !payload?.length) return null;
   return (
-    <div className="bg-[#111827] border border-white/10 rounded-xl px-4 py-3 shadow-xl text-xs">
-      <p className="text-neutral-400 mb-1 font-semibold">{label}</p>
+    <div className="bg-tonal-a20 border border-tonal-a30 rounded-xl px-4 py-3 shadow-xl">
+      <p className="text-neutral-a300 mb-1 font-semibold p8">{label}</p>
       {payload.map((p) => (
-        <div key={p.dataKey} className="flex items-center gap-2 mt-1">
-          <span className="text-neutral-300">Đã solved:</span>
-          <span className="text-white font-bold">{p.value}</span>
+        <div key={p.dataKey} className="flex items-center gap-2 mt-1 p8">
+          <span className="text-neutral-a100">Đã solved:</span>
+          <span className="text-neutral-a50 font-bold">{p.value}</span>
         </div>
       ))}
     </div>
@@ -61,12 +61,12 @@ export const DifficultyBarChart: React.FC<DifficultyBarChartProps> = ({
     solved_by_difficulty.Hard;
 
   return (
-    <div className="p-5 rounded-2xl bg-white/[0.04] border border-white/[0.08]">
+    <div className="p-5 rounded-2xl bg-tonal-a20 border border-tonal-a30">
       <div className="mb-4">
-        <h3 className="text-white font-semibold text-sm">
+        <h3 className="text-neutral-a50 font-semibold p7">
           Phân phối theo độ khó
         </h3>
-        <p className="text-neutral-500 text-xs mt-0.5">
+        <p className="text-neutral-a300 p8 mt-0.5">
           Số bài đã giải (Passed) theo mức độ
         </p>
       </div>
@@ -85,7 +85,7 @@ export const DifficultyBarChart: React.FC<DifficultyBarChartProps> = ({
             >
               {d.solved}
             </p>
-            <p className="text-neutral-400 text-[10px] mt-0.5">{d.name}</p>
+            <p className="text-neutral-a300 text-[10px] mt-0.5">{d.name}</p>
           </div>
         ))}
       </div>
@@ -97,17 +97,17 @@ export const DifficultyBarChart: React.FC<DifficultyBarChartProps> = ({
         >
           <CartesianGrid
             strokeDasharray="3 3"
-            stroke="rgba(255,255,255,0.05)"
+            stroke="var(--color-surface-a30)"
             vertical={false}
           />
           <XAxis
             dataKey="name"
-            tick={{ fill: '#6b7280', fontSize: 11 }}
+            tick={{ fill: 'var(--color-neutral-a400)', fontSize: 11 }}
             axisLine={false}
             tickLine={false}
           />
           <YAxis
-            tick={{ fill: '#6b7280', fontSize: 10 }}
+            tick={{ fill: 'var(--color-neutral-a400)', fontSize: 10 }}
             axisLine={false}
             tickLine={false}
           />
@@ -123,7 +123,7 @@ export const DifficultyBarChart: React.FC<DifficultyBarChartProps> = ({
         </BarChart>
       </ResponsiveContainer>
 
-      <p className="text-center text-neutral-600 text-xs mt-2">
+      <p className="text-center text-neutral-a400 p8 mt-2">
         {total} bài đã giải tổng cộng
       </p>
     </div>
