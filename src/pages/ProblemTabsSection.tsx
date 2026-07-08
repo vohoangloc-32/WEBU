@@ -147,7 +147,7 @@ export const ProblemTabsSection = ({
   useEffect(() => {
     if (activeTab === 'note' && userId) {
       apiClient
-        .get(`/api/notes?userId=${userId}&cardId=${card.id}`)
+        .get(`/notes?userId=${userId}&cardId=${card.id}`)
         .then((res) => {
           setNoteContent(res.data.content || '');
         })
