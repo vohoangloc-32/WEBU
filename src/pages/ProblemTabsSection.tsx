@@ -3,6 +3,8 @@ import React, { useState, useEffect, useRef } from 'react';
 import { renderFormattedDescription } from '../components/utils/descriptionFormatter';
 import { ideApi } from '../api/ideService';
 import { CardDetail, SubmissionHistory } from '../types/ide';
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
 
 interface Message {
   sender: 'ai' | 'user';
@@ -198,6 +200,15 @@ export const ProblemTabsSection = ({
 
   const diffClass =
     DIFFICULTY_COLORS[card.difficulty_level] ?? DIFFICULTY_COLORS.Medium;
+
+  const quillModules = {
+    toolbar: [
+      ['bold', 'italic', 'underline'],
+      [{ color: [] }, { background: [] }],
+      [{ align: [] }], // Căn lề
+      [{ list: 'bullet' }, { list: 'ordered' }],
+    ],
+  };
 
   return (
     <div className="w-full h-full bg-[#0f1623] flex flex-col overflow-hidden rounded-xl border border-white/[0.07]">
@@ -502,13 +513,16 @@ export const ProblemTabsSection = ({
               </div>
             ) : (
               <>
-                <textarea
-                  value={noteContent}
-                  onChange={(e) => setNoteContent(e.target.value)}
-                  placeholder={`Ghi chú lại cách giải, mẹo hay, hoặc nhắc nhở bản thân cho bài ${card.title} tại đây...`}
-                  className="flex-1 w-full bg-[#1a2235] text-neutral-200 text-sm p-4 rounded-xl border border-white/[0.08] focus:border-secondary-a50 focus:outline-none resize-none scrollbar-thin transition-colors"
-                />
-
+                <div className="flex-1 w-full bg-[#1a2235] rounded-xl border border-white/[0.08] overflow-hidden flex flex-col text-neutral-200">
+                  <ReactQuill
+                    theme="snow"
+                    value={noteContent}
+                    onChange={setNoteContent} // Quill tự động trả về value là chuỗi HTML, không cần e.target.value
+                    modules={quillModules}
+                    placeholder={`Ghi chú lại cách giải, mẹo hay cho bài ${card.title} tại đây...`}
+                    className="flex-1 flex flex-col h-full"
+                  />
+                </div>
                 <div className="flex justify-end flex-shrink-0">
                   <button
                     onClick={handleSaveNote}
