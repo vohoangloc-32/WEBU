@@ -1,22 +1,42 @@
 import { useId, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-const options = [
+const questions = [
   {
-    id: 'duoi-6-thang',
-    label: 'Dưới 6 tháng',
+    text: 'Bạn đã học lập trình được bao lâu?',
+    options: [
+      { id: 'duoi-6-thang', label: 'Dưới 6 tháng' },
+      { id: 'duoi-1-nam', label: 'Dưới 1 năm' },
+      { id: 'tu-1-den-2-nam', label: 'Từ 1 đến 2 năm' },
+      { id: 'tren-2-nam', label: 'Trên 2 năm' },
+    ],
   },
   {
-    id: 'duoi-1-nam',
-    label: 'Dưới 1 năm',
+    text: 'Trình độ lập trình hiện tại của bạn?',
+    options: [
+      { id: 'beginner', label: 'Beginner — Mới bắt đầu' },
+      { id: 'intermediate', label: 'Intermediate — Đã biết cơ bản' },
+      { id: 'advanced', label: 'Advanced — Có kinh nghiệm thực tế' },
+      { id: 'expert', label: 'Expert — Senior / Chuyên gia' },
+    ],
   },
   {
-    id: 'tu-1-den-2-nam',
-    label: 'Từ 1 đến 2 năm',
+    text: 'Mục tiêu học lập trình của bạn là gì?',
+    options: [
+      { id: 'di-lam', label: 'Tìm việc làm / Đi làm' },
+      { id: 'freelance', label: 'Làm freelance' },
+      { id: 'du-an-ca-nhan', label: 'Xây dựng dự án cá nhân' },
+      { id: 'hoc-thuat', label: 'Nghiên cứu / Học thuật' },
+    ],
   },
   {
-    id: 'tren-2-nam',
-    label: 'Trên 2 năm',
+    text: 'Bạn muốn tập trung vào lĩnh vực nào?',
+    options: [
+      { id: 'thuat-toan', label: 'Thuật toán & Cấu trúc dữ liệu' },
+      { id: 'web-frontend', label: 'Web Frontend' },
+      { id: 'backend', label: 'Backend / API' },
+      { id: 'fullstack', label: 'Full-stack Development' },
+    ],
   },
 ];
 
@@ -46,10 +66,10 @@ export const Survey = (): JSX.Element => {
   const [selectedOptions, setSelectedOptions] = useState<
     Record<number, string>
   >({
-    1: options[1].id,
-    2: options[1].id,
-    3: options[1].id,
-    4: options[1].id,
+    1: questions[0].options[0].id,
+    2: questions[1].options[0].id,
+    3: questions[2].options[0].id,
+    4: questions[3].options[0].id,
   });
 
   const handleBack = () => {
@@ -106,13 +126,13 @@ export const Survey = (): JSX.Element => {
 
         {/* Question Text */}
         <p className="absolute w-[calc(100%_-_253px)] top-[271px] left-[120px] [font-family:'HYWenHei-85W',Helvetica] font-normal text-[#8bc5ff] text-2xl tracking-[0] leading-[normal]">
-          Question {step}: Bạn đã học code được bao lâu rồi?
+          Question {step}: {questions[step - 1].text}
         </p>
 
         {/* Radio Options List */}
         <fieldset className="flex flex-col w-[calc(100%_-_254px)] items-start gap-10 absolute top-[360px] left-[121px] border-0 p-0 m-0 min-w-0">
-          <legend className="sr-only">Chọn thời gian bạn đã học code</legend>
-          {options.map((option) => {
+          <legend className="sr-only">{questions[step - 1].text}</legend>
+          {questions[step - 1].options.map((option) => {
             const inputId = `${groupId}-${option.id}`;
             const checked = selectedOptions[step] === option.id;
 

@@ -1,5 +1,5 @@
 import { FormEvent, useId, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { GoogleLogin, CredentialResponse } from '@react-oauth/google';
 import { googleLogin, login, register, saveAuthToken } from '@/api/authService';
 import { LinkAccountModal } from '@/components/ui/LinkAccountModal';
@@ -41,7 +41,12 @@ const signInFields: FormField[] = [
 export const SignUp = (): JSX.Element => {
   const formId = useId();
   const navigate = useNavigate();
-  const [activeTab, setActiveTab] = useState<'signup' | 'signin'>('signup');
+  const location = useLocation();
+
+  // Derive active tab directly from URL pathname
+  const activeTab = location.pathname.startsWith('/signin')
+    ? 'signin'
+    : 'signup';
   const [formData, setFormData] = useState({
     email: '',
     username: '',
@@ -94,6 +99,9 @@ export const SignUp = (): JSX.Element => {
       setIsLoading(true);
       try {
         await register(username, email, password);
+        // Auto-login sau khi đăng ký để lấy JWT token
+        const loginRes = await login(email, password);
+        saveAuthToken(loginRes.token);
         navigate('/survey');
       } catch (err: unknown) {
         const msg =
@@ -197,10 +205,10 @@ export const SignUp = (): JSX.Element => {
         formElement.requestSubmit();
       }
     } else {
-      // Chuyển tab → reset lỗi
-      setActiveTab(tab);
+      // Chuyển tab → reset lỗi và chuyển route
       setFormError('');
       setGoogleError('');
+      navigate(tab === 'signin' ? '/signin' : '/signup');
     }
   };
 

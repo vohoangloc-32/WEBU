@@ -39,3 +39,14 @@ coverage
 
 # Vite temporary timestamp files
 vite.config.ts.timestamp-*
+
+# Playwright E2E testing outputs
+playwright-report/
+test-results/
+playwright/.local-browsers/
+
+# Lighthouse audit reports
+lighthouse-report.json
+lighthouse-report-*.json
+lighthouse-report.html
+lighthouse-report-*.html
