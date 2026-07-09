@@ -172,8 +172,8 @@ export const Notebook = (): JSX.Element => {
         <MainNavigation />
       </header>
 
-      <div className="w-full min-h-screen bg-tonal-a10 px-20 py-5 flex flex-col items-center overflow-hidden select-none gap-10 pb-20">
-        <div className="w-full max-w-300 flex flex-col gap-10 mt-5">
+      <div className="w-full min-h-screen bg-tonal-a10 px-4 sm:px-8 md:px-16 lg:px-20 py-5 flex flex-col items-center overflow-hidden select-none gap-6 md:gap-10 pb-20">
+        <div className="w-full max-w-[1400px] flex flex-col gap-6 md:gap-10 mt-5">
           <NotebookHeader />
 
           <NotebookFilter
@@ -188,7 +188,7 @@ export const Notebook = (): JSX.Element => {
           />
 
           {currentProblems.length > 0 ? (
-            <div className="w-full grid grid-cols-3 gap-20">
+            <div className="w-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
               {currentProblems.map((problem) => (
                 <NotebookProblem
                   key={problem.id}

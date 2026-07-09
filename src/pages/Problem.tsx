@@ -110,7 +110,7 @@ export const Problem = (): JSX.Element => {
         <MainNavigation />
       </header>
 
-      <div className="w-full min-h-screen bg-tonal-a10 px-20 py-10 flex flex-col items-center overflow-hidden select-none">
+      <div className="w-full min-h-screen bg-tonal-a10 px-4 sm:px-8 md:px-12 lg:px-20 py-10 flex flex-col items-center overflow-hidden select-none">
         <div className="w-full max-w-[1200px] flex flex-col gap-8">
           <div className="flex items-baseline gap-4">
             <h1 className="h1 text-neutral-a50 leading-normal">Problem</h1>

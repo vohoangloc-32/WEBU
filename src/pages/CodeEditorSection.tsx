@@ -761,7 +761,7 @@ export const CodeEditorSection = ({
       )}
 
       {/* ── Bottom action bar ─────────────────────────────────────────────── */}
-      <div className="flex-shrink-0 h-12 bg-[#0e1521] border-t border-white/[0.07] px-3 flex items-center justify-between">
+      <div className="flex-shrink-0 min-h-[48px] bg-[#0e1521] border-t border-white/[0.07] px-2 sm:px-3 flex items-center justify-between flex-wrap gap-1">
         {/* Console toggle */}
         <button
           type="button"

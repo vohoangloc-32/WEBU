@@ -34,7 +34,7 @@ export const GoogleSignInButton = ({
 
   return (
     <div
-      className="relative overflow-hidden flex h-14 w-[710px] items-center justify-center gap-2.5 rounded-[10px] border border-solid border-secondary-secondary-a70 bg-surface-tonal-tonal-a20 p-2.5 shadow-[0px_4px_12px_rgba(0,0,0,0.35),0px_2px_0px_#4ca3ff] transition-all hover:brightness-110 active:brightness-95"
+      className="relative overflow-hidden flex h-14 w-full max-w-[500px] items-center justify-center gap-2.5 rounded-[10px] border border-solid border-secondary-secondary-a70 bg-surface-tonal-tonal-a20 p-2.5 shadow-[0px_4px_12px_rgba(0,0,0,0.35),0px_2px_0px_#4ca3ff] transition-all hover:brightness-110 active:brightness-95"
       style={{
         opacity: disabled ? 0.5 : 1,
         pointerEvents: disabled ? 'none' : 'auto',

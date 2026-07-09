@@ -138,8 +138,8 @@ export const Dashboard = (): JSX.Element => {
       <header className="self-stretch flex flex-row justify-start gap-10 sticky top-0 z-10">
         <MainNavigation />
       </header>
-      <div className="w-full min-h-screen bg-tonal-a10 px-20 py-5 flex flex-col justify-between items-stretch overflow-hidden select-none gap-10">
-        <div className="w-full h-40 relative bg-tonal-a20 rounded-[20px] overflow-hidden px-20 py-5 flex flex-col justify-between items-stretch gap-10">
+      <div className="w-full min-h-screen bg-tonal-a10 px-4 sm:px-8 md:px-12 lg:px-20 py-5 flex flex-col justify-between items-stretch overflow-hidden select-none gap-6 md:gap-10">
+        <div className="w-full relative bg-tonal-a20 rounded-[20px] overflow-hidden px-4 sm:px-8 md:px-12 lg:px-20 py-5 flex flex-col justify-between items-stretch gap-6 md:gap-10">
           <Review
             reviewCount={dueProblems.length}
             isLoading={isLoadingReview}
@@ -160,10 +160,13 @@ export const Dashboard = (): JSX.Element => {
             <p className="text-danger-a10 text-center mt-3 p7">{aiError}</p>
           )}
         </div>
-        <div className="self-stretch flex-1 flex flex-row justify-center items-center py-1 gap-10">
+        <div
+          className="self-stretch flex-1 flex flex-row justify-center items-center py-1 gap-10"
+          aria-hidden="true"
+        >
           <div></div>
         </div>
-        <div className="self-stretch flex-1 flex flex-row justify-center items-center py-1 gap-10">
+        <div className="self-stretch flex-1 flex flex-col lg:flex-row justify-center items-center py-1 gap-6 md:gap-10">
           <div>
             <Suggest
               onExpandClick={() => {

@@ -147,7 +147,7 @@ export const SignIn = (): JSX.Element => {
 
       <main className="w-full min-h-screen flex flex-col items-center justify-center bg-[#0a1222] px-4 py-10 select-none">
         <header className="flex justify-center items-center">
-          <h1 className="text-[#e0e0e0] text-6xl [font-family:'HYWenHei-85W',Helvetica] font-normal tracking-[0] leading-[normal] whitespace-nowrap">
+          <h1 className="text-[#e0e0e0] text-3xl sm:text-4xl md:text-5xl lg:text-6xl [font-family:'HYWenHei-85W',Helvetica] font-normal tracking-[0] leading-[normal] whitespace-nowrap">
             Sign In
           </h1>
         </header>
@@ -155,7 +155,7 @@ export const SignIn = (): JSX.Element => {
         <form
           id={formId}
           onSubmit={handleSubmit}
-          className="flex w-full max-w-[710px] h-[172px] relative mt-[60px] flex-col items-center gap-[60px] transition-all duration-300"
+          className="flex w-full max-w-[710px] h-auto min-h-[172px] relative mt-8 sm:mt-[60px] flex-col items-center gap-8 sm:gap-[60px] transition-all duration-300"
         >
           <Button className="hidden" type="submit">
             Submit

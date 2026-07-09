@@ -22,7 +22,7 @@ export const Suggest = ({
   const navigate = useNavigate();
 
   return (
-    <div className="w-145 min-h-140 p-8 bg-tonal-a20 rounded-[10px] flex flex-col gap-8">
+    <div className="w-full max-w-[580px] min-h-140 p-6 md:p-8 bg-tonal-a20 rounded-[10px] flex flex-col gap-8">
       <div className="flex justify-between items-center w-full">
         <h2 className="text-secondary-a50 h2 m-0">{title}</h2>
         <div

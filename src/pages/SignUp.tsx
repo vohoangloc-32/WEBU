@@ -219,7 +219,7 @@ export const SignUp = (): JSX.Element => {
       <main className="w-full min-h-screen flex flex-col items-center justify-center bg-[#0a1222] px-4 py-10 select-none">
         {/* Title */}
         <header className="flex justify-center items-center">
-          <h1 className="text-[#e0e0e0] text-6xl [font-family:'HYWenHei-85W',Helvetica] font-normal tracking-[0] leading-[normal] whitespace-nowrap">
+          <h1 className="text-[#e0e0e0] text-3xl sm:text-4xl md:text-5xl lg:text-6xl [font-family:'HYWenHei-85W',Helvetica] font-normal tracking-[0] leading-[normal] whitespace-nowrap">
             {activeTab === 'signup' ? 'Sign Up' : 'Sign In'}
           </h1>
         </header>
@@ -228,8 +228,8 @@ export const SignUp = (): JSX.Element => {
         <form
           id={formId}
           onSubmit={handleSubmit}
-          className={`flex w-full max-w-[710px] relative mt-[60px] flex-col items-center gap-[60px] transition-all duration-300 ${
-            activeTab === 'signup' ? 'h-[404px]' : 'h-[172px]'
+          className={`flex w-full max-w-[710px] h-auto relative mt-8 sm:mt-[60px] flex-col items-center gap-6 sm:gap-[60px] transition-all duration-300 ${
+            activeTab === 'signup' ? 'min-h-[404px]' : 'min-h-[172px]'
           }`}
         >
           <button type="submit" className="hidden" />

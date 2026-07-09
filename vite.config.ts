@@ -15,5 +15,10 @@ export default defineConfig({
   server: {
     port: 5173,
     open: true,
+    headers: {
+      // Required for Google OAuth popup flow
+      'Cross-Origin-Opener-Policy': 'same-origin-allow-popups',
+      'Cross-Origin-Embedder-Policy': 'unsafe-none',
+    },
   },
 });

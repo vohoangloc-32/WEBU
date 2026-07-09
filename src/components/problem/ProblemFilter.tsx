@@ -88,8 +88,8 @@ export const ProblemFilter = ({
 
   return (
     <div className="w-full flex flex-col gap-4">
-      <div className="w-full flex justify-between items-center gap-4">
-        <div className="flex-1 h-[42px] bg-info-a0 rounded-[6px] px-3 flex items-center gap-2 border border-transparent focus-within:border-secondary-a70 transition-colors">
+      <div className="w-full flex flex-wrap justify-between items-center gap-3">
+        <div className="flex-1 min-w-[200px] h-[42px] bg-info-a0 rounded-[6px] px-3 flex items-center gap-2 border border-transparent focus-within:border-secondary-a70 transition-colors">
           <span className="text-white p7">🔍</span>
           <input
             type="text"
@@ -100,7 +100,7 @@ export const ProblemFilter = ({
           />
         </div>
 
-        <div className="relative w-[120px] h-[42px]">
+        <div className="relative w-[110px] sm:w-[120px] h-[42px]">
           <SelectDropdown
             label="Tags"
             options={tagOptions}
@@ -112,7 +112,7 @@ export const ProblemFilter = ({
           />
         </div>
 
-        <div className="relative w-[120px] h-[42px]">
+        <div className="relative w-[110px] sm:w-[120px] h-[42px]">
           <SelectDropdown
             label="Course"
             options={courseOptions}

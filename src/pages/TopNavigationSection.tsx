@@ -49,11 +49,11 @@ export const TopNavigationSection = (): JSX.Element => {
 
   return (
     <header
-      className="absolute top-0 left-0 w-[1440px] h-[120px] bg-tonal-a0 border-b border-tonal-a20 flex items-center justify-between px-8 select-none z-20"
+      className="w-full h-16 sm:h-20 bg-tonal-a0 border-b border-tonal-a20 flex items-center justify-between px-3 sm:px-6 select-none z-20 shrink-0"
       data-id="top-navigation-section"
     >
       {/* Left Area: Back, Logo, Breadcrumb */}
-      <div className="flex items-center gap-6">
+      <div className="flex items-center gap-2 sm:gap-4 min-w-0">
         <button
           type="button"
           onClick={() => navigate('/problems')}
@@ -75,12 +75,12 @@ export const TopNavigationSection = (): JSX.Element => {
           </svg>
         </button>
 
-        {/* Small logo container */}
+        {/* Small logo container — hidden on very small screens */}
         <div
-          className="h-16 w-20 overflow-hidden flex items-center justify-center cursor-pointer"
+          className="hidden sm:flex h-10 w-14 overflow-hidden items-center justify-center cursor-pointer"
           onClick={() => navigate('/dashboard')}
         >
-          <div className="scale-65 origin-center">
+          <div className="scale-50 origin-center">
             <Logo2 />
           </div>
         </div>
@@ -88,26 +88,26 @@ export const TopNavigationSection = (): JSX.Element => {
         {/* Divider */}
         <div className="h-6 w-px bg-tonal-a30" />
 
-        {/* Breadcrumbs */}
+        {/* Breadcrumbs — hide problem title on very small screens */}
         <nav
-          className="flex items-center gap-2 text-sm"
+          className="hidden xs:flex items-center gap-1 sm:gap-2 text-sm min-w-0"
           aria-label="Breadcrumb"
         >
           <span
             onClick={() => navigate('/problems')}
-            className="text-neutral-a400 hover:text-secondary-a50 cursor-pointer font-medium transition-colors"
+            className="text-neutral-a400 hover:text-secondary-a50 cursor-pointer font-medium transition-colors whitespace-nowrap"
           >
             Problems
           </span>
           <span className="text-neutral-a600">/</span>
-          <span className="text-white font-bold text-base">
+          <span className="text-white font-bold text-sm truncate max-w-[120px] sm:max-w-xs">
             {getProblemTitle(problemId)}
           </span>
         </nav>
       </div>
 
-      {/* Center Area: Stopwatch Timer */}
-      <div className="flex items-center gap-4 bg-tonal-a10 border border-tonal-a20 px-5 py-2.5 rounded-full shadow-inner">
+      {/* Center Area: Stopwatch Timer — hidden on small screens */}
+      <div className="hidden sm:flex items-center gap-2 sm:gap-4 bg-tonal-a10 border border-tonal-a20 px-3 sm:px-5 py-1.5 sm:py-2.5 rounded-full shadow-inner flex-shrink-0">
         <svg
           className={`w-5 h-5 ${isRunning ? 'text-secondary-a70 animate-pulse' : 'text-neutral-a400'}`}
           fill="none"
