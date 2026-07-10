@@ -47,6 +47,11 @@ export const TopNavigationSection = (): JSX.Element => {
       .join(':');
   };
 
+  const handleSignOut = () => {
+    localStorage.removeItem('auth_token');
+    navigate('/signin');
+  };
+
   return (
     <header
       className="w-full h-16 sm:h-20 bg-tonal-a0 border-b border-tonal-a20 flex items-center justify-between px-3 sm:px-6 select-none z-20 shrink-0"
@@ -159,13 +164,39 @@ export const TopNavigationSection = (): JSX.Element => {
         </div>
       </div>
 
-      {/* Right Area: Status and Profile */}
-      <div className="flex items-center gap-4">
+      {/* Right Area: Status, Profile and Sign Out */}
+      <div className="flex items-center gap-3">
         <div className="hidden md:flex flex-col text-right">
           <span className="text-white font-semibold text-sm">John Doe</span>
           <span className="text-success-a0 text-xs font-bold">PRO Member</span>
         </div>
         <UserIcon />
+
+        {/* Sign Out Button */}
+        <button
+          id="ide-sign-out-btn"
+          type="button"
+          onClick={handleSignOut}
+          title="Sign Out"
+          className="flex items-center gap-2 px-3 py-2 rounded-lg border border-danger-a0/40 bg-danger-a0/10 text-danger-a10 hover:bg-danger-a0 hover:text-white hover:border-danger-a0 hover:shadow-[0_0_16px_rgba(214,61,61,0.45)] active:scale-95 transition-all duration-200 cursor-pointer select-none"
+        >
+          <svg
+            className="w-4 h-4 shrink-0"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            strokeWidth={2.2}
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h6a2 2 0 012 2v1"
+            />
+          </svg>
+          <span className="hidden sm:inline text-xs font-bold tracking-widest uppercase">
+            Sign Out
+          </span>
+        </button>
       </div>
     </header>
   );

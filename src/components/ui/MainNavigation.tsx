@@ -32,6 +32,11 @@ export const MainNavigation = (): JSX.Element => {
     setMenuOpen(false);
   };
 
+  const handleSignOut = () => {
+    localStorage.removeItem('auth_token');
+    navigate('/signin');
+  };
+
   return (
     <div className="w-full bg-tonal-a10 rounded-[5px] flex flex-col justify-start items-start relative">
       {/* Main header bar */}
@@ -57,9 +62,37 @@ export const MainNavigation = (): JSX.Element => {
           ))}
         </div>
 
-        {/* Right side: UserIcon + hamburger */}
+        {/* Right side: UserIcon + Sign Out + hamburger */}
         <div className="flex items-center gap-3">
           <UserIcon />
+
+          {/* Sign Out Button */}
+          <button
+            id="sign-out-btn"
+            type="button"
+            onClick={handleSignOut}
+            title="Sign Out"
+            className="group flex items-center gap-2 px-3 py-2 rounded-lg border border-danger-a0/40 bg-danger-a0/10 text-danger-a10 hover:bg-danger-a0 hover:text-white hover:border-danger-a0 hover:shadow-[0_0_16px_rgba(214,61,61,0.45)] active:scale-95 transition-all duration-200 cursor-pointer select-none"
+          >
+            {/* Icon */}
+            <svg
+              className="w-4 h-4 shrink-0"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              strokeWidth={2.2}
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h6a2 2 0 012 2v1"
+              />
+            </svg>
+            {/* Label — hidden on small screens */}
+            <span className="hidden sm:inline text-xs font-bold tracking-widest uppercase">
+              Sign Out
+            </span>
+          </button>
 
           {/* Hamburger button — visible only below md */}
           <button
@@ -110,6 +143,27 @@ export const MainNavigation = (): JSX.Element => {
                 {label}
               </button>
             ))}
+            {/* Sign Out row in mobile menu */}
+            <button
+              type="button"
+              onClick={handleSignOut}
+              className="w-full text-left px-6 py-4 text-sm font-bold tracking-widest transition-colors cursor-pointer border-0 text-danger-a10 hover:text-white hover:bg-danger-a0/20 flex items-center gap-3"
+            >
+              <svg
+                className="w-4 h-4 shrink-0"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                strokeWidth={2.2}
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h6a2 2 0 012 2v1"
+                />
+              </svg>
+              SIGN OUT
+            </button>
           </div>
         </>
       )}
